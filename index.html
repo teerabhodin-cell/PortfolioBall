@@ -190,7 +190,7 @@
             color: var(--text-muted);
         }
 
-        /* Category Box */
+        /* Interactive Category Box */
         .category-box {
             background: var(--bg-card);
             border-radius: 16px;
@@ -211,18 +211,25 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 12px 10px;
-            border-radius: 10px;
+            padding: 14px 10px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             color: var(--text-muted);
             border: 1px solid transparent;
+            user-select: none;
         }
 
-        .cat-item:hover, .cat-item.active {
-            background: rgba(212, 175, 55, 0.1);
+        .cat-item:hover {
+            color: var(--light-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .cat-item.active {
+            background: rgba(212, 175, 55, 0.12);
             color: var(--primary-gold);
-            border-color: var(--border-gold);
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
         }
 
         .cat-item .icon { font-size: 1.6rem; }
@@ -243,6 +250,7 @@
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 25px;
             margin-bottom: 60px;
+            min-height: 200px;
         }
 
         .service-card {
@@ -253,6 +261,10 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
+        }
+
+        .service-card.hide {
+            display: none !important;
         }
 
         .service-card:hover {
@@ -350,6 +362,15 @@
             border-radius: 6px;
         }
 
+        #no-result {
+            display: none;
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
         /* Contact Section */
         .contact-section {
             background: var(--bg-card);
@@ -443,29 +464,29 @@
 
             <div class="search-container">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="search-bar" placeholder="ค้นหารายการโปรเจกต์ เช่น Web Development, MySQL, Network...">
+                <input type="text" id="search-input" class="search-bar" placeholder="ค้นหารายการโปรเจกต์ เช่น Web Development, MySQL, Network...">
             </div>
 
-            <!-- Categories -->
+            <!-- Categories Bar (Interactive) -->
             <div class="category-box">
                 <ul class="category-grid">
-                    <li class="cat-item active">
+                    <li class="cat-item active" data-category="all">
                         <span class="icon">🚀</span>
                         <span class="label">งานยอดนิยม</span>
                     </li>
-                    <li class="cat-item">
+                    <li class="cat-item" data-category="web">
                         <span class="icon">💻</span>
                         <span class="label">ทำเว็บ & แอป</span>
                     </li>
-                    <li class="cat-item">
+                    <li class="cat-item" data-category="db">
                         <span class="icon">🗄️</span>
                         <span class="label">ฐานข้อมูล SQL</span>
                     </li>
-                    <li class="cat-item">
+                    <li class="cat-item" data-category="network">
                         <span class="icon">🌐</span>
                         <span class="label">ระบบ Network</span>
                     </li>
-                    <li class="cat-item">
+                    <li class="cat-item" data-category="pc">
                         <span class="icon">🛠️</span>
                         <span class="label">แก้ปัญหา PC</span>
                     </li>
@@ -480,7 +501,7 @@
 
         <div class="card-grid" id="projects">
             <!-- Card 1 -->
-            <div class="service-card">
+            <div class="service-card" data-category="web">
                 <div class="card-banner">
                     🛒
                     <span class="card-badge">PRO</span>
@@ -499,7 +520,7 @@
             </div>
 
             <!-- Card 2 -->
-            <div class="service-card">
+            <div class="service-card" data-category="network">
                 <div class="card-banner">
                     🌐
                     <span class="card-badge">POPULAR</span>
@@ -518,7 +539,7 @@
             </div>
 
             <!-- Card 3 -->
-            <div class="service-card">
+            <div class="service-card" data-category="db">
                 <div class="card-banner">
                     🗄️
                     <span class="card-badge">BEST SELLER</span>
@@ -537,7 +558,7 @@
             </div>
 
             <!-- Card 4 -->
-            <div class="service-card">
+            <div class="service-card" data-category="web">
                 <div class="card-banner">
                     💻
                     <span class="card-badge">NEW</span>
@@ -554,6 +575,27 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Card 5 (PC Troubleshooting) -->
+            <div class="service-card" data-category="pc">
+                <div class="card-banner">
+                    🛠️
+                    <span class="card-badge">SERVICE</span>
+                </div>
+                <div class="card-content">
+                    <div class="author-box">
+                        <div class="avatar">DS</div>
+                        <span class="author-name">DevSphere Team</span>
+                    </div>
+                    <div class="card-title">บริการตรวจเช็ก แก้ปัญหา PC ซอฟต์แวร์ และการปรับแต่งประสิทธิภาพระบบ Windows</div>
+                    <div class="card-footer">
+                        <span class="rating-box">★ 5.0 (20)</span>
+                        <span class="tech-tag">Hardware / OS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
         </div>
     </section>
 
@@ -569,7 +611,7 @@
                     <div class="contact-icon" style="background: var(--facebook-color);">f</div>
                     <div class="contact-info">
                         <h4>Facebook</h4>
-                        <p>DevSphere Official</p>
+                        <p>Teerabhodin Phongsura</p>
                     </div>
                 </a>
 
@@ -578,25 +620,25 @@
                     <div class="contact-icon" style="background: var(--line-color);">💬</div>
                     <div class="contact-info">
                         <h4>LINE Official</h4>
-                        <p>@devsphere</p>
+                        <p>sosuck78</p>
                     </div>
                 </a>
 
                 <!-- Telephone -->
-                <a href="tel:0800000000" class="contact-card">
+                <a href="tel:0952189775" class="contact-card">
                     <div class="contact-icon" style="background: #e65100;">📞</div>
                     <div class="contact-info">
                         <h4>เบอร์โทรศัพท์</h4>
-                        <p>08x-xxx-xxxx</p>
+                        <p>0952189775</p>
                     </div>
                 </a>
 
                 <!-- Email -->
-                <a href="mailto:contact@devsphere.com" class="contact-card">
+                <a href="mailto:teerabhodin@gmail.com" class="contact-card">
                     <div class="contact-icon" style="background: #00838f;">✉️</div>
                     <div class="contact-info">
                         <h4>อีเมล</h4>
-                        <p>your-email@example.com</p>
+                        <p>teerabhodin@gmail.com</p>
                     </div>
                 </a>
 
@@ -620,8 +662,9 @@
         </div>
     </footer>
 
-    <!-- Interactive Typing Script -->
+    <!-- Interactive Scripts -->
     <script>
+        // Typing Effect
         const words = ["Web Development", "Database Systems", "Network Solutions", "Digital Experience"];
         let i = 0;
         let timer;
@@ -661,6 +704,52 @@
         }
 
         typingEffect();
+
+        // Category Filter & Search Logic
+        const catItems = document.querySelectorAll('.cat-item');
+        const cards = document.querySelectorAll('.service-card');
+        const searchInput = document.getElementById('search-input');
+        const noResult = document.getElementById('no-result');
+
+        let currentCategory = 'all';
+
+        function filterProjects() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                const cardTitle = card.querySelector('.card-title').innerText.toLowerCase();
+                const cardTag = card.querySelector('.tech-tag').innerText.toLowerCase();
+
+                const matchesCat = (currentCategory === 'all' || cardCat === currentCategory);
+                const matchesSearch = (cardTitle.includes(searchTerm) || cardTag.includes(searchTerm));
+
+                if (matchesCat && matchesSearch) {
+                    card.classList.remove('hide');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hide');
+                }
+            });
+
+            if (visibleCount === 0) {
+                noResult.style.display = 'block';
+            } else {
+                noResult.style.display = 'none';
+            }
+        }
+
+        catItems.forEach(item => {
+            item.addEventListener('click', () => {
+                catItems.forEach(c => c.classList.remove('active'));
+                item.classList.add('active');
+                currentCategory = item.getAttribute('data-category');
+                filterProjects();
+            });
+        });
+
+        searchInput.addEventListener('input', filterProjects);
     </script>
 </body>
 </html>
