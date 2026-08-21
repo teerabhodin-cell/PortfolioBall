@@ -459,7 +459,6 @@
             line-height: 1.4;
             margin-bottom: 12px;
             display: -webkit-box;
-            display: -webkit-box;
             -webkit-line-clamp: 3;
             line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -1229,7 +1228,7 @@
         </div>
     </section>
 
-  <!-- 7. Showcase & Reviews -->
+    <!-- 7. Showcase & Reviews -->
     <section class="container" id="showcase-section">
         <h2 class="section-title reveal-element">ตัวอย่างผลงานและคำรีวิว (SHOWCASE & REVIEWS)</h2>
 
@@ -1271,7 +1270,7 @@
     <section class="container" style="padding-bottom: 20px;">
         <div class="add-project-section" id="admin-panel">
             <h2 class="section-title" style="margin-bottom: 8px;">👑 ส่วนของ Admin: เพิ่มผลงาน / รีวิว / ตัวอย่างระบบใหม่</h2>
-            <p style="color: var(--text-secondary); font-size: 0.82rem;">กรอกข้อมูลเพื่อเพิ่มรายการลงในหมวดหมู่ที่เลือกด้านล่าง (บันทึกใน Local Storage)</p>
+            <p style="color: var(--text-secondary); font-size: 0.82rem;">กรอกข้อมูลเพื่อเพิ่มรายการลงในฐานข้อมูล Cloud (Firebase Firestore)</p>
 
             <form id="project-form">
                 <div class="form-grid">
@@ -1313,13 +1312,13 @@
                 </div>
 
                 <div style="margin-top: 20px; text-align: right;">
-                    <button type="submit" style="background: #ffffff; color: #000000; border: none; padding: 10px 24px; font-weight: 700; border-radius: 20px; cursor: pointer;">+ เพิ่มข้อมูลลงในหมวดหมู่</button>
+                    <button type="submit" style="background: #ffffff; color: #000000; border: none; padding: 10px 24px; font-weight: 700; border-radius: 20px; cursor: pointer;">+ เพิ่มข้อมูลลงใน Cloud</button>
                 </div>
             </form>
         </div>
     </section>
 
-    <!-- 9. Get In Touch & Contact Form Section (ปรับไอคอนช่องทางติดต่อให้เป็นเส้นสีขาวทั้งหมด) -->
+    <!-- 9. Get In Touch & Contact Form Section -->
     <section class="container" id="contact" style="padding-top: 20px;">
         <div class="contact-section reveal-element">
             <h2 class="section-title" style="margin-bottom: 8px;">GET IN TOUCH (ส่งข้อความสอบถาม / ขอใบเสนอราคา)</h2>
@@ -1401,8 +1400,25 @@
         </div>
     </footer>
 
-    <!-- Interactive Scripts -->
-    <script>
+    <!-- Interactive Scripts & Firebase Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBATBodHOZjaANjP82xPu6yMJqEOpdU88I",
+            authDomain: "protfolio-1bef5.firebaseapp.com",
+            projectId: "protfolio-1bef5",
+            storageBucket: "protfolio-1bef5.firebasestorage.app",
+            messagingSenderId: "101372892488",
+            appId: "1:101372892488:web:61e7a42c5123c678de0f7d",
+            measurementId: "G-CGP5TESL45"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const colRef = collection(db, "devsphere_showcase");
+
         const lineSvgIcons = {
             network: `<svg class="line-icon-large" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><circle cx="12" cy="12" r="2"/><path d="M12 14v8"/><path d="M8 22h8"/></svg>`,
             laptop: `<svg class="line-icon-large" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
@@ -1412,203 +1428,39 @@
             review: `<svg class="line-icon-large" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
         };
 
-        // Rocket Timeline Engine
-        let currentStepIndex = 0;
-        const totalSteps = 7;
-
-        function updateRocketTimeline() {
-            const stepCards = document.querySelectorAll('.step-card');
-            const rocket = document.getElementById('rocket-runner');
-            const progress = document.getElementById('timeline-progress');
-            const wrapper = document.getElementById('timeline-wrapper');
-
-            if (!stepCards.length || !rocket || !progress || !wrapper) return;
-
-            stepCards.forEach(card => card.classList.remove('active-step'));
-
-            const activeCard = stepCards[currentStepIndex];
-            activeCard.classList.add('active-step');
-
-            const wrapperRect = wrapper.getBoundingClientRect();
-            const cardRect = activeCard.getBoundingClientRect();
-            const cardCenterX = (cardRect.left + cardRect.width / 2) - wrapperRect.left;
-
-            rocket.style.left = `${cardCenterX}px`;
-            progress.style.width = `${cardCenterX}px`;
-
-            currentStepIndex = (currentStepIndex + 1) % totalSteps;
-        }
-
-        setInterval(updateRocketTimeline, 2500);
-
-        window.addEventListener('resize', () => {
-            currentStepIndex = (currentStepIndex - 1 + totalSteps) % totalSteps;
-            updateRocketTimeline();
-        });
-
-        // Scroll Reveal Observer Engine
-        function initScrollReveal() {
-            const revealElements = document.querySelectorAll('.reveal-element');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
-            }, { threshold: 0.15 });
-
-            revealElements.forEach(el => observer.observe(el));
-        }
-
-        // Realtime Clock
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: true });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Custom Cursor Mechanics
-        const cursorDot = document.querySelector('.cursor-dot');
-        const cursorOutline = document.querySelector('.cursor-outline');
-
-        let mouseX = -100, mouseY = -100;
-        let outlineX = -100, outlineY = -100;
-
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            cursorDot.style.left = `${mouseX}px`;
-            cursorDot.style.top = `${mouseY}px`;
-        });
-
-        function animateCursor() {
-            outlineX += (mouseX - outlineX) * 0.15;
-            outlineY += (mouseY - outlineY) * 0.15;
-
-            cursorOutline.style.left = `${outlineX}px`;
-            cursorOutline.style.top = `${outlineY}px`;
-
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
-
-        function initCursorEvents() {
-            const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, .service-box, .step-card, .deliverable-card, .creation-card');
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-            });
-        }
-
-        // Typing Effect
-        const words = ["Web Development", "Database Systems", "Network Solutions", "UI/UX Design"];
-        let i = 0;
-        let timer;
-
-        function typingEffect() {
-            let word = words[i].split("");
-            var loopTyping = function() {
-                if (word.length > 0) {
-                    document.querySelector('.typing-text').innerHTML += word.shift();
-                } else {
-                    setTimeout(deletingEffect, 2000);
-                    return false;
-                }
-                timer = setTimeout(loopTyping, 100);
-            };
-            loopTyping();
-        }
-
-        function deletingEffect() {
-            let word = words[i].split("");
-            var loopDeleting = function() {
-                if (word.length > 0) {
-                    word.pop();
-                    document.querySelector('.typing-text').innerHTML = word.join("");
-                } else {
-                    if (words.length > (i + 1)) {
-                        i++;
-                    } else {
-                        i = 0;
-                    }
-                    setTimeout(typingEffect, 500);
-                    return false;
-                }
-                timer = setTimeout(loopDeleting, 50);
-            };
-            loopDeleting();
-        }
-
-        typingEffect();
-
-        // Initial Showcase Data
         const initialShowcaseItems = [
-            { 
-                id: 101, 
-                category: "portfolio", 
-                title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", 
-                tech: "PHP / MySQL / E-Commerce", 
-                badge: "WORK", 
-                type: "cart" 
-            },
-            { 
-                id: 102, 
-                category: "portfolio", 
-                title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", 
-                tech: "HTML / CSS / JS", 
-                badge: "WORK", 
-                type: "laptop" 
-            },
-            { 
-                id: 103, 
-                category: "review", 
-                title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", 
-                tech: "คุณธีรภัทร (ผู้จ้างงานจริง)", 
-                badge: "5-STARS", 
-                type: "review" 
-            },
-            { 
-                id: 105, 
-                category: "review", 
-                title: "'งานออกแบบดูเป็นมืออาชีพ ใช้งานง่าย และทีมงานตอบกลับไวมากครับ'", 
-                tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", 
-                badge: "5-STARS", 
-                type: "review" 
-            },
-            { 
-                id: 106, 
-                category: "review", 
-                title: "'ระบบทำงานได้ตรงตามที่คุยไว้ และมีการปรับแก้รายละเอียดให้จนเรียบร้อยครับ'", 
-                tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", 
-                badge: "5-STARS", 
-                type: "review" 
-            },
-            { 
-                id: 104, 
-                category: "sample", 
-                title: "ระบบจำลองคลังสินค้าและโครงสร้างฐานข้อมูล MySQL ประสิทธิภาพสูง", 
-                tech: "MySQL Schema Query", 
-                badge: "SYSTEM SAMPLE", 
-                type: "db" 
-            }
+            { category: "portfolio", title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", tech: "PHP / MySQL / E-Commerce", badge: "WORK", type: "cart" },
+            { category: "portfolio", title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", tech: "HTML / CSS / JS", badge: "WORK", type: "laptop" },
+            { category: "review", title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", tech: "คุณธีรภัทร (ผู้จ้างงานจริง)", badge: "5-STARS", type: "review" },
+            { category: "review", title: "'งานออกแบบดูเป็นมืออาชีพ ใช้งานง่าย และทีมงานตอบกลับไวมากครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review" },
+            { category: "review", title: "'ระบบทำงานได้ตรงตามที่คุยไว้ และมีการปรับแก้รายละเอียดให้จนเรียบร้อยครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review" },
+            { category: "sample", title: "ระบบจำลองคลังสินค้าและโครงสร้างฐานข้อมูล MySQL ประสิทธิภาพสูง", tech: "MySQL Schema Query", badge: "SYSTEM SAMPLE", type: "db" }
         ];
 
-        // Local Storage Management
-        function getStoredShowcase() {
-            const saved = localStorage.getItem('devsphere_stacked_showcase');
-            if (saved) return JSON.parse(saved);
-            localStorage.setItem('devsphere_stacked_showcase', JSON.stringify(initialShowcaseItems));
-            return initialShowcaseItems;
-        }
-
-        function saveShowcase(items) {
-            localStorage.setItem('devsphere_stacked_showcase', JSON.stringify(items));
-        }
-
-        let showcaseList = getStoredShowcase();
+        let showcaseList = [];
         let isAdmin = false;
 
-        // Render Stacked Showcase Items
+        async function fetchShowcaseData() {
+            try {
+                const querySnapshot = await getDocs(colRef);
+                if (querySnapshot.empty) {
+                    // หากฐานข้อมูลยังว่างอยู่ ให้เพิ่มข้อมูลเริ่มต้นชุดแรกเข้าไปอัตโนมัติ
+                    for (let item of initialShowcaseItems) {
+                        await addDoc(colRef, item);
+                    }
+                    return fetchShowcaseData();
+                }
+                
+                showcaseList = [];
+                querySnapshot.forEach((docSnap) => {
+                    showcaseList.push({ firestoreId: docSnap.id, ...docSnap.data() });
+                });
+                renderShowcase();
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
+        }
+
         function renderShowcase() {
             const portfolioGrid = document.getElementById('portfolio-grid');
             const reviewGrid = document.getElementById('review-grid');
@@ -1624,10 +1476,10 @@
 
                 return `
                     <div class="creation-card">
-                        <button class="delete-btn" onclick="deleteShowcase(event, ${p.id})">🗑️ ลบ</button>
+                        <button class="delete-btn" onclick="deleteItem('${p.firestoreId}')">🗑️ ลบ</button>
                         <div class="card-banner">
                             ${iconSvg}
-                            <span class="card-badge">${p.badge.toUpperCase()}</span>
+                            <span class="card-badge">${(p.badge || 'FEATURED').toUpperCase()}</span>
                         </div>
                         <div class="card-content">
                             <div class="author-box">
@@ -1648,23 +1500,9 @@
             const reviewItems = showcaseList.filter(item => item.category === 'review');
             const sampleItems = showcaseList.filter(item => item.category === 'sample');
 
-            if (portfolioItems.length) {
-                portfolioItems.forEach(item => portfolioGrid.innerHTML += createCardHTML(item));
-            } else {
-                portfolioGrid.innerHTML = `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ผลงานที่ผ่านมา</div>`;
-            }
-
-            if (sampleItems.length) {
-                sampleItems.forEach(item => sampleGrid.innerHTML += createCardHTML(item));
-            } else {
-                sampleGrid.innerHTML = `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ตัวอย่างระบบ</div>`;
-            }
-
-            if (reviewItems.length) {
-                reviewItems.forEach(item => reviewGrid.innerHTML += createCardHTML(item));
-            } else {
-                reviewGrid.innerHTML = `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่รีวิวลูกค้า</div>`;
-            }
+            portfolioGrid.innerHTML = portfolioItems.length ? portfolioItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ผลงานที่ผ่านมา</div>`;
+            sampleGrid.innerHTML = sampleItems.length ? sampleItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ตัวอย่างระบบ</div>`;
+            reviewGrid.innerHTML = reviewItems.length ? reviewItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่รีวิวลูกค้า</div>`;
 
             if (isAdmin) {
                 document.querySelectorAll('.card-grid').forEach(grid => grid.classList.add('admin-mode'));
@@ -1676,8 +1514,7 @@
 
         // Admin Login
         const ADMIN_PASSWORD = "1234";
-
-        function adminLogin() {
+        window.adminLogin = function() {
             if (isAdmin) {
                 alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
                 return;
@@ -1695,47 +1532,158 @@
             } else if (password !== null) {
                 alert("❌ รหัสผ่านไม่ถูกต้อง!");
             }
-        }
+        };
 
-        // Delete Showcase Item
-        function deleteShowcase(event, id) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            if (confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?")) {
-                showcaseList = showcaseList.filter(p => p.id !== id);
-                saveShowcase(showcaseList);
-                renderShowcase();
+        // Delete Item from Firebase
+        window.deleteItem = async function(firestoreId) {
+            if (confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้จาก Cloud?")) {
+                try {
+                    await deleteDoc(doc(db, "devsphere_showcase", firestoreId));
+                    fetchShowcaseData();
+                } catch (error) {
+                    console.error("Error deleting document: ", error);
+                }
             }
-        }
+        };
 
-        // Add New Showcase Item Form Submit
+        // Add New Item to Firebase
         const projectForm = document.getElementById('project-form');
-
-        projectForm.addEventListener('submit', function(e) {
+        projectForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const selectedCategory = document.getElementById('proj-category').value;
-
             const newProj = {
-                id: Date.now(),
-                category: selectedCategory,
+                category: document.getElementById('proj-category').value,
                 title: document.getElementById('proj-title').value,
                 tech: document.getElementById('proj-tech').value,
                 badge: document.getElementById('proj-badge').value || 'FEATURED',
                 type: document.getElementById('proj-type').value
             };
 
-            showcaseList.push(newProj);
-            saveShowcase(showcaseList);
-
-            renderShowcase();
-            projectForm.reset();
-            document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
+            try {
+                await addDoc(colRef, newProj);
+                fetchShowcaseData();
+                projectForm.reset();
+                document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error("Error adding document: ", error);
+            }
         });
 
-        // Initialize Render & Rocket Timeline
-        renderShowcase();
+        // Other UI Engines
+        function updateClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('clock');
+            if (clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', { hour12: true });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        let currentStepIndex = 0;
+        const totalSteps = 7;
+        function updateRocketTimeline() {
+            const stepCards = document.querySelectorAll('.step-card');
+            const rocket = document.getElementById('rocket-runner');
+            const progress = document.getElementById('timeline-progress');
+            const wrapper = document.getElementById('timeline-wrapper');
+
+            if (!stepCards.length || !rocket || !progress || !wrapper) return;
+
+            stepCards.forEach(card => card.classList.remove('active-step'));
+            const activeCard = stepCards[currentStepIndex];
+            activeCard.classList.add('active-step');
+
+            const wrapperRect = wrapper.getBoundingClientRect();
+            const cardRect = activeCard.getBoundingClientRect();
+            const cardCenterX = (cardRect.left + cardRect.width / 2) - wrapperRect.left;
+
+            rocket.style.left = `${cardCenterX}px`;
+            progress.style.width = `${cardCenterX}px`;
+
+            currentStepIndex = (currentStepIndex + 1) % totalSteps;
+        }
+        setInterval(updateRocketTimeline, 2500);
+
+        function initScrollReveal() {
+            const revealElements = document.querySelectorAll('.reveal-element');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => observer.observe(el));
+        }
+
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        let mouseX = -100, mouseY = -100;
+        let outlineX = -100, outlineY = -100;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            if (cursorDot) {
+                cursorDot.style.left = `${mouseX}px`;
+                cursorDot.style.top = `${mouseY}px`;
+            }
+        });
+
+        function animateCursor() {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+            if (cursorOutline) {
+                cursorOutline.style.left = `${outlineX}px`;
+                cursorOutline.style.top = `${outlineY}px`;
+            }
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        function initCursorEvents() {
+            const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, .service-box, .step-card, .deliverable-card, .creation-card');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            });
+        }
+
+        const words = ["Web Development", "Database Systems", "Network Solutions", "UI/UX Design"];
+        let i = 0;
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    const typingTarget = document.querySelector('.typing-text');
+                    if(typingTarget) typingTarget.innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000);
+                    return false;
+                }
+                setTimeout(loopTyping, 100);
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    const typingTarget = document.querySelector('.typing-text');
+                    if(typingTarget) typingTarget.innerHTML = word.join("");
+                } else {
+                    i = (words.length > (i + 1)) ? i + 1 : 0;
+                    setTimeout(typingEffect, 500);
+                    return false;
+                }
+                setTimeout(loopDeleting, 50);
+            };
+            loopDeleting();
+        }
+        typingEffect();
+
+        // โหลดข้อมูลเริ่มต้นจาก Cloud ทันทีที่เปิดหน้าเว็บ
+        fetchShowcaseData();
         initScrollReveal();
         setTimeout(updateRocketTimeline, 200);
     </script>
