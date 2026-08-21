@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevSphere | Digital Creator & Developer Portfolio</title>
+    <title>DevSphere Studio | Editorial Monochrome Portfolio</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-gold: #ffd700;
-            --accent-gold: #d4af37;
-            --light-gold: #f3e5ab;
-            --gold-glow: rgba(255, 215, 0, 0.25);
-            --bg-dark: #070709;
-            --bg-card: rgba(20, 20, 25, 0.85);
-            --text-light: #f8fafc;
-            --text-muted: #a0a0a0;
-            --border-gold: rgba(255, 215, 0, 0.2);
+            --bg-dark: #000000;
+            --bg-card: rgba(18, 18, 20, 0.75);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --border-light: rgba(255, 255, 255, 0.12);
+            --border-hover: rgba(255, 255, 255, 0.4);
             --font-main: 'Poppins', 'Bai Jamjuree', sans-serif;
             --facebook-color: #1877f2;
             --line-color: #00b900;
@@ -28,53 +25,52 @@
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
-            cursor: none; /* ซ่อนเมาส์ปกติเพื่อใช้ Custom Cursor */
+            cursor: none; /* Custom Cursor */
         }
 
         body {
             background-color: var(--bg-dark);
-            color: var(--text-light);
+            color: var(--text-primary);
             font-family: var(--font-main);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* VYRE Style Custom Glowing Cursor */
+        /* Custom White Cursor (Minimalist) */
         .cursor-dot {
             position: fixed;
             top: 0; left: 0;
             width: 8px; height: 8px;
-            background-color: var(--primary-gold);
+            background-color: #ffffff;
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--primary-gold);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         .cursor-outline {
             position: fixed;
             top: 0; left: 0;
             width: 40px; height: 40px;
-            border: 1.5px solid var(--primary-gold);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             pointer-events: none;
             z-index: 9998;
             transform: translate(-50%, -50%);
             transition: width 0.25s ease-out, height 0.25s ease-out, background-color 0.25s ease-out;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
         }
 
         body.cursor-hover .cursor-outline {
             width: 65px; height: 65px;
-            background-color: rgba(255, 215, 0, 0.12);
-            border-color: #fff;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         body.cursor-hover .cursor-dot {
             transform: translate(-50%, -50%) scale(1.5);
-            background-color: #fff;
+            background-color: #ffffff;
         }
 
         .container {
@@ -84,37 +80,28 @@
         }
 
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
-        .gold { color: var(--primary-gold); font-weight: 600; }
 
-        /* Ambient Glow Background */
-        .ambient-glow {
+        /* Subtle Dark Grid Pattern Background */
+        .grid-bg {
             position: fixed;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, var(--gold-glow) 0%, rgba(0,0,0,0) 70%);
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -1;
             pointer-events: none;
-            animation: pulseGlow 8s infinite alternate ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-            100% { transform: translate(-30%, -30%) scale(1.2); opacity: 0.8; }
         }
 
         /* Header Navigation */
         header {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(7, 7, 9, 0.9);
+            top: 0; left: 0; width: 100%;
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 1000;
-            border-bottom: 1px solid var(--border-gold);
+            border-bottom: 1px solid var(--border-light);
         }
 
         nav {
@@ -125,44 +112,29 @@
         }
 
         .logo {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: 1px;
-            background: linear-gradient(135deg, #fff 40%, var(--primary-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
         .time-badge {
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             letter-spacing: 1px;
             font-weight: 500;
         }
 
-        .btn-gold {
-            background: linear-gradient(135deg, var(--primary-gold), #9a7b1c);
-            color: #000;
-            padding: 8px 22px;
-            border-radius: 25px;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            border: none;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .btn-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
-        }
-
         .btn-admin {
             background: transparent;
-            border: 1px solid var(--border-gold);
-            color: var(--light-gold);
+            border: 1px solid var(--border-light);
+            color: #fff;
             padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -170,41 +142,56 @@
         }
 
         .btn-admin:hover {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: var(--primary-gold);
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Hero Section & Typing Effect */
+        /* Hero Section */
         .hero {
-            padding: 130px 0 30px;
+            padding: 150px 0 40px;
             text-align: center;
         }
 
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
         .hero h1 {
-            font-size: 2.8rem;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-            min-height: 60px;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.1;
         }
 
         .hero-sub {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 25px;
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
             height: 30px;
         }
 
         .typing-text {
-            color: var(--primary-gold);
-            border-right: 2px solid var(--primary-gold);
+            color: #fff;
+            border-right: 2px solid #fff;
             animation: blink 0.75s step-end infinite;
+            font-weight: 600;
         }
 
         @keyframes blink { 50% { border-color: transparent; } }
 
         .search-container {
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto 35px;
             position: relative;
         }
@@ -212,18 +199,18 @@
         .search-bar {
             width: 100%;
             padding: 16px 24px 16px 50px;
-            border-radius: 40px;
-            border: 1px solid var(--border-gold);
-            background: rgba(15, 15, 20, 0.9);
+            border-radius: 30px;
+            border: 1px solid var(--border-light);
+            background: rgba(15, 15, 18, 0.8);
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: 0.3s;
         }
 
         .search-bar:focus {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         .search-icon {
@@ -232,48 +219,49 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 1.1rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
-        /* Marquee Slider Feature */
+        /* Marquee Feature */
         .marquee-container {
-            border-top: 1px solid var(--border-gold);
-            border-bottom: 1px solid var(--border-gold);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
             padding: 14px 0;
             overflow: hidden;
             white-space: nowrap;
-            margin-bottom: 40px;
-            background: rgba(10, 10, 15, 0.5);
+            margin-bottom: 50px;
+            background: rgba(10, 10, 12, 0.6);
         }
 
         .marquee-content {
             display: inline-flex;
             gap: 40px;
-            animation: marquee 20s linear infinite;
+            animation: marquee 22s linear infinite;
         }
 
         .brand-item {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .brand-item:hover { color: var(--primary-gold); }
+        .brand-item:hover { color: #fff; }
 
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
 
-        /* Interactive Category Box */
+        /* Category Box */
         .category-box {
             background: var(--bg-card);
             border-radius: 16px;
-            padding: 20px;
-            border: 1px solid var(--border-gold);
+            padding: 18px;
+            border: 1px solid var(--border-light);
             margin-bottom: 50px;
         }
 
@@ -289,37 +277,37 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 14px 10px;
-            border-radius: 12px;
+            padding: 12px 10px;
+            border-radius: 10px;
             transition: all 0.3s ease;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             border: 1px solid transparent;
             user-select: none;
         }
 
         .cat-item:hover {
-            color: var(--light-gold);
-            background: rgba(212, 175, 55, 0.05);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .cat-item.active {
-            background: rgba(212, 175, 55, 0.12);
-            color: var(--primary-gold);
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .cat-item .icon { font-size: 1.6rem; }
+        .cat-item .icon { font-size: 1.5rem; }
         .cat-item .label { font-size: 0.85rem; font-weight: 500; }
 
         /* Service Cards Section */
         .section-title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 25px;
             text-transform: uppercase;
-            border-left: 4px solid var(--primary-gold);
+            border-left: 3px solid #fff;
             padding-left: 12px;
+            letter-spacing: 1px;
         }
 
         .card-grid {
@@ -333,22 +321,20 @@
         .service-card {
             background: var(--bg-card);
             border-radius: 16px;
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--border-light);
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             position: relative;
         }
 
-        .service-card.hide {
-            display: none !important;
-        }
+        .service-card.hide { display: none !important; }
 
         .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.25);
-            border-color: var(--primary-gold);
+            transform: translateY(-6px);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .delete-btn {
@@ -359,7 +345,7 @@
             color: #fff;
             border: none;
             padding: 4px 10px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 600;
             z-index: 10;
@@ -370,13 +356,13 @@
 
         .card-banner {
             height: 160px;
-            background: #111116;
+            background: #09090b;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.8rem;
+            font-size: 3.5rem;
             position: relative;
-            border-bottom: 1px solid var(--border-gold);
+            border-bottom: 1px solid var(--border-light);
             overflow: hidden;
         }
 
@@ -388,14 +374,15 @@
         .card-badge {
             position: absolute;
             top: 12px; right: 12px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--primary-gold);
-            color: var(--light-gold);
+            background: #000000;
+            border: 1px solid var(--border-light);
+            color: #ffffff;
             padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            border-radius: 10px;
+            font-size: 0.68rem;
             font-weight: 600;
             z-index: 2;
+            letter-spacing: 0.5px;
         }
 
         .card-content {
@@ -413,27 +400,27 @@
         }
 
         .avatar {
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-gold), #9a7b1c);
-            color: #000;
+            background: #ffffff;
+            color: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 800;
         }
 
         .author-name {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text-secondary);
         }
 
         .card-title {
             font-size: 0.95rem;
             font-weight: 500;
-            color: #e2e8f0;
+            color: #ffffff;
             line-height: 1.5;
             margin-bottom: 16px;
             display: -webkit-box;
@@ -452,12 +439,12 @@
             align-items: center;
         }
 
-        .rating-box { font-size: 0.85rem; color: var(--primary-gold); font-weight: 600; }
+        .rating-box { font-size: 0.8rem; color: #ffffff; font-weight: 600; }
         .tech-tag {
             font-size: 0.75rem;
-            color: var(--light-gold);
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--border-gold);
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
             padding: 2px 8px;
             border-radius: 6px;
         }
@@ -467,8 +454,8 @@
             grid-column: 1 / -1;
             text-align: center;
             padding: 40px;
-            color: var(--text-muted);
-            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
         }
 
         /* Admin Add Project Section */
@@ -476,10 +463,9 @@
             display: none;
             background: var(--bg-card);
             border-radius: 16px;
-            border: 1px solid var(--primary-gold);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 40px;
             margin-bottom: 60px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
         .form-grid {
@@ -497,15 +483,15 @@
 
         .form-group label {
             font-size: 0.85rem;
-            color: var(--light-gold);
+            color: #ffffff;
             font-weight: 500;
         }
 
         .form-control {
             padding: 12px 16px;
             border-radius: 8px;
-            border: 1px solid var(--border-gold);
-            background: rgba(10, 10, 12, 0.8);
+            border: 1px solid var(--border-light);
+            background: #000000;
             color: #fff;
             font-size: 0.9rem;
             outline: none;
@@ -513,15 +499,14 @@
         }
 
         .form-control:focus {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+            border-color: #ffffff;
         }
 
         /* Contact Section */
         .contact-section {
             background: var(--bg-card);
             border-radius: 16px;
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--border-light);
             padding: 40px;
             margin-bottom: 60px;
         }
@@ -534,50 +519,49 @@
         }
 
         .contact-card {
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--border-light);
             border-radius: 12px;
             padding: 18px;
             display: flex;
             align-items: center;
             gap: 15px;
-            background: rgba(10, 10, 12, 0.7);
+            background: rgba(10, 10, 12, 0.8);
             transition: 0.3s;
         }
 
         .contact-card:hover {
             transform: translateY(-4px);
-            background: rgba(212, 175, 55, 0.12);
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #ffffff;
         }
 
         .contact-icon {
-            width: 44px; height: 44px;
+            width: 42px; height: 42px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #fff;
             flex-shrink: 0;
         }
 
-        .contact-info h4 { font-size: 0.9rem; color: var(--text-light); font-weight: 600; }
-        .contact-info p { font-size: 0.8rem; color: var(--text-muted); word-break: break-word; }
+        .contact-info h4 { font-size: 0.9rem; color: #ffffff; font-weight: 600; }
+        .contact-info p { font-size: 0.8rem; color: var(--text-secondary); word-break: break-word; }
 
-        /* Footer Extra Big Year Feature */
+        /* Footer */
         footer {
-            background: #030304;
-            border-top: 1px solid var(--border-gold);
+            background: #000000;
+            border-top: 1px solid var(--border-light);
             padding: 40px 0 25px;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-align: center;
             font-size: 0.85rem;
         }
 
         .back-top-btn {
             background: transparent;
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--border-light);
             color: #fff;
             padding: 6px 20px;
             border-radius: 30px;
@@ -588,14 +572,14 @@
         }
 
         .back-top-btn:hover {
-            border-color: var(--primary-gold);
-            color: var(--primary-gold);
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .giant-year {
             font-size: clamp(3rem, 10vw, 8rem);
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.04);
             line-height: 0.8;
             letter-spacing: -2px;
             user-select: none;
@@ -603,8 +587,8 @@
         }
 
         @media (max-width: 768px) {
-            .nav-links, .time-badge { display: none; }
-            .hero h1 { font-size: 2rem; }
+            .time-badge { display: none; }
+            .hero h1 { font-size: 2.2rem; }
             .contact-section, .add-project-section { padding: 25px; }
             .cursor-dot, .cursor-outline { display: none; }
             * { cursor: auto; }
@@ -613,18 +597,17 @@
 </head>
 <body>
 
-    <!-- VYRE Style Cursor -->
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <div class="ambient-glow"></div>
+    <div class="grid-bg"></div>
 
     <!-- Header Navigation -->
     <header>
         <div class="container">
             <nav>
-                <a href="#" class="logo">DEV<span style="color:#fff;">SPHERE</span></a>
-                <div class="time-badge">BASED IN THAILAND • <span id="clock">00:00:00 PM</span></div>
+                <a href="#" class="logo">DEV<span>SPHERE</span></a>
+                <div class="time-badge">BANGKOK • <span id="clock">00:00:00 PM</span></div>
                 <button class="btn-admin" id="admin-btn" onclick="adminLogin()">🔐 Admin Login</button>
             </nav>
         </div>
@@ -633,7 +616,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1><span class="gold">DevSphere</span> Digital Lab</h1>
+            <span class="hero-badge">Digital Experience & Software Lab</span>
+            <h1>DevSphere Studio</h1>
             <p class="hero-sub">พวกเราเชี่ยวชาญด้าน <span class="typing-text"></span></p>
 
             <div class="search-container">
@@ -665,7 +649,7 @@
         </div>
     </section>
 
-    <!-- Trust Brands Marquee Slider Feature -->
+    <!-- Marquee Slider Feature -->
     <div class="marquee-container">
         <div class="marquee-content">
             <div class="brand-item">🛒 E-Commerce Platform</div>
@@ -682,7 +666,7 @@
 
     <!-- Service Cards Grid -->
     <section class="container" id="services">
-        <h2 class="section-title">บริการและผลงานแนะนำ (คลิกเพื่อเข้าชมเว็บ)</h2>
+        <h2 class="section-title">ผลงานและระบบที่พัฒนา (คลิกเพื่อเข้าชมเว็บ)</h2>
 
         <div class="card-grid" id="projects">
             <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
@@ -693,7 +677,7 @@
     <section class="container">
         <div class="add-project-section" id="admin-panel">
             <h2 class="section-title" style="margin-bottom: 8px;">👑 ส่วนของ Admin: เพิ่มผลงานใหม่</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">กรอกข้อมูลเพื่อเพิ่มผลงานขึ้นการ์ดหน้าเว็บได้ทันที (บันทึกใน Local Storage)</p>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลเพื่อเพิ่มผลงานขึ้นการ์ดหน้าเว็บได้ทันที (บันทึกใน Local Storage)</p>
 
             <form id="project-form">
                 <div class="form-grid">
@@ -733,7 +717,7 @@
                 </div>
 
                 <div style="margin-top: 25px; text-align: right;">
-                    <button type="submit" class="btn-gold" style="padding: 12px 30px; font-size: 0.9rem;">+ เพิ่มผลงานลงหน้าเว็บ</button>
+                    <button type="submit" style="background: #ffffff; color: #000000; border: none; padding: 10px 25px; font-weight: 700; border-radius: 20px; cursor: pointer;">+ เพิ่มผลงานลงหน้าเว็บ</button>
                 </div>
             </form>
         </div>
@@ -743,7 +727,7 @@
     <section class="container" id="contact">
         <div class="contact-section">
             <h2 class="section-title" style="margin-bottom: 8px;">ช่องทางติดต่อทีมงาน (Direct Contact)</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">คลิกช่องทางด้านล่างเพื่อทักแชท โทร หรือส่งอีเมลได้ทันที</p>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">คลิกช่องทางด้านล่างเพื่อทักแชท โทร หรือส่งอีเมลได้ทันที</p>
 
             <div class="contact-grid">
                 <a href="https://www.facebook.com/exodustt.ex" target="_blank" class="contact-card">
@@ -785,7 +769,7 @@
     <footer>
         <div class="container">
             <button class="back-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">BACK TO TOP ↑</button>
-            <p style="color: var(--primary-gold); font-weight: 700; margin-bottom: 5px;">DEVSPHERE STUDIO</p>
+            <p style="color: #ffffff; font-weight: 700; margin-bottom: 5px;">DEVSPHERE STUDIO</p>
             <p>© 2026 DevSphere Team. All rights reserved. Hosted on GitHub Pages.</p>
             <div class="giant-year">©2026</div>
         </div>
@@ -801,7 +785,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Custom Glowing Cursor Mechanics (VYRE Studio Style)
+        // Custom Cursor Mechanics
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
 
@@ -961,7 +945,7 @@
                 alert("✅ เข้าสู่ระบบ Admin สำเร็จ!");
                 document.getElementById('admin-panel').style.display = 'block';
                 document.getElementById('admin-btn').innerText = '👑 Admin Active';
-                document.getElementById('admin-btn').style.borderColor = 'var(--primary-gold)';
+                document.getElementById('admin-btn').style.borderColor = '#ffffff';
                 cardsGrid.classList.add('admin-mode');
                 document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
                 initCursorEvents();
