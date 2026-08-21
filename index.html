@@ -28,6 +28,7 @@
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
+            cursor: none; /* ซ่อนเคอร์เซอร์ปกติเพื่อใช้ Custom Cursor */
         }
 
         body {
@@ -36,6 +37,51 @@
             font-family: var(--font-main);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        /* VYRE Studio Style Custom Glowing Cursor */
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--primary-gold);
+            transition: transform 0.1s ease;
+        }
+
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid var(--primary-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.25s ease-out, height 0.25s ease-out, background-color 0.25s ease-out, border-color 0.25s ease-out;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+        }
+
+        /* Cursor Hover States */
+        body.cursor-hover .cursor-outline {
+            width: 65px;
+            height: 65px;
+            background-color: rgba(255, 215, 0, 0.12);
+            border-color: #fff;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+        }
+
+        body.cursor-hover .cursor-dot {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: #fff;
         }
 
         .container {
@@ -47,7 +93,7 @@
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
         .gold { color: var(--primary-gold); font-weight: 600; }
 
-        /* Ambient Dual Glow (Vyra & SevenZ Style) */
+        /* Ambient Dual Glow */
         .ambient-glow-1 {
             position: fixed;
             width: 500px;
@@ -133,7 +179,6 @@
             font-size: 0.85rem;
             letter-spacing: 1px;
             border: none;
-            cursor: pointer;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
             transition: all 0.3s ease;
         }
@@ -150,7 +195,6 @@
             padding: 7px 18px;
             border-radius: 20px;
             font-size: 0.8rem;
-            cursor: pointer;
             transition: 0.3s;
             backdrop-filter: blur(5px);
         }
@@ -261,7 +305,6 @@
             gap: 8px;
             padding: 14px 10px;
             border-radius: 14px;
-            cursor: pointer;
             transition: all 0.3s ease;
             color: var(--text-muted);
             border: 1px solid transparent;
@@ -312,7 +355,6 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
-            cursor: pointer;
             position: relative;
         }
 
@@ -338,7 +380,6 @@
             border-radius: 8px;
             font-size: 0.75rem;
             font-weight: 600;
-            cursor: pointer;
             z-index: 10;
             transition: 0.2s;
         }
@@ -571,10 +612,16 @@
             .nav-links { display: none; }
             .hero h1 { font-size: 2.2rem; }
             .contact-section, .add-project-section { padding: 25px; }
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto; }
         }
     </style>
 </head>
 <body>
+
+    <!-- VYRE Style Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <div class="ambient-glow-1"></div>
     <div class="ambient-glow-2"></div>
@@ -742,6 +789,43 @@
 
     <!-- Interactive Scripts -->
     <script>
+        // Custom Glowing Cursor Mechanics (VYRE Studio Style)
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        let mouseX = 0, mouseY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+
+        // Smoothed Animation Loop for Cursor Ring
+        function animateCursor() {
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+
+            cursorOutline.style.left = `${outlineX}px`;
+            cursorOutline.style.top = `${outlineY}px`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor Hover Effect on Interactive Elements
+        function initCursorEvents() {
+            const interactiveElements = document.querySelectorAll('a, button, input, select, .cat-item, .service-card');
+            
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+            });
+        }
+
         // Typing Effect
         const words = ["Web Development", "Database Systems", "Network Solutions", "Digital Experience"];
         let i = 0;
@@ -853,6 +937,7 @@
             }
 
             filterProjects();
+            initCursorEvents();
         }
 
         // Admin Login
@@ -872,6 +957,7 @@
                 document.getElementById('admin-btn').style.borderColor = 'var(--primary-gold)';
                 cardsGrid.classList.add('admin-mode');
                 document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
+                initCursorEvents();
             } else if (password !== null) {
                 alert("❌ รหัสผ่านไม่ถูกต้อง!");
             }
@@ -958,7 +1044,7 @@
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Initialize Render
+        // Initialize Render & Cursor Mechanics
         renderProjects();
     </script>
 </body>
