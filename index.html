@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevSphere | Digital Creator & Developer Portfolio</title>
+    <title>DevSphere | Next-Gen Digital Studio Portfolio</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-gold: #d4af37;
-            --light-gold: #f3e5ab;
-            --gold-glow: rgba(212, 175, 55, 0.35);
-            --bg-dark: #070709;
-            --bg-card: rgba(20, 20, 25, 0.85);
+            --primary-gold: #ffd700;
+            --accent-gold: #d4af37;
+            --light-gold: #fff5c0;
+            --gold-glow: rgba(255, 215, 0, 0.25);
+            --bg-dark: #050508;
+            --bg-card: rgba(18, 18, 26, 0.65);
             --text-light: #f8fafc;
-            --text-muted: #a0a0a0;
-            --border-gold: rgba(212, 175, 55, 0.2);
+            --text-muted: #94a3b8;
+            --border-gold: rgba(255, 215, 0, 0.2);
             --font-main: 'Poppins', 'Bai Jamjuree', sans-serif;
             --facebook-color: #1877f2;
             --line-color: #00b900;
@@ -46,33 +47,45 @@
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
         .gold { color: var(--primary-gold); font-weight: 600; }
 
-        /* Ambient Glow Background */
-        .ambient-glow {
+        /* Ambient Dual Glow (Vyra & SevenZ Style) */
+        .ambient-glow-1 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--gold-glow) 0%, rgba(0,0,0,0) 70%);
+            top: -10%;
+            left: 20%;
+            z-index: -1;
+            pointer-events: none;
+            animation: pulseGlow 10s infinite alternate ease-in-out;
+        }
+
+        .ambient-glow-2 {
             position: fixed;
             width: 450px;
             height: 450px;
-            background: radial-gradient(circle, var(--gold-glow) 0%, rgba(0,0,0,0) 70%);
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, rgba(0,0,0,0) 70%);
+            bottom: 10%;
+            right: 10%;
             z-index: -1;
             pointer-events: none;
-            animation: pulseGlow 8s infinite alternate ease-in-out;
+            animation: pulseGlow 8s infinite alternate-reverse ease-in-out;
         }
 
         @keyframes pulseGlow {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
-            100% { transform: translate(-30%, -30%) scale(1.2); opacity: 0.8; }
+            0% { transform: scale(0.8) translate(0, 0); opacity: 0.5; }
+            100% { transform: scale(1.2) translate(30px, 30px); opacity: 0.8; }
         }
 
-        /* Header Navigation */
+        /* Glassmorphic Header Navigation */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(7, 7, 9, 0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(5, 5, 8, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             border-bottom: 1px solid var(--border-gold);
         }
@@ -81,14 +94,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 70px;
+            height: 75px;
         }
 
         .logo {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 800;
-            letter-spacing: 1px;
-            background: linear-gradient(135deg, #fff 40%, var(--primary-gold));
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -107,62 +120,78 @@
 
         .nav-links a:hover, .nav-links a.active {
             color: var(--primary-gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .btn-gold {
             background: linear-gradient(135deg, var(--primary-gold), #9a7b1c);
             color: #000;
-            padding: 8px 22px;
-            border-radius: 25px;
+            padding: 9px 24px;
+            border-radius: 30px;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 1px;
             border: none;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
             transition: all 0.3s ease;
         }
 
         .btn-gold:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
         }
 
         .btn-admin {
-            background: transparent;
+            background: rgba(255, 215, 0, 0.05);
             border: 1px solid var(--border-gold);
             color: var(--light-gold);
-            padding: 6px 16px;
+            padding: 7px 18px;
             border-radius: 20px;
             font-size: 0.8rem;
             cursor: pointer;
             transition: 0.3s;
+            backdrop-filter: blur(5px);
         }
 
         .btn-admin:hover {
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(255, 215, 0, 0.2);
             border-color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
 
         /* Hero Section & Typing Effect */
         .hero {
-            padding: 130px 0 40px;
+            padding: 150px 0 50px;
             text-align: center;
         }
 
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--light-gold);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
         .hero h1 {
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             letter-spacing: -0.5px;
-            min-height: 60px;
+            line-height: 1.2;
         }
 
         .hero-sub {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--text-muted);
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             height: 30px;
         }
 
@@ -176,16 +205,17 @@
 
         .search-container {
             max-width: 650px;
-            margin: 0 auto 35px;
+            margin: 0 auto 40px;
             position: relative;
         }
 
         .search-bar {
             width: 100%;
-            padding: 16px 24px 16px 50px;
+            padding: 18px 24px 18px 55px;
             border-radius: 40px;
             border: 1px solid var(--border-gold);
-            background: rgba(15, 15, 20, 0.9);
+            background: rgba(15, 15, 22, 0.7);
+            backdrop-filter: blur(10px);
             color: #fff;
             font-size: 1rem;
             outline: none;
@@ -194,22 +224,24 @@
 
         .search-bar:focus {
             border-color: var(--primary-gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
         }
 
         .search-icon {
             position: absolute;
-            left: 20px;
+            left: 22px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--text-muted);
         }
 
-        /* Interactive Category Box */
+        /* Glassmorphic Category Box */
         .category-box {
             background: var(--bg-card);
-            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid var(--border-gold);
             margin-bottom: 50px;
@@ -228,7 +260,7 @@
             align-items: center;
             gap: 8px;
             padding: 14px 10px;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
             color: var(--text-muted);
@@ -238,14 +270,14 @@
 
         .cat-item:hover {
             color: var(--light-gold);
-            background: rgba(212, 175, 55, 0.05);
+            background: rgba(255, 215, 0, 0.08);
         }
 
         .cat-item.active {
-            background: rgba(212, 175, 55, 0.12);
+            background: rgba(255, 215, 0, 0.15);
             color: var(--primary-gold);
             border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
         }
 
         .cat-item .icon { font-size: 1.6rem; }
@@ -259,11 +291,12 @@
             text-transform: uppercase;
             border-left: 4px solid var(--primary-gold);
             padding-left: 12px;
+            letter-spacing: 0.5px;
         }
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 25px;
             margin-bottom: 60px;
             min-height: 200px;
@@ -271,13 +304,16 @@
 
         .service-card {
             background: var(--bg-card);
-            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
             border: 1px solid var(--border-gold);
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             cursor: pointer;
+            position: relative;
         }
 
         .service-card.hide {
@@ -285,18 +321,43 @@
         }
 
         .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.25);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px rgba(255, 215, 0, 0.3);
             border-color: var(--primary-gold);
         }
 
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(220, 38, 38, 0.9);
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        .admin-mode .delete-btn {
+            display: block;
+        }
+
         .card-banner {
-            height: 160px;
-            background: #111116;
+            height: 170px;
+            background: rgba(10, 10, 15, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.8rem;
+            font-size: 4rem;
             position: relative;
             border-bottom: 1px solid var(--border-gold);
             overflow: hidden;
@@ -312,18 +373,20 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(5px);
             border: 1px solid var(--primary-gold);
             color: var(--light-gold);
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.7rem;
-            font-weight: 600;
+            font-weight: 700;
             z-index: 2;
+            letter-spacing: 0.5px;
         }
 
         .card-content {
-            padding: 20px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -356,22 +419,22 @@
         }
 
         .card-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 500;
-            color: #e2e8f0;
+            color: #f1f5f9;
             line-height: 1.5;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            height: 42px;
+            height: 48px;
         }
 
         .card-footer {
             margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -381,17 +444,18 @@
         .tech-tag {
             font-size: 0.75rem;
             color: var(--light-gold);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(255, 215, 0, 0.1);
             border: 1px solid var(--border-gold);
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 500;
         }
 
         #no-result {
             display: none;
             grid-column: 1 / -1;
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: var(--text-muted);
             font-size: 1.1rem;
         }
@@ -400,11 +464,12 @@
         .add-project-section {
             display: none;
             background: var(--bg-card);
-            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
             border: 1px solid var(--primary-gold);
             padding: 40px;
             margin-bottom: 60px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
         }
 
         .form-grid {
@@ -428,9 +493,9 @@
 
         .form-control {
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--border-gold);
-            background: rgba(10, 10, 12, 0.8);
+            background: rgba(5, 5, 8, 0.8);
             color: #fff;
             font-size: 0.9rem;
             outline: none;
@@ -439,13 +504,14 @@
 
         .form-control:focus {
             border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
         }
 
-        /* Contact Section */
+        /* Direct Contact Section */
         .contact-section {
             background: var(--bg-card);
-            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
             border: 1px solid var(--border-gold);
             padding: 40px;
             margin-bottom: 60px;
@@ -460,40 +526,40 @@
 
         .contact-card {
             border: 1px solid var(--border-gold);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 14px;
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
-            background: rgba(10, 10, 12, 0.7);
+            background: rgba(10, 10, 15, 0.6);
             transition: 0.3s;
         }
 
         .contact-card:hover {
-            transform: translateY(-4px);
-            background: rgba(212, 175, 55, 0.12);
+            transform: translateY(-5px);
+            background: rgba(255, 215, 0, 0.1);
             border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.25);
         }
 
         .contact-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             color: #fff;
             flex-shrink: 0;
         }
 
-        .contact-info h4 { font-size: 0.9rem; color: var(--text-light); font-weight: 600; }
+        .contact-info h4 { font-size: 0.95rem; color: var(--text-light); font-weight: 600; }
         .contact-info p { font-size: 0.8rem; color: var(--text-muted); word-break: break-word; }
 
         /* Footer */
         footer {
-            background: #030304;
+            background: #020203;
             border-top: 1px solid var(--border-gold);
             padding: 40px 0 25px;
             color: var(--text-muted);
@@ -503,14 +569,15 @@
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            .hero h1 { font-size: 2rem; }
+            .hero h1 { font-size: 2.2rem; }
             .contact-section, .add-project-section { padding: 25px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-glow"></div>
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
 
     <!-- Header Navigation -->
     <header>
@@ -521,7 +588,7 @@
                     <li><a href="#services">บริการทั้งหมด</a></li>
                     <li><a href="#projects">ผลงานเด่น</a></li>
                     <li><a href="#contact">ช่องทางติดต่อ</a></li>
-                    <li><button class="btn-admin" onclick="adminLogin()">🔐 Admin Login</button></li>
+                    <li><button class="btn-admin" id="admin-btn" onclick="adminLogin()">🔐 Admin Login</button></li>
                 </ul>
                 <a href="#contact"><button class="btn-gold">ติดต่อผู้พัฒนา</button></a>
             </nav>
@@ -531,7 +598,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1><span class="gold">DevSphere</span> Digital Lab</h1>
+            <span class="hero-badge">✦ DIGITAL CREATIVE LAB</span>
+            <h1><span class="gold">DevSphere</span> Studio</h1>
             <p class="hero-sub">พวกเราเชี่ยวชาญด้าน <span class="typing-text"></span></p>
 
             <div class="search-container">
@@ -565,105 +633,9 @@
 
     <!-- Service Cards Grid -->
     <section class="container" id="services">
-        <h2 class="section-title">บริการและผลงานแนะนำ (คลิกเพื่อเข้าชมเว็บ)</h2>
+        <h2 class="section-title">ผลงานแนะนำ (คลิกเพื่อเข้าชมเว็บ)</h2>
 
         <div class="card-grid" id="projects">
-
-            <!-- Card 1: E-Commerce -->
-            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="web">
-                <div class="card-banner">
-                    🛒
-                    <span class="card-badge">E-COMMERCE</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (28)</span>
-                        <span class="tech-tag">PHP / MySQL</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 2: Networking Learning Site -->
-            <a href="https://sites.google.com" target="_blank" class="service-card" data-category="network">
-                <div class="card-banner">
-                    🌐
-                    <span class="card-badge">EDUCATION</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">Computer Networking Instructional Website สื่อการเรียนรู้ระบบเครือข่าย</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 4.9 (19)</span>
-                        <span class="tech-tag">Google Sites</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 3: MySQL Database -->
-            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="db">
-                <div class="card-banner">
-                    🗄️
-                    <span class="card-badge">DATABASE</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">ออกแบบและวางโครงสร้างฐานข้อมูล MySQL (tbl_product & Inventory)</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (35)</span>
-                        <span class="tech-tag">SQL Query</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 4: Web Portfolio -->
-            <a href="https://teerabhodin-cell.github.io/PortfolioBall/" target="_blank" class="service-card" data-category="web">
-                <div class="card-banner">
-                    💻
-                    <span class="card-badge">PORTFOLIO</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (14)</span>
-                        <span class="tech-tag">HTML / CSS / JS</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Card 5: Network System Architecture -->
-            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="network">
-                <div class="card-banner">
-                    📡
-                    <span class="card-badge">NETWORK</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">วางระบบ Network Topology และจำลองการเชื่อมต่อเครือข่ายคอมพิวเตอร์</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (16)</span>
-                        <span class="tech-tag">Cisco / Routing</span>
-                    </div>
-                </div>
-            </a>
-
             <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
         </div>
     </section>
@@ -672,7 +644,7 @@
     <section class="container">
         <div class="add-project-section" id="admin-panel">
             <h2 class="section-title" style="margin-bottom: 8px;">👑 ส่วนของ Admin: เพิ่มผลงานใหม่</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">กรอกข้อมูลเพื่อเพิ่มผลงานขึ้นการ์ดหน้าเว็บได้ทันที</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">กรอกข้อมูลเพื่อเพิ่มผลงานขึ้นการ์ดหน้าเว็บได้ทันที (บันทึกใน Local Storage)</p>
 
             <form id="project-form">
                 <div class="form-grid">
@@ -811,26 +783,115 @@
 
         typingEffect();
 
-        // Admin Login Function
+        // Default Projects Initial Data
+        const initialProjects = [
+            { id: 1, title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", category: "web", tech: "PHP / MySQL", badge: "E-COMMERCE", link: "https://github.com/teerabhodin-cell", icon: "🛒", rating: "★ 5.0 (28)" },
+            { id: 2, title: "Computer Networking Instructional Website สื่อการเรียนรู้ระบบเครือข่าย", category: "network", tech: "Google Sites", badge: "EDUCATION", link: "https://sites.google.com", icon: "🌐", rating: "★ 4.9 (19)" },
+            { id: 3, title: "ออกแบบและวางโครงสร้างฐานข้อมูล MySQL (tbl_product & Inventory)", category: "db", tech: "SQL Query", badge: "DATABASE", link: "https://github.com/teerabhodin-cell", icon: "🗄️", rating: "★ 5.0 (35)" },
+            { id: 4, title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", category: "web", tech: "HTML / CSS / JS", badge: "PORTFOLIO", link: "https://teerabhodin-cell.github.io/PortfolioBall/", icon: "💻", rating: "★ 5.0 (14)" },
+            { id: 5, title: "วางระบบ Network Topology และจำลองการเชื่อมต่อเครือข่ายคอมพิวเตอร์", category: "network", tech: "Cisco / Routing", badge: "NETWORK", link: "https://github.com/teerabhodin-cell", icon: "📡", rating: "★ 5.0 (16)" }
+        ];
+
+        // Local Storage Management
+        function getStoredProjects() {
+            const saved = localStorage.getItem('devsphere_projects');
+            if (saved) return JSON.parse(saved);
+            localStorage.setItem('devsphere_projects', JSON.stringify(initialProjects));
+            return initialProjects;
+        }
+
+        function saveProjects(projects) {
+            localStorage.setItem('devsphere_projects', JSON.stringify(projects));
+        }
+
+        let projectsList = getStoredProjects();
+        let isAdmin = false;
+
+        // Render Projects Cards
+        const cardsGrid = document.getElementById('projects');
+
+        function renderProjects() {
+            cardsGrid.innerHTML = '<div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>';
+            
+            projectsList.forEach(p => {
+                let bannerContent = p.icon || '🚀';
+                if (p.icon && (p.icon.startsWith('http://') || p.icon.startsWith('https://'))) {
+                    bannerContent = `<img src="${p.icon}" alt="${p.title}">`;
+                }
+
+                const cardA = document.createElement('a');
+                cardA.href = p.link;
+                cardA.target = '_blank';
+                cardA.className = 'service-card';
+                cardA.setAttribute('data-category', p.category);
+                cardA.setAttribute('data-id', p.id);
+
+                cardA.innerHTML = `
+                    <button class="delete-btn" onclick="deleteProject(event, ${p.id})">🗑️ ลบ</button>
+                    <div class="card-banner">
+                        ${bannerContent}
+                        <span class="card-badge">${p.badge.toUpperCase()}</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="author-box">
+                            <div class="avatar">DS</div>
+                            <span class="author-name">DevSphere Team</span>
+                        </div>
+                        <div class="card-title">${p.title}</div>
+                        <div class="card-footer">
+                            <span class="rating-box">${p.rating || '★ 5.0 (NEW)'}</span>
+                            <span class="tech-tag">${p.tech}</span>
+                        </div>
+                    </div>
+                `;
+
+                cardsGrid.insertBefore(cardA, cardsGrid.firstChild);
+            });
+
+            if (isAdmin) {
+                cardsGrid.classList.add('admin-mode');
+            }
+
+            filterProjects();
+        }
+
+        // Admin Login
         const ADMIN_PASSWORD = "1234";
 
         function adminLogin() {
-            const password = prompt("🔑 กรุณาใส่รหัสผ่าน Admin เพื่อเข้าสู่ระบบเพิ่มผลงาน:");
+            if (isAdmin) {
+                alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
+                return;
+            }
+            const password = prompt("🔑 กรุณาใส่รหัสผ่าน Admin เพื่อเข้าสู่ระบบ:");
             if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
                 alert("✅ เข้าสู่ระบบ Admin สำเร็จ!");
-                const adminPanel = document.getElementById('admin-panel');
-                adminPanel.style.display = 'block';
-                adminPanel.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('admin-btn').innerText = '👑 Admin Active';
+                document.getElementById('admin-btn').style.borderColor = 'var(--primary-gold)';
+                cardsGrid.classList.add('admin-mode');
+                document.getElementById('admin-panel').scrollIntoView({ behavior: 'smooth' });
             } else if (password !== null) {
                 alert("❌ รหัสผ่านไม่ถูกต้อง!");
             }
         }
 
+        // Delete Project
+        function deleteProject(event, id) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบผลงานชิ้นนี้?")) {
+                projectsList = projectsList.filter(p => p.id !== id);
+                saveProjects(projectsList);
+                renderProjects();
+            }
+        }
+
         // Category Filter & Search Logic
         const catItems = document.querySelectorAll('.cat-item');
-        const cardsGrid = document.getElementById('projects');
         const searchInput = document.getElementById('search-input');
-        const noResult = document.getElementById('no-result');
 
         let currentCategory = 'all';
 
@@ -855,10 +916,9 @@
                 }
             });
 
-            if (visibleCount === 0) {
-                noResult.style.display = 'block';
-            } else {
-                noResult.style.display = 'none';
+            const noResult = document.getElementById('no-result');
+            if (noResult) {
+                noResult.style.display = visibleCount === 0 ? 'block' : 'none';
             }
         }
 
@@ -873,53 +933,33 @@
 
         searchInput.addEventListener('input', filterProjects);
 
-        // Dynamic Add Project Logic
+        // Add New Project Form Submit
         const projectForm = document.getElementById('project-form');
 
         projectForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const title = document.getElementById('proj-title').value;
-            const category = document.getElementById('proj-category').value;
-            const tech = document.getElementById('proj-tech').value;
-            const badge = document.getElementById('proj-badge').value || 'PROJECT';
-            const link = document.getElementById('proj-link').value;
-            const iconInput = document.getElementById('proj-icon').value.trim();
+            const newProj = {
+                id: Date.now(),
+                title: document.getElementById('proj-title').value,
+                category: document.getElementById('proj-category').value,
+                tech: document.getElementById('proj-tech').value,
+                badge: document.getElementById('proj-badge').value || 'PROJECT',
+                link: document.getElementById('proj-link').value,
+                icon: document.getElementById('proj-icon').value.trim() || '🚀',
+                rating: '★ 5.0 (NEW)'
+            };
 
-            let bannerContent = iconInput || '🚀';
-            if (iconInput.startsWith('http://') || iconInput.startsWith('https://')) {
-                bannerContent = `<img src="${iconInput}" alt="${title}">`;
-            }
+            projectsList.push(newProj);
+            saveProjects(projectsList);
+            renderProjects();
 
-            const newCard = document.createElement('a');
-            newCard.href = link;
-            newCard.target = '_blank';
-            newCard.className = 'service-card';
-            newCard.setAttribute('data-category', category);
-
-            newCard.innerHTML = `
-                <div class="card-banner">
-                    ${bannerContent}
-                    <span class="card-badge">${badge.toUpperCase()}</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">${title}</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (NEW)</span>
-                        <span class="tech-tag">${tech}</span>
-                    </div>
-                </div>
-            `;
-
-            cardsGrid.insertBefore(newCard, cardsGrid.firstChild);
             projectForm.reset();
-            filterProjects();
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         });
+
+        // Initialize Render
+        renderProjects();
     </script>
 </body>
 </html>
