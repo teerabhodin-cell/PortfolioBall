@@ -473,6 +473,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .category-tag {
@@ -492,6 +494,24 @@
             border: 1px solid var(--border-light);
             padding: 2px 6px;
             border-radius: 6px;
+        }
+
+        .project-link-btn {
+            font-size: 0.7rem;
+            color: #000000;
+            background: #ffffff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.3s;
+        }
+
+        .project-link-btn:hover {
+            background: #d1d1d1;
         }
 
         /* Delivery Process Section */
@@ -1299,7 +1319,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="proj-type">ประเภทไอคอนเส้น *</label>
+                        <label for="proj-type">ประเภทไอคอนเส้น (ถ้าไม่ใส่รูปลิงก์)</label>
                         <select id="proj-type" class="form-control">
                             <option value="cart">Cart / E-Commerce</option>
                             <option value="laptop">Laptop / Web</option>
@@ -1308,6 +1328,16 @@
                             <option value="network">Network / Satellite</option>
                             <option value="review">Star / Review</option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="proj-image">ลิงก์รูปภาพผลงาน (Image URL)</label>
+                        <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project / Live URL)</label>
+                        <input type="url" id="proj-link" class="form-control" placeholder="https://your-project-url.com">
                     </div>
                 </div>
 
@@ -1429,12 +1459,12 @@
         };
 
         const initialShowcaseItems = [
-            { category: "portfolio", title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", tech: "PHP / MySQL / E-Commerce", badge: "WORK", type: "cart" },
-            { category: "portfolio", title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", tech: "HTML / CSS / JS", badge: "WORK", type: "laptop" },
-            { category: "review", title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", tech: "คุณธีรภัทร (ผู้จ้างงานจริง)", badge: "5-STARS", type: "review" },
-            { category: "review", title: "'งานออกแบบดูเป็นมืออาชีพ ใช้งานง่าย และทีมงานตอบกลับไวมากครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review" },
-            { category: "review", title: "'ระบบทำงานได้ตรงตามที่คุยไว้ และมีการปรับแก้รายละเอียดให้จนเรียบร้อยครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review" },
-            { category: "sample", title: "ระบบจำลองคลังสินค้าและโครงสร้างฐานข้อมูล MySQL ประสิทธิภาพสูง", tech: "MySQL Schema Query", badge: "SYSTEM SAMPLE", type: "db" }
+            { category: "portfolio", title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", tech: "PHP / MySQL / E-Commerce", badge: "WORK", type: "cart", imageUrl: "", projectUrl: "" },
+            { category: "portfolio", title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", tech: "HTML / CSS / JS", badge: "WORK", type: "laptop", imageUrl: "", projectUrl: "" },
+            { category: "review", title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", tech: "คุณธีรภัทร (ผู้จ้างงานจริง)", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
+            { category: "review", title: "'งานออกแบบดูเป็นมืออาชีพ ใช้งานง่าย และทีมงานตอบกลับไวมากครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
+            { category: "review", title: "'ระบบทำงานได้ตรงตามที่คุยไว้ และมีการปรับแก้รายละเอียดให้จนเรียบร้อยครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
+            { category: "sample", title: "ระบบจำลองคลังสินค้าและโครงสร้างฐานข้อมูล MySQL ประสิทธิภาพสูง", tech: "MySQL Schema Query", badge: "SYSTEM SAMPLE", type: "db", imageUrl: "", projectUrl: "" }
         ];
 
         let showcaseList = [];
@@ -1444,7 +1474,6 @@
             try {
                 const querySnapshot = await getDocs(colRef);
                 if (querySnapshot.empty) {
-                    // หากฐานข้อมูลยังว่างอยู่ ให้เพิ่มข้อมูลเริ่มต้นชุดแรกเข้าไปอัตโนมัติ
                     for (let item of initialShowcaseItems) {
                         await addDoc(colRef, item);
                     }
@@ -1474,11 +1503,21 @@
                 const iconSvg = lineSvgIcons[p.type] || lineSvgIcons['laptop'];
                 const categoryLabel = p.category === 'review' ? 'รีวิวลูกค้า' : (p.category === 'sample' ? 'ตัวอย่างระบบ' : 'ผลงานที่ผ่านมา');
 
+                // ถ้ามีรูปภาพ ให้แสดงรูปภาพเต็มกรอบ banner ถ้าไม่มีให้แสดงไอคอน SVG ปกติ
+                const bannerContent = p.imageUrl 
+                    ? `<img src="${p.imageUrl}" alt="${p.title}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`
+                    : iconSvg;
+
+                // ปุ่มลิงก์ไปยังเว็บจริง (ถ้ามีกรอก URL มา)
+                const liveLinkBtn = p.projectUrl 
+                    ? `<a href="${p.projectUrl}" target="_blank" class="project-link-btn">🔗 ดูระบบจริง</a>` 
+                    : '';
+
                 return `
                     <div class="creation-card">
                         <button class="delete-btn" onclick="deleteItem('${p.firestoreId}')">🗑️ ลบ</button>
                         <div class="card-banner">
-                            ${iconSvg}
+                            ${bannerContent}
                             <span class="card-badge">${(p.badge || 'FEATURED').toUpperCase()}</span>
                         </div>
                         <div class="card-content">
@@ -1490,6 +1529,7 @@
                             <div class="card-footer">
                                 <span class="category-tag">${categoryLabel}</span>
                                 <span class="tech-tag">${p.tech}</span>
+                                ${liveLinkBtn}
                             </div>
                         </div>
                     </div>
@@ -1556,7 +1596,9 @@
                 title: document.getElementById('proj-title').value,
                 tech: document.getElementById('proj-tech').value,
                 badge: document.getElementById('proj-badge').value || 'FEATURED',
-                type: document.getElementById('proj-type').value
+                type: document.getElementById('proj-type').value,
+                imageUrl: document.getElementById('proj-image').value.trim(),
+                projectUrl: document.getElementById('proj-link').value.trim()
             };
 
             try {
@@ -1682,7 +1724,6 @@
         }
         typingEffect();
 
-        // โหลดข้อมูลเริ่มต้นจาก Cloud ทันทีที่เปิดหน้าเว็บ
         fetchShowcaseData();
         initScrollReveal();
         setTimeout(updateRocketTimeline, 200);
