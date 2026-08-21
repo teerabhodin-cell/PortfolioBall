@@ -21,6 +21,8 @@
             --radius-md: 10px;
             --shadow-soft: 0 8px 24px rgba(9, 30, 66, 0.08);
             --shadow-hover: 0 12px 32px rgba(9, 30, 66, 0.15);
+            --facebook-color: #1877f2;
+            --line-color: #00b900;
         }
 
         * {
@@ -338,6 +340,64 @@
             border-radius: 6px;
         }
 
+        /* --- Contact Section --- */
+        .contact-section {
+            background: var(--surface-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 60px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .contact-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: 0.3s;
+            background: #fafbfc;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+            background: var(--surface-white);
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .contact-info h4 {
+            font-size: 0.95rem;
+            color: var(--text-title);
+            font-weight: 600;
+        }
+
+        .contact-info p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            word-break: break-word;
+        }
+
         /* --- Footer --- */
         footer {
             background: var(--surface-white);
@@ -364,6 +424,7 @@
             .nav-links { display: none; }
             .hero h1 { font-size: 1.8rem; }
             .footer-grid { grid-template-columns: 1fr; }
+            .contact-section { padding: 24px; }
         }
     </style>
 </head>
@@ -379,7 +440,7 @@
                 <ul class="nav-links">
                     <li><a href="#services">บริการทั้งหมด</a></li>
                     <li><a href="#projects">ผลงานเด่น</a></li>
-                    <li><a href="#about">เกี่ยวกับเรา</a></li>
+                    <li><a href="#contact">ช่องทางติดต่อ</a></li>
                     <li><a href="#contact" class="btn-primary">ติดต่อผู้พัฒนา</a></li>
                 </ul>
             </nav>
@@ -429,7 +490,7 @@
             <h2 class="section-title">หมวดหมู่บริการและผลงานแนะนำ</h2>
         </div>
 
-        <div class="card-grid">
+        <div class="card-grid" id="projects">
             <!-- Card 1 -->
             <div class="service-card">
                 <div class="card-banner" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
@@ -520,8 +581,63 @@
         </div>
     </section>
 
+    <!-- Contact Section -->
+    <section class="container" id="contact">
+        <div class="contact-section">
+            <h2 class="section-title">ช่องทางติดต่อทีมงาน (Contact Us)</h2>
+            <p style="color: var(--text-sub); font-size: 0.95rem; margin-top: 4px;">สอบถามรายละเอียด ปรึกษาโปรเจกต์ หรือสั่งทำระบบได้ตลอดเวลา</p>
+
+            <div class="contact-grid">
+                <!-- Facebook -->
+                <a href="https://facebook.com" target="_blank" class="contact-card">
+                    <div class="contact-icon" style="background: var(--facebook-color);">f</div>
+                    <div class="contact-info">
+                        <h4>Facebook</h4>
+                        <p>DevSphere Official</p>
+                    </div>
+                </a>
+
+                <!-- LINE -->
+                <a href="https://line.me" target="_blank" class="contact-card">
+                    <div class="contact-icon" style="background: var(--line-color);">💬</div>
+                    <div class="contact-info">
+                        <h4>LINE Official</h4>
+                        <p>@devsphere</p>
+                    </div>
+                </a>
+
+                <!-- Telephone -->
+                <a href="tel:0800000000" class="contact-card">
+                    <div class="contact-icon" style="background: #ff5630;">📞</div>
+                    <div class="contact-info">
+                        <h4>เบอร์โทรศัพท์</h4>
+                        <p>08x-xxx-xxxx</p>
+                    </div>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:contact@devsphere.com" class="contact-card">
+                    <div class="contact-icon" style="background: #00b8d9;">✉️</div>
+                    <div class="contact-info">
+                        <h4>อีเมล</h4>
+                        <p>your-email@example.com</p>
+                    </div>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/teerabhodin-cell" target="_blank" class="contact-card">
+                    <div class="contact-icon" style="background: #24292e;">🐙</div>
+                    <div class="contact-info">
+                        <h4>GitHub Profile</h4>
+                        <p>teerabhodin-cell</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer id="contact">
+    <footer>
         <div class="container">
             <div class="footer-grid">
                 <div>
@@ -533,8 +649,8 @@
                     <p style="font-size: 0.85rem; line-height: 2;">Web Development<br>Database Design<br>Network Systems</p>
                 </div>
                 <div>
-                    <h4 style="color: var(--text-title); margin-bottom: 10px; font-size: 0.95rem;">ช่องทางติดต่อ</h4>
-                    <p style="font-size: 0.85rem; line-height: 2;">GitHub: teerabhodin-cell<br>Location: Thailand</p>
+                    <h4 style="color: var(--text-title); margin-bottom: 10px; font-size: 0.95rem;">การติดต่อ</h4>
+                    <p style="font-size: 0.85rem; line-height: 2;">LINE: @devsphere<br>GitHub: teerabhodin-cell</p>
                 </div>
             </div>
             <div class="copyright">
