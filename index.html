@@ -44,6 +44,7 @@
         }
 
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        .gold { color: var(--primary-gold); font-weight: 600; }
 
         /* Ambient Glow Background */
         .ambient-glow {
@@ -128,18 +129,34 @@
             box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
         }
 
-        /* Hero & Search Section */
+        /* Hero Section & Typing Effect */
         .hero {
             padding: 130px 0 40px;
             text-align: center;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             letter-spacing: -0.5px;
+            min-height: 60px;
         }
+
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            height: 30px;
+        }
+
+        .typing-text {
+            color: var(--primary-gold);
+            border-right: 2px solid var(--primary-gold);
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink { 50% { border-color: transparent; } }
 
         .search-container {
             max-width: 650px;
@@ -394,7 +411,7 @@
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { font-size: 2rem; }
             .contact-section { padding: 25px; }
         }
     </style>
@@ -421,7 +438,9 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>ค้นหาผู้ช่วยด้านโปรแกรมและเทคโนโลยี..</h1>
+            <h1><span class="gold">DevSphere</span> Digital Lab</h1>
+            <p class="hero-sub">พวกเราเชี่ยวชาญด้าน <span class="typing-text"></span></p>
+
             <div class="search-container">
                 <span class="search-icon">🔍</span>
                 <input type="text" class="search-bar" placeholder="ค้นหารายการโปรเจกต์ เช่น Web Development, MySQL, Network...">
@@ -601,5 +620,47 @@
         </div>
     </footer>
 
+    <!-- Interactive Typing Script -->
+    <script>
+        const words = ["Web Development", "Database Systems", "Network Solutions", "Digital Experience"];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.querySelector('.typing-text').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000);
+                    return false;
+                }
+                timer = setTimeout(loopTyping, 100);
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.querySelector('.typing-text').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) {
+                        i++;
+                    } else {
+                        i = 0;
+                    }
+                    setTimeout(typingEffect, 500);
+                    return false;
+                }
+                timer = setTimeout(loopDeleting, 50);
+            };
+            loopDeleting();
+        }
+
+        typingEffect();
+    </script>
 </body>
 </html>
