@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevSphere Studio | Editorial Monochrome Portfolio</title>
+    <title>DevSphere Studio | Editorial Scroll Reveal Portfolio</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -34,6 +34,19 @@
             font-family: var(--font-main);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        /* VYRE Style Scroll Reveal Effects */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Custom White Cursor (Minimalist) */
@@ -81,7 +94,7 @@
 
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
 
-        /* Subtle Dark Grid Pattern Background */
+        /* Grid Pattern Background */
         .grid-bg {
             position: fixed;
             top: 0; left: 0;
@@ -323,7 +336,7 @@
             border-radius: 16px;
             border: 1px solid var(--border-light);
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -332,7 +345,7 @@
         .service-card.hide { display: none !important; }
 
         .service-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             border-color: var(--border-hover);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.1);
         }
@@ -614,7 +627,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero reveal-element">
         <div class="container">
             <span class="hero-badge">Digital Experience & Software Lab</span>
             <h1>DevSphere Studio</h1>
@@ -650,7 +663,7 @@
     </section>
 
     <!-- Marquee Slider Feature -->
-    <div class="marquee-container">
+    <div class="marquee-container reveal-element">
         <div class="marquee-content">
             <div class="brand-item">🛒 E-Commerce Platform</div>
             <div class="brand-item">🗄️ MySQL Database Architecture</div>
@@ -666,7 +679,7 @@
 
     <!-- Service Cards Grid -->
     <section class="container" id="services">
-        <h2 class="section-title">ผลงานและระบบที่พัฒนา (คลิกเพื่อเข้าชมเว็บ)</h2>
+        <h2 class="section-title reveal-element">ผลงานและระบบที่พัฒนา (คลิกเพื่อเข้าชมเว็บ)</h2>
 
         <div class="card-grid" id="projects">
             <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
@@ -725,7 +738,7 @@
 
     <!-- Contact Section -->
     <section class="container" id="contact">
-        <div class="contact-section">
+        <div class="contact-section reveal-element">
             <h2 class="section-title" style="margin-bottom: 8px;">ช่องทางติดต่อทีมงาน (Direct Contact)</h2>
             <p style="color: var(--text-secondary); font-size: 0.85rem;">คลิกช่องทางด้านล่างเพื่อทักแชท โทร หรือส่งอีเมลได้ทันที</p>
 
@@ -767,7 +780,7 @@
 
     <!-- Footer -->
     <footer>
-        <div class="container">
+        <div class="container reveal-element">
             <button class="back-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">BACK TO TOP ↑</button>
             <p style="color: #ffffff; font-weight: 700; margin-bottom: 5px;">DEVSPHERE STUDIO</p>
             <p>© 2026 DevSphere Team. All rights reserved. Hosted on GitHub Pages.</p>
@@ -777,6 +790,22 @@
 
     <!-- Interactive Scripts -->
     <script>
+        // Scroll Reveal Observer Engine (Vyre Studio Effect)
+        function initScrollReveal() {
+            const revealElements = document.querySelectorAll('.reveal-element');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.15
+            });
+
+            revealElements.forEach(el => observer.observe(el));
+        }
+
         // Realtime Clock
         function updateClock() {
             const now = new Date();
@@ -888,7 +917,7 @@
         function renderProjects() {
             cardsGrid.innerHTML = '<div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>';
             
-            projectsList.forEach(p => {
+            projectsList.forEach((p, index) => {
                 let bannerContent = p.icon || '🚀';
                 if (p.icon && (p.icon.startsWith('http://') || p.icon.startsWith('https://'))) {
                     bannerContent = `<img src="${p.icon}" alt="${p.title}">`;
@@ -897,7 +926,8 @@
                 const cardA = document.createElement('a');
                 cardA.href = p.link;
                 cardA.target = '_blank';
-                cardA.className = 'service-card';
+                cardA.className = 'service-card reveal-element';
+                cardA.style.transitionDelay = `${(index % 3) * 0.15}s`;
                 cardA.setAttribute('data-category', p.category);
                 cardA.setAttribute('data-id', p.id);
 
@@ -929,6 +959,7 @@
 
             filterProjects();
             initCursorEvents();
+            initScrollReveal();
         }
 
         // Admin Login
@@ -1035,8 +1066,9 @@
             document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Initialize Render
+        // Initialize Render & Animations
         renderProjects();
+        initScrollReveal();
     </script>
 </body>
 </html>
