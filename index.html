@@ -217,7 +217,7 @@
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 12px;
             list-style: none;
         }
@@ -558,10 +558,6 @@
                         <span class="icon">🌐</span>
                         <span class="label">ระบบ Network</span>
                     </li>
-                    <li class="cat-item" data-category="pc">
-                        <span class="icon">🛠️</span>
-                        <span class="label">แก้ปัญหา PC</span>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -668,25 +664,6 @@
                 </div>
             </a>
 
-            <!-- Card 6: PC Troubleshooting -->
-            <a href="#contact" class="service-card" data-category="pc">
-                <div class="card-banner">
-                    🛠️
-                    <span class="card-badge">SERVICE</span>
-                </div>
-                <div class="card-content">
-                    <div class="author-box">
-                        <div class="avatar">DS</div>
-                        <span class="author-name">DevSphere Team</span>
-                    </div>
-                    <div class="card-title">บริการแก้ปัญหา PC ฮาร์ดแวร์/การ์ดจอ GTX และจูนระบบ Windows 11</div>
-                    <div class="card-footer">
-                        <span class="rating-box">★ 5.0 (20)</span>
-                        <span class="tech-tag">Hardware / Windows</span>
-                    </div>
-                </div>
-            </a>
-
             <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
         </div>
     </section>
@@ -710,7 +687,6 @@
                             <option value="web">ทำเว็บ & แอป (Web)</option>
                             <option value="db">ฐานข้อมูล SQL (Database)</option>
                             <option value="network">ระบบ Network</option>
-                            <option value="pc">แก้ปัญหา PC / ฮาร์ดแวร์</option>
                         </select>
                     </div>
 
@@ -836,7 +812,7 @@
         typingEffect();
 
         // Admin Login Function
-        const ADMIN_PASSWORD = "Inaheekuy";
+        const ADMIN_PASSWORD = "1234";
 
         function adminLogin() {
             const password = prompt("🔑 กรุณาใส่รหัสผ่าน Admin เพื่อเข้าสู่ระบบเพิ่มผลงาน:");
