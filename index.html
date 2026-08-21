@@ -247,7 +247,7 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
             margin-bottom: 60px;
             min-height: 200px;
@@ -261,6 +261,7 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
+            cursor: pointer;
         }
 
         .service-card.hide {
@@ -269,17 +270,17 @@
 
         .service-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.25);
             border-color: var(--primary-gold);
         }
 
         .card-banner {
-            height: 150px;
+            height: 160px;
             background: #111116;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             position: relative;
             border-bottom: 1px solid var(--border-gold);
         }
@@ -400,9 +401,9 @@
 
         .contact-card:hover {
             transform: translateY(-4px);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(212, 175, 55, 0.12);
             border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
         }
 
         .contact-icon {
@@ -464,7 +465,7 @@
 
             <div class="search-container">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" class="search-bar" placeholder="ค้นหารายการโปรเจกต์ เช่น Web Development, MySQL, Network...">
+                <input type="text" id="search-input" class="search-bar" placeholder="ค้นหารายการโปรเจกต์ เช่น E-Commerce, MySQL, Google Sites...">
             </div>
 
             <!-- Categories Bar (Interactive) -->
@@ -497,87 +498,107 @@
 
     <!-- Service Cards Grid -->
     <section class="container" id="services">
-        <h2 class="section-title">บริการและผลงานแนะนำ</h2>
+        <h2 class="section-title">บริการและผลงานแนะนำ (คลิกเพื่อเข้าชมเว็บ)</h2>
 
         <div class="card-grid" id="projects">
-            <!-- Card 1 -->
-            <div class="service-card" data-category="web">
+
+            <!-- Card 1: E-Commerce -->
+            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="web">
                 <div class="card-banner">
                     🛒
-                    <span class="card-badge">PRO</span>
+                    <span class="card-badge">E-COMMERCE</span>
                 </div>
                 <div class="card-content">
                     <div class="author-box">
                         <div class="avatar">DS</div>
                         <span class="author-name">DevSphere Team</span>
                     </div>
-                    <div class="card-title">พัฒนาเว็บไซต์ E-Commerce วัสดุก่อสร้าง ครบวงจร พร้อมระบบสต็อกสินค้า</div>
+                    <div class="card-title">เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร</div>
                     <div class="card-footer">
                         <span class="rating-box">★ 5.0 (28)</span>
                         <span class="tech-tag">PHP / MySQL</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Card 2 -->
-            <div class="service-card" data-category="network">
+            <!-- Card 2: Networking Learning Site -->
+            <a href="https://sites.google.com" target="_blank" class="service-card" data-category="network">
                 <div class="card-banner">
                     🌐
-                    <span class="card-badge">POPULAR</span>
+                    <span class="card-badge">EDUCATION</span>
                 </div>
                 <div class="card-content">
                     <div class="author-box">
                         <div class="avatar">DS</div>
                         <span class="author-name">DevSphere Team</span>
                     </div>
-                    <div class="card-title">สร้างเว็บไซต์สื่อการเรียนรู้ Computer Networking เข้าใจง่าย สืบค้นสะดวก</div>
+                    <div class="card-title">Computer Networking Instructional Website สื่อการเรียนรู้ระบบเครือข่าย</div>
                     <div class="card-footer">
                         <span class="rating-box">★ 4.9 (19)</span>
                         <span class="tech-tag">Google Sites</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Card 3 -->
-            <div class="service-card" data-category="db">
+            <!-- Card 3: MySQL Database -->
+            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="db">
                 <div class="card-banner">
                     🗄️
-                    <span class="card-badge">BEST SELLER</span>
+                    <span class="card-badge">DATABASE</span>
                 </div>
                 <div class="card-content">
                     <div class="author-box">
                         <div class="avatar">DS</div>
                         <span class="author-name">DevSphere Team</span>
                     </div>
-                    <div class="card-title">ออกแบบและวางโครงสร้างฐานข้อมูล MySQL (Database Architecture)</div>
+                    <div class="card-title">ออกแบบและวางโครงสร้างฐานข้อมูล MySQL (tbl_product & Inventory)</div>
                     <div class="card-footer">
                         <span class="rating-box">★ 5.0 (35)</span>
                         <span class="tech-tag">SQL Query</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Card 4 -->
-            <div class="service-card" data-category="web">
+            <!-- Card 4: Web Portfolio -->
+            <a href="https://teerabhodin-cell.github.io/PortfolioBall/" target="_blank" class="service-card" data-category="web">
                 <div class="card-banner">
                     💻
-                    <span class="card-badge">NEW</span>
+                    <span class="card-badge">PORTFOLIO</span>
                 </div>
                 <div class="card-content">
                     <div class="author-box">
                         <div class="avatar">DS</div>
                         <span class="author-name">DevSphere Team</span>
                     </div>
-                    <div class="card-title">รับจัดทำ Web Portfolio สไตล์ Luxury โหลดเร็ว รองรับทุกอุปกรณ์</div>
+                    <div class="card-title">รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์</div>
                     <div class="card-footer">
                         <span class="rating-box">★ 5.0 (14)</span>
-                        <span class="tech-tag">HTML / CSS</span>
+                        <span class="tech-tag">HTML / CSS / JS</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Card 5 (PC Troubleshooting) -->
-            <div class="service-card" data-category="pc">
+            <!-- Card 5: Network System Architecture -->
+            <a href="https://github.com/teerabhodin-cell" target="_blank" class="service-card" data-category="network">
+                <div class="card-banner">
+                    📡
+                    <span class="card-badge">NETWORK</span>
+                </div>
+                <div class="card-content">
+                    <div class="author-box">
+                        <div class="avatar">DS</div>
+                        <span class="author-name">DevSphere Team</span>
+                    </div>
+                    <div class="card-title">วางระบบ Network Topology และจำลองการเชื่อมต่อเครือข่ายคอมพิวเตอร์</div>
+                    <div class="card-footer">
+                        <span class="rating-box">★ 5.0 (16)</span>
+                        <span class="tech-tag">Cisco / Routing</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 6: PC Troubleshooting -->
+            <a href="#contact" class="service-card" data-category="pc">
                 <div class="card-banner">
                     🛠️
                     <span class="card-badge">SERVICE</span>
@@ -587,66 +608,66 @@
                         <div class="avatar">DS</div>
                         <span class="author-name">DevSphere Team</span>
                     </div>
-                    <div class="card-title">บริการตรวจเช็ก แก้ปัญหา PC ซอฟต์แวร์ และการปรับแต่งประสิทธิภาพระบบ Windows</div>
+                    <div class="card-title">บริการแก้ปัญหา PC ฮาร์ดแวร์/การ์ดจอ GTX และจูนระบบ Windows 11</div>
                     <div class="card-footer">
                         <span class="rating-box">★ 5.0 (20)</span>
-                        <span class="tech-tag">Hardware / OS</span>
+                        <span class="tech-tag">Hardware / Windows</span>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <div id="no-result">ไม่พบรายการผลงานที่คุณค้นหา</div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section (DIRECT LINKS) -->
     <section class="container" id="contact">
         <div class="contact-section">
-            <h2 class="section-title" style="margin-bottom: 8px;">ช่องทางติดต่อทีมงาน (Contact Us)</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">สอบถามรายละเอียด ปรึกษาโปรเจกต์ หรือสั่งทำระบบได้ตลอดเวลา</p>
+            <h2 class="section-title" style="margin-bottom: 8px;">ช่องทางติดต่อทีมงาน (Direct Contact)</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">คลิกช่องทางด้านล่างเพื่อทักแชท โทร หรือส่งอีเมลได้ทันที</p>
 
             <div class="contact-grid">
-                <!-- Facebook -->
-                <a href="https://facebook.com" target="_blank" class="contact-card">
+                <!-- Direct Facebook Link -->
+                <a href="https://www.facebook.com/teerabhodin.phongsura" target="_blank" class="contact-card">
                     <div class="contact-icon" style="background: var(--facebook-color);">f</div>
                     <div class="contact-info">
-                        <h4>Facebook</h4>
+                        <h4>Facebook (Direct Chat)</h4>
                         <p>Teerabhodin Phongsura</p>
                     </div>
                 </a>
 
-                <!-- LINE -->
-                <a href="https://line.me" target="_blank" class="contact-card">
+                <!-- Direct LINE Link -->
+                <a href="https://line.me/R/ti/p/~sosuck78" target="_blank" class="contact-card">
                     <div class="contact-icon" style="background: var(--line-color);">💬</div>
                     <div class="contact-info">
-                        <h4>LINE Official</h4>
-                        <p>sosuck78</p>
+                        <h4>LINE (Direct Add)</h4>
+                        <p>ID: sosuck78</p>
                     </div>
                 </a>
 
-                <!-- Telephone -->
+                <!-- Direct Phone Call -->
                 <a href="tel:0952189775" class="contact-card">
                     <div class="contact-icon" style="background: #e65100;">📞</div>
                     <div class="contact-info">
-                        <h4>เบอร์โทรศัพท์</h4>
-                        <p>0952189775</p>
+                        <h4>โทรศัพท์ (กดโทรออก)</h4>
+                        <p>095-218-9775</p>
                     </div>
                 </a>
 
-                <!-- Email -->
+                <!-- Direct Email -->
                 <a href="mailto:teerabhodin@gmail.com" class="contact-card">
                     <div class="contact-icon" style="background: #00838f;">✉️</div>
                     <div class="contact-info">
-                        <h4>อีเมล</h4>
+                        <h4>อีเมล (ส่งข้อความ)</h4>
                         <p>teerabhodin@gmail.com</p>
                     </div>
                 </a>
 
-                <!-- GitHub -->
+                <!-- Direct GitHub Profile -->
                 <a href="https://github.com/teerabhodin-cell" target="_blank" class="contact-card">
                     <div class="contact-icon" style="background: #212121; border: 1px solid var(--border-gold);">🐙</div>
                     <div class="contact-info">
-                        <h4>GitHub Profile</h4>
+                        <h4>GitHub Repository</h4>
                         <p>teerabhodin-cell</p>
                     </div>
                 </a>
