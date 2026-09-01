@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/teerabhodin-cell/PortfolioBall/main/logo_transparent.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevSphere Studio | Elite Web & Software Development</title>
@@ -1619,12 +1618,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="proj-image">อัปโหลดรูปภาพผลงาน</label>
-                        <input type="file" id="proj-image" class="form-control" accept="image/*">
-                        <small id="proj-image-note" style="color: var(--text-secondary); font-size: 0.78rem;">เลือกรูปจากเครื่องได้เลย ระบบจะบันทึกเป็นรูปแบบ base64 ลงในข้อมูลผลงาน</small>
-                        <div id="proj-image-preview" style="display:none; margin-top:10px; border:1px solid var(--border-light); border-radius:12px; padding:10px; background:rgba(255,255,255,0.02);">
-                            <img id="proj-image-preview-tag" alt="Preview" style="width:100%; max-height:180px; object-fit:cover; border-radius:10px;">
-                        </div>
+                        <label for="proj-image">ลิงก์รูปภาพผลงาน (Image URL)</label>
+                        <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project / Live URL)</label>
@@ -1638,7 +1633,7 @@
         </div>
     </section>
 
- <section class="container" id="contact" style="padding-top: 20px;">
+    <section class="container" id="contact" style="padding-top: 20px;">
         <div class="contact-section reveal-element">
             <h2 class="section-title" style="margin-bottom: 8px;">GET IN TOUCH (ส่งข้อความสอบถาม / ขอใบเสนอราคา)</h2>
             <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลด้านล่างหรือทักทายทีมงานผ่านช่องทางโซเชียลมีเดียได้โดยตรง</p>
@@ -1814,7 +1809,7 @@
             initScrollReveal();
         }
 
-        const ADMIN_PASSWORD = "Inaheekuy1";
+        const ADMIN_PASSWORD = "1234";
         window.adminLogin = function() {
             if (isAdmin) {
                 alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
@@ -1847,42 +1842,6 @@
         };
 
         const projectForm = document.getElementById('project-form');
-        const projectImageInput = document.getElementById('proj-image');
-        const projectImagePreview = document.getElementById('proj-image-preview');
-        const projectImagePreviewTag = document.getElementById('proj-image-preview-tag');
-        let uploadedProjectImage = '';
-
-        function resetProjectImagePreview() {
-            uploadedProjectImage = '';
-            if (projectImagePreview) projectImagePreview.style.display = 'none';
-            if (projectImagePreviewTag) projectImagePreviewTag.src = '';
-        }
-
-        if (projectImageInput) {
-            projectImageInput.addEventListener('change', function () {
-                const file = this.files && this.files[0];
-                if (!file) {
-                    resetProjectImagePreview();
-                    return;
-                }
-                if (!file.type.startsWith('image/')) {
-                    alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
-                    this.value = '';
-                    resetProjectImagePreview();
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    uploadedProjectImage = event.target.result || '';
-                    if (projectImagePreview && projectImagePreviewTag && uploadedProjectImage) {
-                        projectImagePreviewTag.src = uploadedProjectImage;
-                        projectImagePreview.style.display = 'block';
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
         if (projectForm) {
             projectForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -1893,7 +1852,7 @@
                     tech: document.getElementById('proj-tech').value,
                     badge: document.getElementById('proj-badge').value || 'FEATURED',
                     type: document.getElementById('proj-type').value,
-                    imageUrl: uploadedProjectImage,
+                    imageUrl: document.getElementById('proj-image').value.trim(),
                     projectUrl: document.getElementById('proj-link').value.trim()
                 };
 
@@ -1901,7 +1860,6 @@
                     await addDoc(colRef, newProj);
                     fetchShowcaseData();
                     projectForm.reset();
-                    resetProjectImagePreview();
                     document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
                 } catch (error) {
                     console.error("Error adding document: ", error);
@@ -1959,7 +1917,21 @@
         let mouseX = -100, mouseY = -100;
         let outlineX = -100, outlineY = -100;
 
-        window.addEventListener('mousemove', (e) => {
+        
+const contactForm=document.getElementById('contact-form');
+const contactSuccessModal=document.getElementById('contact-success-modal');
+const contactSuccessClose=document.getElementById('contact-success-close');
+const contactSuccessOk=document.getElementById('contact-success-ok');
+const contactSubmitBtn=document.getElementById('contact-submit-btn');
+function openContactSuccess(){if(contactSuccessModal){contactSuccessModal.style.display='flex';document.body.style.overflow='hidden';}}
+function closeContactSuccess(){if(contactSuccessModal){contactSuccessModal.style.display='none';document.body.style.overflow='';}}
+if(contactForm){contactForm.addEventListener('submit',()=>{if(contactSubmitBtn){contactSubmitBtn.disabled=true;contactSubmitBtn.textContent='กำลังส่งข้อความ...';contactSubmitBtn.style.opacity='.7';}setTimeout(()=>{openContactSuccess();contactForm.reset();if(contactSubmitBtn){contactSubmitBtn.disabled=false;contactSubmitBtn.textContent='ส่งข้อความขอเสนอราคา →';contactSubmitBtn.style.opacity='1';}},900);});}
+if(contactSuccessClose)contactSuccessClose.addEventListener('click',closeContactSuccess);
+if(contactSuccessOk)contactSuccessOk.addEventListener('click',closeContactSuccess);
+if(contactSuccessModal)contactSuccessModal.addEventListener('click',(event)=>{if(event.target===contactSuccessModal)closeContactSuccess();});
+document.addEventListener('keydown',(event)=>{if(event.key==='Escape')closeContactSuccess();});
+
+window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             if (cursorDot) {
                 cursorDot.style.left = `${mouseX}px`;
