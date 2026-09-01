@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevSphere Studio | Elite Web & Software Development</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="./logo_transparent.png?v=2">
-    <link rel="icon" type="image/png" sizes="192x192" href="./logo_transparent.png?v=2">
-    <link rel="apple-touch-icon" href="./logo_transparent.png?v=2">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -1621,8 +1618,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="proj-image">ลิงก์รูปภาพผลงาน (Image URL)</label>
-                        <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
+                        <label for="proj-image">อัปโหลดรูปภาพผลงาน</label>
+                        <input type="file" id="proj-image" class="form-control" accept="image/*">
+                        <small id="proj-image-note" style="color: var(--text-secondary); font-size: 0.78rem;">เลือกรูปจากเครื่องได้เลย ระบบจะบันทึกเป็นรูปแบบ base64 ลงในข้อมูลผลงาน</small>
+                        <div id="proj-image-preview" style="display:none; margin-top:10px; border:1px solid var(--border-light); border-radius:12px; padding:10px; background:rgba(255,255,255,0.02);">
+                            <img id="proj-image-preview-tag" alt="Preview" style="width:100%; max-height:180px; object-fit:cover; border-radius:10px;">
+                        </div>
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project / Live URL)</label>
@@ -1794,7 +1795,7 @@
             initScrollReveal();
         }
 
-        const ADMIN_PASSWORD = "1234";
+        const ADMIN_PASSWORD = "Inaheekuy1";
         window.adminLogin = function() {
             if (isAdmin) {
                 alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
@@ -1827,6 +1828,42 @@
         };
 
         const projectForm = document.getElementById('project-form');
+        const projectImageInput = document.getElementById('proj-image');
+        const projectImagePreview = document.getElementById('proj-image-preview');
+        const projectImagePreviewTag = document.getElementById('proj-image-preview-tag');
+        let uploadedProjectImage = '';
+
+        function resetProjectImagePreview() {
+            uploadedProjectImage = '';
+            if (projectImagePreview) projectImagePreview.style.display = 'none';
+            if (projectImagePreviewTag) projectImagePreviewTag.src = '';
+        }
+
+        if (projectImageInput) {
+            projectImageInput.addEventListener('change', function () {
+                const file = this.files && this.files[0];
+                if (!file) {
+                    resetProjectImagePreview();
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
+                    this.value = '';
+                    resetProjectImagePreview();
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    uploadedProjectImage = event.target.result || '';
+                    if (projectImagePreview && projectImagePreviewTag && uploadedProjectImage) {
+                        projectImagePreviewTag.src = uploadedProjectImage;
+                        projectImagePreview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         if (projectForm) {
             projectForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -1837,7 +1874,7 @@
                     tech: document.getElementById('proj-tech').value,
                     badge: document.getElementById('proj-badge').value || 'FEATURED',
                     type: document.getElementById('proj-type').value,
-                    imageUrl: document.getElementById('proj-image').value.trim(),
+                    imageUrl: uploadedProjectImage,
                     projectUrl: document.getElementById('proj-link').value.trim()
                 };
 
@@ -1845,6 +1882,7 @@
                     await addDoc(colRef, newProj);
                     fetchShowcaseData();
                     projectForm.reset();
+                    resetProjectImagePreview();
                     document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
                 } catch (error) {
                     console.error("Error adding document: ", error);
