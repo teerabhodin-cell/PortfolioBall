@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/teerabhodin-cell/PortfolioBall/main/logo_transparent.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevSphere Studio | Elite Web & Software Development</title>
@@ -1619,8 +1618,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="proj-image">ลิงก์รูปภาพผลงาน (Image URL)</label>
-                        <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
+                        <label for="proj-image-file">รูปภาพผลงาน</label>
+                        <input type="file" id="proj-image-file" class="form-control" accept="image/png,image/jpeg,image/webp" required>
+                        <small style="color: var(--text-secondary); font-size: 0.72rem;">รองรับ PNG, JPG และ WebP — ระบบจะย่อรูปก่อนบันทึก</small>
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project / Live URL)</label>
@@ -1842,28 +1842,61 @@
             }
         };
 
+        function compressImageToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) return reject(new Error('กรุณาเลือกรูปภาพผลงาน'));
+                if (!file.type.startsWith('image/')) return reject(new Error('ไฟล์ที่เลือกไม่ใช่รูปภาพ'));
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('ไม่สามารถอ่านไฟล์รูปภาพได้'));
+                reader.onload = event => {
+                    const image = new Image();
+                    image.onerror = () => reject(new Error('ไม่สามารถเปิดไฟล์รูปภาพได้'));
+                    image.onload = () => {
+                        const maxSide = 1200;
+                        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(image.width * scale));
+                        canvas.height = Math.max(1, Math.round(image.height * scale));
+                        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.78));
+                    };
+                    image.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         const projectForm = document.getElementById('project-form');
-        if (projectForm) {
+        if(projectForm) {
             projectForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
-                const newProj = {
-                    category: document.getElementById('proj-category').value,
-                    title: document.getElementById('proj-title').value,
-                    tech: document.getElementById('proj-tech').value,
-                    badge: document.getElementById('proj-badge').value || 'FEATURED',
-                    type: document.getElementById('proj-type').value,
-                    imageUrl: document.getElementById('proj-image').value.trim(),
-                    projectUrl: document.getElementById('proj-link').value.trim()
-                };
-
+                const submitBtn = projectForm.querySelector('button[type="submit"]');
+                const imageFile = document.getElementById('proj-image-file').files[0];
+                const originalLabel = submitBtn.innerHTML;
                 try {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'กำลังเตรียมรูปภาพ...';
+                    const imageUrl = await compressImageToDataUrl(imageFile);
+                    submitBtn.innerHTML = 'กำลังบันทึกลง Cloud...';
+                    const newProj = {
+                        category: document.getElementById('proj-category').value,
+                        title: document.getElementById('proj-title').value,
+                        tech: document.getElementById('proj-tech').value,
+                        badge: document.getElementById('proj-badge').value || 'FEATURED',
+                        type: document.getElementById('proj-type').value,
+                        imageUrl,
+                        projectUrl: document.getElementById('proj-link').value.trim()
+                    };
                     await addDoc(colRef, newProj);
-                    fetchShowcaseData();
+                    await fetchShowcaseData();
                     projectForm.reset();
-                    document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
-                } catch (error) {
-                    console.error("Error adding document: ", error);
+                    document.getElementById('showcase-section').scrollIntoView({behavior: 'smooth'});
+                } catch(error) {
+                    console.error('Error adding document: ', error);
+                    alert(error.message || 'ไม่สามารถเพิ่มผลงานได้ กรุณาลองใหม่อีกครั้ง');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalLabel;
                 }
             });
         }
