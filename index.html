@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevSphere Studio | Elite Web & Software Development</title>
+    <title>DevSphere Studio | Elite Web & Software Solutions</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -24,7 +24,7 @@
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
-            cursor: none;
+            cursor: none; /* ใช้ Custom Cursor */
         }
 
         body {
@@ -43,9 +43,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -3; /* ให้อยู่ด้านหลังสุด */
-            pointer-events: none; /* ป้องกันไม่ให้ขวางการคลิก */
-            opacity: 0.35; /* ปรับความสว่างของเส้น */
+            z-index: -3;
+            pointer-events: none;
+            opacity: 0.35;
         }
 
         /* Cinematic Background Ambient Glow */
@@ -69,928 +69,300 @@
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
-
         .reveal-element.active {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Custom White Cursor Fixed */
+        /* Custom Cursor */
         .cursor-dot {
-            position: fixed;
-            top: -100px; left: -100px;
+            position: fixed; top: -100px; left: -100px;
             width: 8px; height: 8px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
+            background-color: #ffffff; border-radius: 50%;
+            pointer-events: none; z-index: 99999;
             transform: translate(-50%, -50%);
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
         }
-
         .cursor-outline {
-            position: fixed;
-            top: -100px; left: -100px;
+            position: fixed; top: -100px; left: -100px;
             width: 38px; height: 38px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99998;
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%;
+            pointer-events: none; z-index: 99998;
             transform: translate(-50%, -50%);
             transition: width 0.25s ease-out, height 0.25s ease-out, background-color 0.25s ease-out, border-color 0.25s ease-out;
         }
-
         body.cursor-hover .cursor-outline {
             width: 60px; height: 60px;
-            background-color: rgba(255, 255, 255, 0.08);
-            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08); border-color: #ffffff;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
         }
-
         body.cursor-hover .cursor-dot {
             transform: translate(-50%, -50%) scale(1.4);
-            background-color: #ffffff;
         }
 
-        .container {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
         a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
-
-        /* Background Grid Pattern */
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -1;
-            pointer-events: none;
-        }
 
         /* Header Navigation */
         header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
+            position: fixed; top: 0; left: 0; width: 100%;
             background: rgba(3, 3, 5, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-light);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; border-bottom: 1px solid var(--border-light);
         }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 75px;
-        }
-
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            stroke: #ffffff;
-            stroke-width: 1.8;
-            fill: none;
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
-        }
-
-        .logo {
-            font-size: 1.35rem;
-            font-weight: 800;
-            letter-spacing: 2.5px;
-            color: #fff;
-            text-transform: uppercase;
-        }
-
+        nav { display: flex; justify-content: space-between; align-items: center; height: 75px; }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 30px; height: 30px; stroke: #ffffff; stroke-width: 1.8; fill: none; filter: drop-shadow(0 0 8px rgba(255,255,255,0.4)); }
+        .logo { font-size: 1.35rem; font-weight: 800; letter-spacing: 2.5px; color: #fff; text-transform: uppercase; }
         .logo span { color: var(--text-secondary); font-weight: 400; }
-
-        .time-badge {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            letter-spacing: 1.5px;
-            font-weight: 500;
-        }
-
+        .time-badge { font-size: 0.78rem; color: var(--text-secondary); letter-spacing: 1.5px; font-weight: 500; }
         .btn-admin {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            color: #fff;
-            padding: 7px 18px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            letter-spacing: 0.5px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-light);
+            color: #fff; padding: 7px 18px; border-radius: 20px; font-size: 0.78rem;
+            letter-spacing: 0.5px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .btn-admin:hover {
-            border-color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(255,255,255,0.15);
+            border-color: #fff; background: rgba(255, 255, 255, 0.1); box-shadow: 0 0 15px rgba(255,255,255,0.15);
         }
 
         /* Hero Section */
-        .hero {
-            padding: 140px 0 40px;
-            text-align: center;
-        }
-
+        .hero { padding: 140px 0 40px; text-align: center; }
         .hero-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            color: var(--text-secondary);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.72rem;
-            font-weight: 500;
-            margin-bottom: 24px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            display: inline-block; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-light);
+            color: var(--text-secondary); padding: 6px 16px; border-radius: 30px; font-size: 0.72rem;
+            font-weight: 500; margin-bottom: 24px; letter-spacing: 2px; text-transform: uppercase;
         }
-
         .hero h1 {
-            font-size: clamp(2.6rem, 6.5vw, 4.8rem);
-            font-weight: 900;
-            margin-bottom: 15px;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
+            font-size: clamp(2.6rem, 6.5vw, 4.8rem); font-weight: 900; margin-bottom: 15px;
+            letter-spacing: -1.5px; line-height: 1.1;
             background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .hero-sub {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            margin-bottom: 25px;
-            height: 35px;
-        }
-
+        .hero-sub { font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 25px; height: 35px; }
         .typing-text {
-            color: #fff;
-            border-right: 2px solid #fff;
-            animation: blink 0.75s step-end infinite;
-            font-weight: 600;
-            text-shadow: 0 0 10px rgba(255,255,255,0.4);
+            color: #fff; border-right: 2px solid #fff; animation: blink 0.75s step-end infinite;
+            font-weight: 600; text-shadow: 0 0 10px rgba(255,255,255,0.4);
         }
-
         @keyframes blink { 50% { border-color: transparent; } }
 
-        /* Minimalist White Line Marquee Slider */
+        /* Marquee */
         .marquee-container {
-            border-top: 1px solid var(--border-light);
-            border-bottom: 1px solid var(--border-light);
-            padding: 16px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            margin-bottom: 50px;
-            background: rgba(8, 8, 10, 0.7);
-            backdrop-filter: blur(10px);
-            display: flex;
-            width: 100%;
-            position: relative;
+            border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+            padding: 16px 0; overflow: hidden; white-space: nowrap; margin-bottom: 50px;
+            background: rgba(8, 8, 10, 0.7); backdrop-filter: blur(10px); display: flex; width: 100%; position: relative;
         }
-
-        .marquee-content {
-            display: flex;
-            width: max-content;
-            animation: marquee 25s linear infinite;
-        }
-
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            padding-right: 50px;
-        }
-
-        .brand-item {
-            font-size: 0.88rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 0.5px;
-            flex-shrink: 0;
-            transition: color 0.3s;
-        }
-
-        .brand-item svg {
-            width: 18px;
-            height: 18px;
-            stroke: #ffffff;
-            stroke-width: 1.8;
-            fill: none;
-            opacity: 0.7;
-            transition: opacity 0.3s, transform 0.3s;
-        }
-
+        .marquee-content { display: flex; width: max-content; animation: marquee 25s linear infinite; }
+        .brand-group { display: flex; align-items: center; gap: 50px; padding-right: 50px; }
+        .brand-item { font-size: 0.88rem; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 12px; letter-spacing: 0.5px; flex-shrink: 0; transition: color 0.3s; }
+        .brand-item svg { width: 18px; height: 18px; stroke: #ffffff; stroke-width: 1.8; fill: none; opacity: 0.7; transition: opacity 0.3s, transform 0.3s; }
         .brand-item:hover { color: #fff; }
         .brand-item:hover svg { opacity: 1; transform: scale(1.1); }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Section Title Main & Sub */
+        /* Section Titles */
         .section-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-            border-left: 3px solid #fff;
-            padding-left: 14px;
-            letter-spacing: 1.2px;
+            font-size: 1.35rem; font-weight: 700; margin-bottom: 24px; text-transform: uppercase;
+            border-left: 3px solid #fff; padding-left: 14px; letter-spacing: 1.2px;
             box-shadow: -5px 0 15px rgba(255,255,255,0.05);
         }
-
         .section-subtitle {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 30px 0 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.5px;
+            font-size: 1.05rem; font-weight: 700; color: #ffffff; margin: 30px 0 18px;
+            display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px;
         }
 
-        /* Spacing */
-        .services-section, 
-        .delivery-section, 
-        .deliverables-section, 
-        #showcase-section, 
-        .contact-section,
-        .add-project-section {
-            padding: 50px 0;
-            margin-bottom: 20px;
-        }
-
-        /* Our Services Section */
-        .services-grid {
+        /* Core Solutions Section (ใหม่ล่าสุด) */
+        .solutions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
-            margin-top: 24px;
+            margin-top: 30px;
         }
-
-        .service-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 18px;
-            padding: 30px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+        .solution-card {
+            background: rgba(16, 16, 20, 0.65); border: 1px solid var(--border-light);
+            border-radius: 18px; padding: 32px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px); display: flex; flex-direction: column;
         }
-
-        .service-box::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.04), transparent 40%);
-            pointer-events: none;
+        .solution-card:hover {
+            border-color: var(--border-hover); transform: translateY(-6px);
+            background: rgba(22, 22, 28, 0.95);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.05);
         }
-
-        .service-box:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-6px);
-            background: rgba(22, 22, 28, 0.9);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.03);
+        .sol-icon-box {
+            width: 54px; height: 54px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-light);
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px; transition: transform 0.4s ease;
         }
-
-        .service-num {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            letter-spacing: 1px;
+        .solution-card:hover .sol-icon-box {
+            transform: scale(1.1); background: rgba(255, 255, 255, 0.1); border-color: #fff;
         }
-
-        .service-box.featured .service-num { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-
-        .service-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 10px;
+        .sol-icon-box svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 1.8; }
+        .sol-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .sol-subtitle {
+            font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;
+            padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-
-        .service-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
+        .sol-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .sol-list li {
+            font-size: 0.85rem; color: #cbd5e1; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;
         }
+        .sol-list li::before { content: '▹'; color: #fff; font-weight: bold; font-size: 1.1rem; line-height: 1.1; }
 
-        /* Feature Creation Cards Grid */
+        /* Showcase Card Grid (Firebase) */
         .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 30px;
-            min-height: 90px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px; margin-bottom: 30px; min-height: 90px;
         }
-
         .creation-card {
-            background: var(--bg-card);
-            border-radius: 18px;
-            border: 1px solid var(--border-light);
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            background: var(--bg-card); border-radius: 18px; border: 1px solid var(--border-light);
+            overflow: hidden; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
+            display: flex; flex-direction: column; position: relative;
         }
-
         .creation-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--border-hover);
+            transform: translateY(-8px); border-color: var(--border-hover);
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.08);
         }
-
         .delete-btn {
-            display: none;
-            position: absolute;
-            top: 12px; left: 12px;
-            background: rgba(220, 38, 38, 0.9);
-            color: #fff;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            z-index: 10;
-            transition: background 0.3s;
+            display: none; position: absolute; top: 12px; left: 12px;
+            background: rgba(220, 38, 38, 0.9); color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; z-index: 10;
         }
-
         .delete-btn:hover { background: #dc2626; }
         .admin-mode .delete-btn { display: block; }
-
         .card-banner {
-            height: 160px;
-            background: #070709;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-bottom: 1px solid var(--border-light);
-            overflow: hidden;
+            height: 160px; background: #070709; display: flex; align-items: center; justify-content: center;
+            position: relative; border-bottom: 1px solid var(--border-light); overflow: hidden;
         }
-
         .line-icon-large {
-            width: 52px; height: 52px;
-            stroke: #ffffff; stroke-width: 1.5;
-            fill: none; opacity: 0.8;
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            width: 52px; height: 52px; stroke: #ffffff; stroke-width: 1.5; fill: none; opacity: 0.8; transition: transform 0.4s ease, opacity 0.4s ease;
         }
-
         .creation-card:hover .line-icon-large {
-            transform: scale(1.15) rotate(5deg);
-            opacity: 1;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
+            transform: scale(1.15) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
         }
-
         .card-badge {
-            position: absolute;
-            top: 12px; right: 12px;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-light);
-            color: #ffffff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.68rem;
-            font-weight: 600;
-            z-index: 2;
-            letter-spacing: 0.8px;
+            position: absolute; top: 12px; right: 12px; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+            border: 1px solid var(--border-light); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 0.68rem; font-weight: 600; z-index: 2;
         }
-
-        .card-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .author-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .author-box { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .avatar {
-            width: 26px; height: 26px;
-            border-radius: 50%;
-            background: #ffffff; color: #000000;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: 800;
-            box-shadow: 0 0 8px rgba(255,255,255,0.4);
+            width: 26px; height: 26px; border-radius: 50%; background: #ffffff; color: #000000;
+            display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800;
         }
-
-        .author-name {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
+        .author-name { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
         .card-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #ffffff;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 42px;
+            font-size: 0.95rem; font-weight: 500; color: #ffffff; line-height: 1.5; margin-bottom: 15px;
+            display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 42px;
         }
-
         .card-footer {
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 12px;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
         }
-
-        .category-tag {
-            font-size: 0.68rem;
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .tech-tag {
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-light);
-            padding: 3px 8px;
-            border-radius: 6px;
-        }
-
+        .category-tag { font-size: 0.68rem; color: #ffffff; background: rgba(255, 255, 255, 0.08); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+        .tech-tag { font-size: 0.72rem; color: var(--text-secondary); background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-light); padding: 3px 8px; border-radius: 6px; }
         .project-link-btn {
-            font-size: 0.72rem;
-            color: #000000;
-            background: #ffffff;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            font-size: 0.72rem; color: #000000; background: #ffffff; padding: 4px 10px; border-radius: 6px;
+            font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: all 0.3s;
         }
+        .project-link-btn:hover { background: #e2e8f0; transform: translateY(-1px); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
 
-        .project-link-btn:hover {
-            background: #e2e8f0;
-            transform: translateY(-1px);
-            box-shadow: 0 0 15px rgba(255,255,255,0.4);
-        }
-
-        /* Delivery Process Section */
+        /* Delivery Process (Timeline) */
         .delivery-header-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-light);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            color: #ffffff;
-            margin-bottom: 14px;
+            display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-light); padding: 6px 16px; border-radius: 30px; font-size: 0.8rem; color: #ffffff; margin-bottom: 14px;
         }
-
-        .delivery-title {
-            font-size: clamp(1.8rem, 3.8vw, 2.6rem);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        .delivery-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            max-width: 780px;
-            margin-bottom: 30px;
-        }
-
-        .delivery-loop-badge {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            letter-spacing: 1.5px;
-            text-align: right;
-            margin-bottom: 18px;
-            font-weight: 500;
-        }
-
-        .timeline-wrapper {
-            position: relative;
-            padding-top: 50px;
-        }
-
-        .timeline-track {
-            position: absolute;
-            top: 18px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 1;
-        }
-
-        .timeline-progress {
-            position: absolute;
-            top: 0; left: 0;
-            height: 100%;
-            width: 0px;
-            background: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
-            transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
+        .delivery-title { font-size: clamp(1.8rem, 3.8vw, 2.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+        .delivery-subtitle { color: var(--text-secondary); font-size: 0.95rem; max-width: 780px; margin-bottom: 30px; }
+        .delivery-loop-badge { font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1.5px; text-align: right; margin-bottom: 18px; font-weight: 500; }
+        .timeline-wrapper { position: relative; padding-top: 50px; }
+        .timeline-track { position: absolute; top: 18px; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1); z-index: 1; }
+        .timeline-progress { position: absolute; top: 0; left: 0; height: 100%; width: 0px; background: #ffffff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.9); transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1); }
         .rocket-runner {
-            position: absolute;
-            top: -16px;
-            left: 0px;
-            transform: translateX(-50%);
-            width: 34px;
-            height: 34px;
-            background: #000000;
-            border: 1.5px solid #ffffff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            box-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
-            transition: left 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            position: absolute; top: -16px; left: 0px; transform: translateX(-50%); width: 34px; height: 34px;
+            background: #000000; border: 1.5px solid #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 5; box-shadow: 0 0 18px rgba(255, 255, 255, 0.8); transition: left 0.7s cubic-bezier(0.25, 1, 0.5, 1);
         }
-
-        .rocket-runner svg {
-            width: 15px;
-            height: 15px;
-            stroke: #ffffff;
-            fill: none;
-            stroke-width: 2;
-            transform: rotate(45deg);
-        }
-
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-            position: relative;
-            z-index: 2;
-        }
-
+        .rocket-runner svg { width: 15px; height: 15px; stroke: #ffffff; fill: none; stroke-width: 2; transform: rotate(45deg); }
+        .steps-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; position: relative; z-index: 2; }
         .step-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 18px 12px;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.4s ease;
-            position: relative;
+            background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px; padding: 18px 12px;
+            display: flex; flex-direction: column; transition: all 0.4s ease; position: relative;
         }
-
         .step-card::before {
-            content: '';
-            position: absolute;
-            top: -34px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #000000;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            transition: all 0.4s ease;
-            z-index: 3;
+            content: ''; position: absolute; top: -34px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px;
+            border-radius: 50%; background: #000000; border: 2px solid rgba(255, 255, 255, 0.4); transition: all 0.4s ease; z-index: 3;
         }
-
-        .step-card.active-step::before {
-            background: #ffffff;
-            border-color: #ffffff;
-            box-shadow: 0 0 12px #ffffff;
-            transform: translateX(-50%) scale(1.3);
-        }
-
-        .step-card.active-step {
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.04);
-            transform: translateY(-6px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .step-num {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-light);
-            color: #ffffff;
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-        }
-
-        .step-card.active-step .step-num {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .step-icon {
-            width: 16px; height: 16px;
-            stroke: #ffffff; stroke-width: 1.8;
-            fill: none; opacity: 0.8;
-        }
-
-        .step-tag {
-            font-size: 0.65rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .step-name {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-
-        .step-desc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.45;
-        }
+        .step-card.active-step::before { background: #ffffff; border-color: #ffffff; box-shadow: 0 0 12px #ffffff; transform: translateX(-50%) scale(1.3); }
+        .step-card.active-step { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.04); transform: translateY(-6px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .step-num { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-light); color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+        .step-card.active-step .step-num { background: #ffffff; color: #000000; }
+        .step-icon { width: 16px; height: 16px; stroke: #ffffff; stroke-width: 1.8; fill: none; opacity: 0.8; }
+        .step-tag { font-size: 0.65rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .step-name { font-size: 0.88rem; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+        .step-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45; }
 
         /* Deliverables Section */
-        .deliverables-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-top: 24px;
-        }
+        .deliverables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 24px; }
+        .deliverable-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+        .deliverable-card:hover { border-color: var(--border-hover); transform: translateY(-4px); background: rgba(22, 22, 28, 0.9); box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
+        .deliverable-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .deliverable-icon { width: 26px; height: 26px; stroke: #ffffff; stroke-width: 1.8; fill: none; }
+        .deliverable-num { font-size: 0.75rem; color: var(--text-secondary); border: 1px solid var(--border-light); padding: 3px 8px; border-radius: 6px; }
+        .deliverable-title { font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+        .deliverable-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 
-        .deliverable-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s;
-        }
-
-        .deliverable-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-4px);
-            background: rgba(22, 22, 28, 0.9);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-        }
-
-        .deliverable-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-
-        .deliverable-icon {
-            width: 26px; height: 26px;
-            stroke: #ffffff; stroke-width: 1.8;
-            fill: none;
-        }
-
-        .deliverable-num {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-light);
-            padding: 3px 8px;
-            border-radius: 6px;
-        }
-
-        .deliverable-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .deliverable-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Admin Add Section */
+        /* Admin Section */
         .add-project-section {
-            display: none;
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 35px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            display: none; background: var(--bg-card); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 35px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 18px;
-            margin-top: 18px;
-        }
-
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 18px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 0.85rem; color: #ffffff; font-weight: 500; }
-
         .form-control {
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border-light);
-            background: #000000;
-            color: #fff;
-            font-size: 0.9rem;
-            outline: none;
-            font-family: var(--font-main);
-            transition: border-color 0.3s, box-shadow 0.3s;
+            padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-light); background: #000000;
+            color: #fff; font-size: 0.9rem; outline: none; font-family: var(--font-main); transition: border-color 0.3s, box-shadow 0.3s;
         }
+        .form-control:focus { border-color: #ffffff; box-shadow: 0 0 12px rgba(255,255,255,0.15); }
 
-        .form-control:focus { 
-            border-color: #ffffff; 
-            box-shadow: 0 0 12px rgba(255,255,255,0.15);
-        }
-
-        /* Get In Touch / Contact Form Section */
-        .contact-section {
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border-light);
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-        }
-
-        .contact-container-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 35px;
-            margin-top: 25px;
-        }
-
-        .contact-form-box {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
+        /* Contact Section */
+        .contact-section { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-light); padding: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        .contact-container-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; margin-top: 25px; }
+        .contact-form-box { display: flex; flex-direction: column; gap: 14px; }
         .btn-submit {
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 14px 26px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 6px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.25);
+            background: #ffffff; color: #000000; border: none; padding: 14px 26px; font-size: 0.9rem; font-weight: 700;
+            border-radius: 10px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; margin-top: 6px; box-shadow: 0 0 20px rgba(255,255,255,0.25);
         }
-
-        .btn-submit:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255,255,255,0.5);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-        }
-
+        .btn-submit:hover { background: #e2e8f0; transform: translateY(-2px); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         .contact-card {
-            border: 1px solid var(--border-light);
-            border-radius: 14px;
-            padding: 16px 18px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(8, 8, 10, 0.8);
-            transition: all 0.3s;
+            border: 1px solid var(--border-light); border-radius: 14px; padding: 16px 18px; display: flex; align-items: center;
+            gap: 16px; background: rgba(8, 8, 10, 0.8); transition: all 0.3s;
         }
-
-        .contact-card:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: #ffffff;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-        }
-
+        .contact-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.06); border-color: #ffffff; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         .contact-icon {
-            width: 42px; height: 42px;
-            border-radius: 10px;
-            border: 1px solid var(--border-light);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
+            width: 42px; height: 42px; border-radius: 10px; border: 1px solid var(--border-light); display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255, 255, 255, 0.03);
         }
-
-        .contact-icon svg {
-            width: 20px; height: 20px;
-            stroke: #ffffff;
-            stroke-width: 1.8;
-            fill: none;
-        }
-
+        .contact-icon svg { width: 20px; height: 20px; stroke: #ffffff; stroke-width: 1.8; fill: none; }
         .contact-info h4 { font-size: 0.9rem; color: #ffffff; font-weight: 600; margin-bottom: 2px; }
         .contact-info p { font-size: 0.8rem; color: var(--text-secondary); word-break: break-word; }
 
         /* Footer */
-        footer {
-            background: #000000;
-            border-top: 1px solid var(--border-light);
-            padding: 40px 0 25px;
-            color: var(--text-secondary);
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
+        footer { background: #000000; border-top: 1px solid var(--border-light); padding: 40px 0 25px; color: var(--text-secondary); text-align: center; font-size: 0.85rem; }
         .back-top-btn {
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: #fff;
-            padding: 7px 20px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            letter-spacing: 1.2px;
-            margin-bottom: 25px;
-            transition: all 0.3s;
+            background: transparent; border: 1px solid var(--border-light); color: #fff; padding: 7px 20px; border-radius: 30px;
+            font-size: 0.8rem; letter-spacing: 1.2px; margin-bottom: 25px; transition: all 0.3s;
         }
-
-        .back-top-btn:hover {
-            border-color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-
-        .giant-year {
-            font-size: clamp(3rem, 9vw, 7rem);
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.025);
-            line-height: 0.8;
-            letter-spacing: -2px;
-            user-select: none;
-            margin-top: 10px;
-        }
+        .back-top-btn:hover { border-color: #ffffff; background: rgba(255, 255, 255, 0.1); box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .giant-year { font-size: clamp(3rem, 9vw, 7rem); font-weight: 900; color: rgba(255, 255, 255, 0.025); line-height: 0.8; letter-spacing: -2px; margin-top: 10px; }
 
         @media (max-width: 992px) {
             .steps-container { grid-template-columns: 1fr; }
             .timeline-track, .rocket-runner, .step-card::before { display: none; }
             .timeline-wrapper { padding-top: 0; }
         }
-
         @media (max-width: 768px) {
-            .time-badge { display: none; }
-            .hero h1 { font-size: 2.2rem; }
-            .contact-section, .add-project-section, .service-box { padding: 22px; }
-            .cursor-dot, .cursor-outline { display: none; }
+            .time-badge, .cursor-dot, .cursor-outline { display: none; }
             * { cursor: auto; }
         }
     </style>
@@ -1001,8 +373,6 @@
 
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
-
-    <div class="grid-bg"></div>
 
     <header>
         <div class="container">
@@ -1044,42 +414,78 @@
         </div>
     </div>
 
-    <section class="container services-section reveal-element">
-        <h2 class="section-title">บริการของเรา (OUR SERVICES)</h2>
-        <div class="services-grid">
-            <div class="service-box">
-                <div class="service-num">01.</div>
-                <div class="service-title">Branding & Architecture</div>
-                <div class="service-desc">วางโครงสร้างระบบ ฐานข้อมูล และออกแบบสถาปัตยกรรมซอฟต์แวร์ให้รองรับการเติบโตอย่างมั่นคง</div>
+    <section class="container reveal-element" style="padding: 20px 0 60px;">
+        <h2 class="section-title">ความเชี่ยวชาญและโซลูชัน (CORE SOLUTIONS)</h2>
+        <p style="color: var(--text-secondary); max-width: 700px; margin-bottom: 10px;">เราไม่ได้แค่เขียนโค้ด แต่เราออกแบบสถาปัตยกรรมซอฟต์แวร์ที่ช่วยแก้ปัญหาและรองรับการเติบโตของธุรกิจคุณ</p>
+        
+        <div class="solutions-grid">
+            <div class="solution-card">
+                <div class="sol-icon-box"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><circle cx="12" cy="12" r="2"/><path d="M12 14v8"/><path d="M8 22h8"/></svg></div>
+                <h3 class="sol-title">Consulting & Architecture</h3>
+                <div class="sol-subtitle">ให้คำปรึกษาและออกแบบโครงสร้างระบบ</div>
+                <ul class="sol-list">
+                    <li>Product Discovery & Scoping วิเคราะห์ความต้องการ</li>
+                    <li>Business Logic & Workflow Mapping</li>
+                    <li>Database Architecture (MySQL / Scalability)</li>
+                    <li>System Design & Feasibility ประเมินความเป็นไปได้</li>
+                </ul>
             </div>
 
-            <div class="service-box featured" style="border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.03);">
-                <div class="service-num">02.</div>
-                <div class="service-title">Website & Web Development</div>
-                <div class="service-desc">รับทำเว็บไซต์, UI/UX Design, E-Commerce, ระบบ CMS และพัฒนาเว็บแอปพลิเคชันประสิทธิภาพสูง</div>
+            <div class="solution-card">
+                <div class="sol-icon-box"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+                <h3 class="sol-title">Digital Experience & UI/UX</h3>
+                <div class="sol-subtitle">ออกแบบประสบการณ์ผู้ใช้และเว็บไซต์</div>
+                <ul class="sol-list">
+                    <li>Custom Web Application Development</li>
+                    <li>E-Commerce Solutions ร้านค้าออนไลน์ครบวงจร</li>
+                    <li>Admin Dashboard & CMS ระบบจัดการหลังบ้าน</li>
+                    <li>Interactive Prototyping สร้างตัวต้นแบบเสมือนจริง</li>
+                </ul>
             </div>
 
-            <div class="service-box">
-                <div class="service-num">03.</div>
-                <div class="service-title">Network & System Solutions</div>
-                <div class="service-desc">วางระบบ Network Topology จัดการการเชื่อมต่อเครือข่ายคอมพิวเตอร์และระบบสื่อการเรียนรู้</div>
+            <div class="solution-card">
+                <div class="sol-icon-box"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+                <h3 class="sol-title">Full-Stack & Integration</h3>
+                <div class="sol-subtitle">พัฒนาซอฟต์แวร์และเชื่อมต่อระบบ</div>
+                <ul class="sol-list">
+                    <li>End-to-End Web Development (Front/Back)</li>
+                    <li>API Development & External Integration</li>
+                    <li>Cloud Database & Firebase Realtime Sync</li>
+                    <li>Code Refactoring & Scaling ปรับปรุงโครงสร้างโค้ด</li>
+                </ul>
+            </div>
+
+            <div class="solution-card">
+                <div class="sol-icon-box"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+                <h3 class="sol-title">Cloud & Infrastructure</h3>
+                <div class="sol-subtitle">วางระบบคลาวด์และเครือข่ายความปลอดภัย</div>
+                <ul class="sol-list">
+                    <li>Production Environment Setup & Deployment</li>
+                    <li>Staging & Testing Environment จำลองเซิร์ฟเวอร์</li>
+                    <li>Secure Network Topology วางผังเครือข่าย</li>
+                    <li>SSL / HTTPS & Domain Management</li>
+                </ul>
+            </div>
+
+            <div class="solution-card">
+                <div class="sol-icon-box"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+                <h3 class="sol-title">Optimization & Maintenance</h3>
+                <div class="sol-subtitle">ดูแลรักษาและเพิ่มประสิทธิภาพระบบ</div>
+                <ul class="sol-list">
+                    <li>Performance Tuning รีดประสิทธิภาพให้เว็บโหลดไว</li>
+                    <li>Root Cause Analysis วิเคราะห์และแก้ปัญหาที่ต้นตอ</li>
+                    <li>Long-term Maintenance & Technical Support</li>
+                    <li>Security Updates อัปเดตความปลอดภัยสม่ำเสมอ</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <section class="container reveal-element" id="creations-section" style="padding: 40px 0;">
-        <h2 class="section-title">สิ่งที่สตูดิโอสร้าง (FEATURED CREATIONS)</h2>
-        
-        <div class="card-grid" id="portfolio-grid-static">
-            </div>
-    </section>
-
-    <section class="container delivery-section reveal-element">
+    <section class="container reveal-element" style="padding: 40px 0;">
         <div class="delivery-header-tag">
             <svg style="width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 1.8;" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
             กระบวนการทำงานของเรา
         </div>
-
         <h2 class="delivery-title">เปลี่ยนแนวคิดให้กลายเป็นระบบจริงอย่างเป็นขั้นตอน</h2>
         <p class="delivery-subtitle">กระบวนการพัฒนาและส่งมอบซอฟต์แวร์มาตรฐานสเกลมืออาชีพ โปร่งใส ตรวจสอบความคืบหน้าได้ในทุกระยะ</p>
 
@@ -1095,211 +501,140 @@
 
             <div class="steps-container" id="steps-container">
                 <div class="step-card active-step">
-                    <div class="step-header">
-                        <span class="step-num">01</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 01</div>
-                    <div class="step-name">Scope & Discovery</div>
-                    <div class="step-desc">รับฟังโจทย์ วิเคราะห์ความต้องการ คัดกรองฟีเจอร์สำคัญ เพื่อควบคุมงบประมาณและเวลา</div>
+                    <div class="step-header"><span class="step-num">01</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                    <div class="step-tag">PHASE 01</div><div class="step-name">Scope & Discovery</div><div class="step-desc">รับฟังโจทย์ วิเคราะห์ความต้องการ คัดกรองฟีเจอร์สำคัญ</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">02</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 02</div>
-                    <div class="step-name">Architecture & UX</div>
-                    <div class="step-desc">วางโครงสร้างระบบ ถอดแบบ Flow การทำงาน และดีไซน์หน้าจอที่เน้นการใช้งานจริง</div>
+                    <div class="step-header"><span class="step-num">02</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></div>
+                    <div class="step-tag">PHASE 02</div><div class="step-name">Architecture & UX</div><div class="step-desc">วางโครงสร้างระบบ ถอดแบบ Flow และดีไซน์หน้าจอ</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">03</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 03</div>
-                    <div class="step-name">Clean Development</div>
-                    <div class="step-desc">เขียนโค้ดอย่างเป็นระเบียบ ทั้ง Frontend, Backend, Database พร้อมทดสอบอย่างรัดกุม</div>
+                    <div class="step-header"><span class="step-num">03</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+                    <div class="step-tag">PHASE 03</div><div class="step-name">Clean Development</div><div class="step-desc">เขียนโค้ดอย่างเป็นระเบียบ พร้อมทดสอบอย่างรัดกุม</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">04</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 04</div>
-                    <div class="step-name">Staging & Demo</div>
-                    <div class="step-desc">นำระบบขึ้นสภาพแวดล้อมทดสอบ (Staging) เพื่อให้คุณเข้าลองใช้งานจริงก่อนเปิดตัว</div>
+                    <div class="step-header"><span class="step-num">04</span><svg class="step-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                    <div class="step-tag">PHASE 04</div><div class="step-name">Staging & Demo</div><div class="step-desc">นำระบบขึ้นสภาพแวดล้อมทดสอบ เพื่อให้ลองใช้งานจริง</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">05</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 05</div>
-                    <div class="step-name">Feedback Refine</div>
-                    <div class="step-desc">รวบรวมข้อเสนอแนะ ปรับจูนการทำงาน และเก็บรายละเอียดจนสมบูรณ์ 100%</div>
+                    <div class="step-header"><span class="step-num">05</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                    <div class="step-tag">PHASE 05</div><div class="step-name">Feedback Refine</div><div class="step-desc">รวบรวมข้อเสนอแนะ ปรับจูนรายละเอียดจนสมบูรณ์</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">06</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 06</div>
-                    <div class="step-name">Official Launch</div>
-                    <div class="step-desc">Deploy ระบบขึ้น Server จริง ผูก Domain, ติดตั้ง SSL พร้อมเปิดใช้งานอย่างเป็นทางการ</div>
+                    <div class="step-header"><span class="step-num">06</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
+                    <div class="step-tag">PHASE 06</div><div class="step-name">Official Launch</div><div class="step-desc">Deploy ระบบขึ้น Server จริง ผูก Domain พร้อมใช้งาน</div>
                 </div>
-
                 <div class="step-card">
-                    <div class="step-header">
-                        <span class="step-num">07</span>
-                        <svg class="step-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <div class="step-tag">PHASE 07</div>
-                    <div class="step-name">Maintenance</div>
-                    <div class="step-desc">ดูแลความเสถียรของระบบ ตรวจสอบความปลอดภัย แก้ไขปัญหา และพร้อมซัพพอร์ตต่อเนื่อง</div>
+                    <div class="step-header"><span class="step-num">07</span><svg class="step-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                    <div class="step-tag">PHASE 07</div><div class="step-name">Maintenance</div><div class="step-desc">ดูแลความเสถียร ตรวจสอบความปลอดภัยหลังส่งมอบ</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="container deliverables-section reveal-element">
+    <section class="container reveal-element" style="padding: 40px 0;">
         <div class="delivery-header-tag">
             <svg style="width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 1.8;" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
             สิ่งที่จะส่งมอบให้ผู้จ้าง
         </div>
-
         <h2 class="delivery-title">ส่งมอบระบบที่ตรวจสอบได้ เปิดใช้งานจริง และพร้อมต่อยอด</h2>
-        <p class="delivery-subtitle">ทุกโปรเจกต์จะมีผลลัพธ์ที่จับต้องได้ตามขอบเขตที่ตกลง เพื่อให้ผู้จ้างนำไปใช้งานจริง ส่งต่อทีม หรือวางแผนดูแลต่อได้อย่างชัดเจน</p>
-
         <div class="deliverables-grid">
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                    <span class="deliverable-num">01</span>
-                </div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="deliverable-num">01</span></div>
                 <div class="deliverable-title">Source Code & Project Files</div>
-                <div class="deliverable-desc">ส่งมอบไฟล์โปรเจกต์ทั้งหมดหรือ Repository พร้อมโครงสร้างโค้ดที่จัดระเบียบ สะอาด และพร้อมต่อยอดได้ทันที</div>
+                <div class="deliverable-desc">ส่งมอบไฟล์โปรเจกต์ทั้งหมด โครงสร้างโค้ดสะอาดพร้อมต่อยอด</div>
             </div>
-
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                    <span class="deliverable-num">02</span>
-                </div>
-                <div class="deliverable-title">Production URL & Live System</div>
-                <div class="deliverable-desc">ระบบ/เว็บไซต์ที่ Deploy ขึ้น Server จริง ผูก Domain Name, ติดตั้ง SSL และผ่านการทดสอบพร้อมใช้งานจริง</div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span class="deliverable-num">02</span></div>
+                <div class="deliverable-title">Live System URL</div>
+                <div class="deliverable-desc">ระบบที่ Deploy ขึ้น Server จริง ผูก Domain Name ติดตั้ง SSL</div>
             </div>
-
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-                    <span class="deliverable-num">03</span>
-                </div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span class="deliverable-num">03</span></div>
                 <div class="deliverable-title">Database & Initial Data</div>
-                <div class="deliverable-desc">เตรียม Schema, ER-Diagram, ไฟล์ SQL Migration และข้อมูลตั้งต้นที่จำเป็นสำหรับการเริ่มต้นเปิดใช้ระบบ</div>
+                <div class="deliverable-desc">เตรียม Schema, ER-Diagram และข้อมูลตั้งต้นสำหรับการเปิดใช้</div>
             </div>
-
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    <span class="deliverable-num">04</span>
-                </div>
-                <div class="deliverable-title">Network & System Diagrams</div>
-                <div class="deliverable-desc">แผนผังระบบเครือข่าย (Network Topology) และผังโครงสร้างสถาปัตยกรรมระบบอย่างละเอียด</div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="deliverable-num">04</span></div>
+                <div class="deliverable-title">System Architecture</div>
+                <div class="deliverable-desc">แผนผังระบบเครือข่ายและโครงสร้างสถาปัตยกรรมอย่างละเอียด</div>
             </div>
-
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    <span class="deliverable-num">05</span>
-                </div>
-                <div class="deliverable-title">Deployment & Config Notes</div>
-                <div class="deliverable-desc">สรุปข้อมูล Environment, บริการที่ใช้, การตั้งค่า SSL/Domain และคู่มือแนะนำการดูแลรักษาระบบเบื้องต้น</div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span class="deliverable-num">05</span></div>
+                <div class="deliverable-title">Config Notes & Manual</div>
+                <div class="deliverable-desc">คู่มือแนะนำการตั้งค่า Environment, SSL และการดูแลรักษาระบบ</div>
             </div>
-
             <div class="deliverable-card">
-                <div class="deliverable-header">
-                    <svg class="deliverable-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span class="deliverable-num">06</span>
-                </div>
-                <div class="deliverable-title">Full Ownership & Credentials</div>
-                <div class="deliverable-desc">ส่งมอบสิทธิ์การเข้าถึงทั้งหมด 100% รวมถึงบัญชีผู้ดูแลระบบ (Admin Access) และรหัสผ่านที่เกี่ยวข้องอย่างปลอดภัย</div>
+                <div class="deliverable-header"><svg class="deliverable-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="deliverable-num">06</span></div>
+                <div class="deliverable-title">Full Ownership Access</div>
+                <div class="deliverable-desc">ส่งมอบสิทธิ์การเข้าถึง 100% บัญชี Admin และรหัสผ่านที่ปลอดภัย</div>
             </div>
         </div>
     </section>
 
-    <section class="container" id="showcase-section">
+    <section class="container" id="showcase-section" style="padding: 40px 0;">
         <h2 class="section-title reveal-element">ตัวอย่างผลงานและคำรีวิว (SHOWCASE & REVIEWS)</h2>
 
         <div class="reveal-element">
             <h3 class="section-subtitle">
-                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; vertical-align: middle; margin-right: 8px;">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                </svg>
+                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; margin-right: 8px;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                 ผลงานที่ผ่านมา (PAST WORKS & PORTFOLIO)
             </h3>
-            <div class="card-grid" id="portfolio-grid"></div>
+            <div class="card-grid" id="portfolio-grid">
+                <div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem; padding: 20px 0;">กำลังโหลดข้อมูล...</div>
+            </div>
         </div>
 
         <div class="reveal-element">
             <h3 class="section-subtitle">
-                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; vertical-align: middle; margin-right: 8px;">
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-                </svg>
+                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; margin-right: 8px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 ตัวอย่างระบบและซอฟต์แวร์ (SYSTEM SAMPLES)
             </h3>
-            <div class="card-grid" id="sample-grid"></div>
+            <div class="card-grid" id="sample-grid">
+                <div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem; padding: 20px 0;">กำลังโหลดข้อมูล...</div>
+            </div>
         </div>
 
         <div class="reveal-element">
             <h3 class="section-subtitle">
-                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; vertical-align: middle; margin-right: 8px;">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
+                <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: #ffffff; fill: none; stroke-width: 2; margin-right: 8px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 รีวิวและความประทับใจจากลูกค้า (CLIENT REVIEWS)
             </h3>
-            <div class="card-grid" id="review-grid"></div>
+            <div class="card-grid" id="review-grid">
+                <div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem; padding: 20px 0;">กำลังโหลดข้อมูล...</div>
+            </div>
         </div>
     </section>
 
     <section class="container" style="padding-bottom: 20px;">
         <div class="add-project-section" id="admin-panel">
-            <h2 class="section-title" style="margin-bottom: 8px;">👑 ส่วนของ Admin: เพิ่มผลงาน / รีวิว / ตัวอย่างระบบใหม่</h2>
-            <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลเพื่อเพิ่มรายการลงในฐานข้อมูล Cloud (Firebase Firestore)</p>
+            <h2 class="section-title" style="margin-bottom: 8px;">👑 ส่วนของ ADMIN: เพิ่มผลงาน / รีวิว / ตัวอย่างระบบใหม่</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลเพื่อเพิ่มรายการลงในหมวดหมู่ด้านล่าง (บันทึกใน Cloud Firebase)</p>
 
             <form id="project-form">
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="proj-category">เลือกหมวดหมู่ที่ต้องการเพิ่ม *</label>
                         <select id="proj-category" class="form-control" style="border-color: #ffffff; background: #111;">
-                            <option value="portfolio">💼 ผลงานที่ผ่านมา (PORTFOLIO / WORKS)</option>
-                            <option value="sample">💻 ตัวอย่างระบบ (SYSTEM SAMPLES)</option>
-                            <option value="review">⭐ รีวิวและความประทับใจ (REVIEWS)</option>
+                            <option value="portfolio">💼 ผลงานที่ผ่านมา (PORTFOLIO)</option>
+                            <option value="sample">💻 ตัวอย่างระบบ (SAMPLES)</option>
+                            <option value="review">⭐ รีวิวลูกค้า (REVIEWS)</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="proj-title">ชื่อระบบ / ข้อความรีวิว / ชื่อผลงาน *</label>
-                        <input type="text" id="proj-title" class="form-control" placeholder="เช่น ระบบ E-Commerce หรือ 'ประทับใจงานไวมาก'" required>
+                        <input type="text" id="proj-title" class="form-control" placeholder="เช่น ระบบ E-Commerce หรือ 'ประทับใจงาน'" required>
                     </div>
-
                     <div class="form-group">
                         <label for="proj-tech">เทคโนโลยี / ผู้ให้รีวิว / ประเภทงาน *</label>
-                        <input type="text" id="proj-tech" class="form-control" placeholder="เช่น PHP/MySQL หรือ คุณสมชาย (ลูกค้าจริง)" required>
+                        <input type="text" id="proj-tech" class="form-control" placeholder="เช่น PHP/MySQL หรือ คุณสมชาย" required>
                     </div>
-
                     <div class="form-group">
                         <label for="proj-badge">ป้ายกำกับ (Badge)</label>
-                        <input type="text" id="proj-badge" class="form-control" placeholder="เช่น WORK, 5-STARS, SAMPLE" value="FEATURED">
+                        <input type="text" id="proj-badge" class="form-control" placeholder="เช่น WORK, 5-STARS" value="FEATURED">
                     </div>
-
                     <div class="form-group">
-                        <label for="proj-type">ประเภทไอคอนเส้น (ถ้าไม่ใส่รูปลิงก์)</label>
+                        <label for="proj-type">ประเภทไอคอนเส้น (ถ้าไม่ใส่รูป)</label>
                         <select id="proj-type" class="form-control">
                             <option value="cart">Cart / E-Commerce</option>
                             <option value="laptop">Laptop / Web</option>
@@ -1309,90 +644,48 @@
                             <option value="review">Star / Review</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="proj-image">ลิงก์รูปภาพผลงาน (Image URL)</label>
                         <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
                     </div>
-
                     <div class="form-group" style="grid-column: 1 / -1;">
-                        <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project / Live URL)</label>
+                        <label for="proj-link">ลิงก์เว็บไซต์ผลงานจริง (Project URL)</label>
                         <input type="url" id="proj-link" class="form-control" placeholder="https://your-project-url.com">
                     </div>
                 </div>
-
                 <div style="margin-top: 25px; text-align: right;">
-                    <button type="submit" style="background: #ffffff; color: #000000; border: none; padding: 12px 28px; font-weight: 700; border-radius: 30px; cursor: pointer; box-shadow: 0 0 15px rgba(255,255,255,0.3);">+ เพิ่มข้อมูลลงใน Cloud</button>
+                    <button type="submit" style="background: #ffffff; color: #000000; border: none; padding: 12px 28px; font-weight: 700; border-radius: 30px; cursor: pointer; box-shadow: 0 0 15px rgba(255,255,255,0.3);">+ เพิ่มข้อมูลลงในหมวดหมู่</button>
                 </div>
             </form>
         </div>
     </section>
 
-    <section class="container" id="contact" style="padding-top: 20px;">
+    <section class="container" id="contact" style="padding: 20px 0 60px;">
         <div class="contact-section reveal-element">
-            <h2 class="section-title" style="margin-bottom: 8px;">GET IN TOUCH (ส่งข้อความสอบถาม / ขอใบเสนอราคา)</h2>
+            <h2 class="section-title" style="margin-bottom: 8px;">GET IN TOUCH (ส่งข้อความสอบถาม)</h2>
             <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลด้านล่างหรือทักทายทีมงานผ่านช่องทางโซเชียลมีเดียได้โดยตรง</p>
 
             <div class="contact-container-grid">
                 <form class="contact-form-box" onsubmit="event.preventDefault(); alert('✅ ส่งข้อความสำเร็จ! ทีมงานจะติดต่อกลับโดยเร็วที่สุด'); this.reset();">
-                    <div class="form-group">
-                        <label>ชื่อผู้ติดต่อ / ชื่อบริษัท *</label>
-                        <input type="text" class="form-control" placeholder="ระบุชื่อของคุณ" required>
-                    </div>
-                    <div class="form-group">
-                        <label>อีเมลติดต่อกลับ *</label>
-                        <input type="email" class="form-control" placeholder="example@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>หัวข้อที่ต้องการสอบถาม / บริการที่สนใจ *</label>
-                        <input type="text" class="form-control" placeholder="เช่น สอบถามราคาทำเว็บไซต์ E-Commerce" required>
-                    </div>
-                    <div class="form-group">
-                        <label>รายละเอียดเพิ่มเติม</label>
-                        <textarea class="form-control" rows="3" placeholder="ระบุรายละเอียดของโปรเจกต์ หรือความต้องการเพิ่มเติม..." style="resize: vertical;"></textarea>
-                    </div>
+                    <div class="form-group"><label>ชื่อผู้ติดต่อ / บริษัท *</label><input type="text" class="form-control" placeholder="ระบุชื่อของคุณ" required></div>
+                    <div class="form-group"><label>อีเมลติดต่อกลับ *</label><input type="email" class="form-control" placeholder="example@email.com" required></div>
+                    <div class="form-group"><label>บริการที่สนใจ *</label><input type="text" class="form-control" placeholder="เช่น สอบถามราคาทำเว็บไซต์" required></div>
+                    <div class="form-group"><label>รายละเอียดเพิ่มเติม</label><textarea class="form-control" rows="3" placeholder="ระบุรายละเอียดโปรเจกต์..."></textarea></div>
                     <button type="submit" class="btn-submit">ส่งข้อความขอเสนอราคา →</button>
                 </form>
 
                 <div class="contact-grid">
                     <a href="https://www.facebook.com/exodustt.ex" target="_blank" class="contact-card">
-                        <div class="contact-icon">
-                            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                        </div>
-                        <div class="contact-info">
-                            <h4>Facebook (Direct Chat)</h4>
-                            <p>Teerabhodin Phongsura</p>
-                        </div>
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
+                        <div class="contact-info"><h4>Facebook</h4><p>Teerabhodin Phongsura</p></div>
                     </a>
-
                     <a href="https://line.me/R/ti/p/~sosuck78" target="_blank" class="contact-card">
-                        <div class="contact-icon">
-                            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                        </div>
-                        <div class="contact-info">
-                            <h4>LINE (Direct Add)</h4>
-                            <p>ID: sosuck78</p>
-                        </div>
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                        <div class="contact-info"><h4>LINE</h4><p>ID: sosuck78</p></div>
                     </a>
-
                     <a href="tel:0952189775" class="contact-card">
-                        <div class="contact-icon">
-                            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        </div>
-                        <div class="contact-info">
-                            <h4>โทรศัพท์ (กดโทรออก)</h4>
-                            <p>095-218-9775</p>
-                        </div>
-                    </a>
-
-                    <a href="mailto:teerabhodin@gmail.com" class="contact-card">
-                        <div class="contact-icon">
-                            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        </div>
-                        <div class="contact-info">
-                            <h4>อีเมล (ส่งข้อความ)</h4>
-                            <p>teerabhodin@gmail.com</p>
-                        </div>
+                        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                        <div class="contact-info"><h4>โทรศัพท์</h4><p>095-218-9775</p></div>
                     </a>
                 </div>
             </div>
@@ -1412,6 +705,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // ==========================================
+        // 1. FIREBASE CONFIGURATION (ข้อมูลของคุณ)
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyBATBodHOZjaANjP82xPu6yMJqEOpdU88I",
             authDomain: "protfolio-1bef5.firebaseapp.com",
@@ -1435,12 +731,11 @@
             review: `<svg class="line-icon-large" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
         };
 
+        // ข้อมูลตัวอย่าง (ถ้าฐานข้อมูลว่าง จะเพิ่มอันนี้ให้ก่อน)
         const initialShowcaseItems = [
             { category: "portfolio", title: "เว็บไซต์พาณิชย์อิเล็กทรอนิกส์สำหรับวัสดุและอุปกรณ์ก่อสร้าง ครบวงจร", tech: "PHP / MySQL / E-Commerce", badge: "WORK", type: "cart", imageUrl: "", projectUrl: "" },
-            { category: "portfolio", title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว รองรับทุกอุปกรณ์", tech: "HTML / CSS / JS", badge: "WORK", type: "laptop", imageUrl: "", projectUrl: "" },
-            { category: "review", title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", tech: "คุณธีรภัทร (ผู้จ้างงานจริง)", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
-            { category: "review", title: "'งานออกแบบดูเป็นมืออาชีพ ใช้งานง่าย และทีมงานตอบกลับไวมากครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
-            { category: "review", title: "'ระบบทำงานได้ตรงตามที่คุยไว้ และมีการปรับแก้รายละเอียดให้จนเรียบร้อยครับ'", tech: "ตัวอย่างรีวิว — รอแทนที่ด้วยรีวิวจริง", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
+            { category: "portfolio", title: "รับจัดทำ Web Portfolio สไตล์ Luxury Fastwork โหลดเร็ว", tech: "HTML / CSS / JS", badge: "WORK", type: "laptop", imageUrl: "", projectUrl: "" },
+            { category: "review", title: "'ทีมงานส่งมอบโค้ดสะอาด เป็นระเบียบและให้คำแนะนำในการนำไปใช้ดีมากๆ ครับ'", tech: "Client Review", badge: "5-STARS", type: "review", imageUrl: "", projectUrl: "" },
             { category: "sample", title: "ระบบจำลองคลังสินค้าและโครงสร้างฐานข้อมูล MySQL ประสิทธิภาพสูง", tech: "MySQL Schema Query", badge: "SYSTEM SAMPLE", type: "db", imageUrl: "", projectUrl: "" }
         ];
 
@@ -1451,10 +746,11 @@
             try {
                 const querySnapshot = await getDocs(colRef);
                 if (querySnapshot.empty) {
+                    console.log("Database is empty, generating initial data...");
                     for (let item of initialShowcaseItems) {
                         await addDoc(colRef, item);
                     }
-                    return fetchShowcaseData();
+                    return fetchShowcaseData(); // โหลดซ้ำหลังเพิ่มเสร็จ
                 }
                 
                 showcaseList = [];
@@ -1464,6 +760,7 @@
                 renderShowcase();
             } catch (error) {
                 console.error("Error fetching data: ", error);
+                document.querySelectorAll('.card-grid').forEach(g => g.innerHTML = '<div style="color:red; font-size: 0.85rem;">ไม่สามารถเชื่อมต่อฐานข้อมูลได้ (โปรดตรวจสอบ Firestore Rules)</div>');
             }
         }
 
@@ -1474,18 +771,12 @@
 
             if (!portfolioGrid || !reviewGrid || !sampleGrid) return;
 
-            portfolioGrid.innerHTML = '';
-            reviewGrid.innerHTML = '';
-            sampleGrid.innerHTML = '';
-
             const createCardHTML = (p) => {
                 const iconSvg = lineSvgIcons[p.type] || lineSvgIcons['laptop'];
                 const categoryLabel = p.category === 'review' ? 'รีวิวลูกค้า' : (p.category === 'sample' ? 'ตัวอย่างระบบ' : 'ผลงานที่ผ่านมา');
-
                 const bannerContent = p.imageUrl 
                     ? `<img src="${p.imageUrl}" alt="${p.title}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">`
                     : iconSvg;
-
                 const liveLinkBtn = p.projectUrl 
                     ? `<a href="${p.projectUrl}" target="_blank" class="project-link-btn">🔗 ดูระบบจริง</a>` 
                     : '';
@@ -1517,26 +808,21 @@
             const reviewItems = showcaseList.filter(item => item.category === 'review');
             const sampleItems = showcaseList.filter(item => item.category === 'sample');
 
-            portfolioGrid.innerHTML = portfolioItems.length ? portfolioItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ผลงานที่ผ่านมา</div>`;
-            sampleGrid.innerHTML = sampleItems.length ? sampleItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่ตัวอย่างระบบ</div>`;
-            reviewGrid.innerHTML = reviewItems.length ? reviewItems.map(createCardHTML).join('') : `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem;">ℹ️ ยังไม่มีรายการในหมวดหมู่รีวิวลูกค้า</div>`;
+            const emptyMsg = `<div style="grid-column: 1/-1; color: var(--text-secondary); font-size: 0.85rem; padding: 20px 0;">ℹ️ ยังไม่มีรายการในหมวดหมู่นี้ (เพิ่มข้อมูลผ่านหน้า Admin)</div>`;
+            
+            portfolioGrid.innerHTML = portfolioItems.length ? portfolioItems.map(createCardHTML).join('') : emptyMsg;
+            sampleGrid.innerHTML = sampleItems.length ? sampleItems.map(createCardHTML).join('') : emptyMsg;
+            reviewGrid.innerHTML = reviewItems.length ? reviewItems.map(createCardHTML).join('') : emptyMsg;
 
-            if (isAdmin) {
-                document.querySelectorAll('.card-grid').forEach(grid => grid.classList.add('admin-mode'));
-            }
-
+            if (isAdmin) document.querySelectorAll('.card-grid').forEach(grid => grid.classList.add('admin-mode'));
             initCursorEvents();
-            initScrollReveal();
         }
 
-        // Admin Login
+        // Admin Auth & Delete
         const ADMIN_PASSWORD = "1234";
         window.adminLogin = function() {
-            if (isAdmin) {
-                alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
-                return;
-            }
-            const password = prompt("🔑 กรุณาใส่รหัสผ่าน Admin เพื่อเข้าสู่ระบบ:");
+            if (isAdmin) return alert("ℹ️ คุณอยู่ในระบบ Admin อยู่แล้ว");
+            const password = prompt("🔑 กรุณาใส่รหัสผ่าน Admin เพื่อเข้าสู่ระบบ (1234):");
             if (password === ADMIN_PASSWORD) {
                 isAdmin = true;
                 alert("✅ เข้าสู่ระบบ Admin สำเร็จ!");
@@ -1551,9 +837,8 @@
             }
         };
 
-        // Delete Item from Firebase
         window.deleteItem = async function(firestoreId) {
-            if (confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้จาก Cloud?")) {
+            if (confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้จากฐานข้อมูล Cloud?")) {
                 try {
                     await deleteDoc(doc(db, "devsphere_showcase", firestoreId));
                     fetchShowcaseData();
@@ -1563,12 +848,15 @@
             }
         };
 
-        // Add New Item to Firebase
+        // Add New Form
         const projectForm = document.getElementById('project-form');
         if (projectForm) {
             projectForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
+                const btn = this.querySelector('button[type="submit"]');
+                const orgText = btn.innerText;
+                btn.innerText = 'กำลังบันทึก...';
+                
                 const newProj = {
                     category: document.getElementById('proj-category').value,
                     title: document.getElementById('proj-title').value,
@@ -1581,32 +869,33 @@
 
                 try {
                     await addDoc(colRef, newProj);
-                    fetchShowcaseData();
+                    await fetchShowcaseData();
                     projectForm.reset();
+                    alert("✅ เพิ่มข้อมูลลงใน Cloud สำเร็จ!");
                     document.getElementById('showcase-section').scrollIntoView({ behavior: 'smooth' });
                 } catch (error) {
                     console.error("Error adding document: ", error);
+                    alert("❌ เกิดข้อผิดพลาดในการบันทึก");
+                } finally {
+                    btn.innerText = orgText;
                 }
             });
         }
 
-        // Other UI Engines
-        function updateClock() {
-            const now = new Date();
+        // ==========================================
+        // 2. UI INTERACTIONS (Cursor, Time, Animation)
+        // ==========================================
+        setInterval(() => {
             const clockEl = document.getElementById('clock');
-            if (clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', { hour12: true });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+            if (clockEl) clockEl.innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
+        }, 1000);
 
         let currentStepIndex = 0;
-        const totalSteps = 7;
-        function updateRocketTimeline() {
+        setInterval(() => {
             const stepCards = document.querySelectorAll('.step-card');
             const rocket = document.getElementById('rocket-runner');
             const progress = document.getElementById('timeline-progress');
             const wrapper = document.getElementById('timeline-wrapper');
-
             if (!stepCards.length || !rocket || !progress || !wrapper) return;
 
             stepCards.forEach(card => card.classList.remove('active-step'));
@@ -1620,140 +909,98 @@
             rocket.style.left = `${cardCenterX}px`;
             progress.style.width = `${cardCenterX}px`;
 
-            currentStepIndex = (currentStepIndex + 1) % totalSteps;
-        }
-        setInterval(updateRocketTimeline, 2500);
+            currentStepIndex = (currentStepIndex + 1) % 7;
+        }, 2500);
 
         function initScrollReveal() {
-            const revealElements = document.querySelectorAll('.reveal-element');
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
+                entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('active'); });
             }, { threshold: 0.15 });
-            revealElements.forEach(el => observer.observe(el));
+            document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
         }
 
+        // Cursor & Typing Effect
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
-        let mouseX = -100, mouseY = -100;
-        let outlineX = -100, outlineY = -100;
+        let mouseX = -100, mouseY = -100, outlineX = -100, outlineY = -100;
 
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
-            if (cursorDot) {
-                cursorDot.style.left = `${mouseX}px`;
-                cursorDot.style.top = `${mouseY}px`;
-            }
-
-            // Mouse coordinate tracking for service cards ambient highlight
-            document.querySelectorAll('.service-box').forEach(box => {
-                const rect = box.getBoundingClientRect();
-                box.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                box.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-            });
+            if (cursorDot) { cursorDot.style.left = `${mouseX}px`; cursorDot.style.top = `${mouseY}px`; }
         });
 
         function animateCursor() {
-            outlineX += (mouseX - outlineX) * 0.15;
-            outlineY += (mouseY - outlineY) * 0.15;
-            if (cursorOutline) {
-                cursorOutline.style.left = `${outlineX}px`;
-                cursorOutline.style.top = `${outlineY}px`;
-            }
+            outlineX += (mouseX - outlineX) * 0.15; outlineY += (mouseY - outlineY) * 0.15;
+            if (cursorOutline) { cursorOutline.style.left = `${outlineX}px`; cursorOutline.style.top = `${outlineY}px`; }
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
 
         function initCursorEvents() {
-            const interactiveElements = document.querySelectorAll('a, button, input, select, textarea, .service-box, .step-card, .deliverable-card, .creation-card');
-            interactiveElements.forEach(el => {
+            document.querySelectorAll('a, button, input, select, textarea, .solution-card, .step-card, .deliverable-card, .creation-card').forEach(el => {
                 el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
                 el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
             });
         }
 
-        const words = ["Web Development", "Database Systems", "Network Solutions", "UI/UX Design"];
+        const words = ["Web Development", "System Architecture", "Network Solutions", "Cloud Deployment"];
         let i = 0;
         function typingEffect() {
             let word = words[i].split("");
-            var loopTyping = function() {
+            const loopTyping = () => {
                 if (word.length > 0) {
-                    const typingTarget = document.querySelector('.typing-text');
-                    if(typingTarget) typingTarget.innerHTML += word.shift();
-                } else {
-                    setTimeout(deletingEffect, 2000);
-                    return false;
-                }
-                setTimeout(loopTyping, 100);
+                    const el = document.querySelector('.typing-text');
+                    if(el) el.innerHTML += word.shift();
+                    setTimeout(loopTyping, 100);
+                } else setTimeout(deletingEffect, 2000);
             };
             loopTyping();
         }
-
         function deletingEffect() {
             let word = words[i].split("");
-            var loopDeleting = function() {
+            const loopDeleting = () => {
                 if (word.length > 0) {
                     word.pop();
-                    const typingTarget = document.querySelector('.typing-text');
-                    if(typingTarget) typingTarget.innerHTML = word.join("");
+                    const el = document.querySelector('.typing-text');
+                    if(el) el.innerHTML = word.join("");
+                    setTimeout(loopDeleting, 50);
                 } else {
                     i = (words.length > (i + 1)) ? i + 1 : 0;
                     setTimeout(typingEffect, 500);
-                    return false;
                 }
-                setTimeout(loopDeleting, 50);
             };
             loopDeleting();
         }
-        typingEffect();
-
-        fetchShowcaseData();
-        initScrollReveal();
-        setTimeout(updateRocketTimeline, 200);
 
         // ==========================================
-        // ANIMATED BACKGROUND MOTION (PARTICLE NETWORK)
+        // 3. BACKGROUND MOTION (PARTICLE NETWORK)
         // ==========================================
         const bgCanvas = document.getElementById("network-canvas");
         const bgCtx = bgCanvas.getContext("2d");
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
-
+        bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
         let particlesArray = [];
-        // คำนวณจำนวนจุดให้เหมาะสมกับขนาดหน้าจอ (เลขยิ่งน้อย จุดยิ่งเยอะ)
-        const numberOfParticles = (bgCanvas.width * bgCanvas.height) / 18000; 
-
+        
         class Particle {
             constructor() {
-                this.x = Math.random() * bgCanvas.width;
-                this.y = Math.random() * bgCanvas.height;
-                this.directionX = (Math.random() * 1.5) - 0.75; // ความเร็วแกน X
-                this.directionY = (Math.random() * 1.5) - 0.75; // ความเร็วแกน Y
-                this.size = Math.random() * 2 + 0.5; // ขนาดจุด
+                this.x = Math.random() * bgCanvas.width; this.y = Math.random() * bgCanvas.height;
+                this.dx = (Math.random() * 1.5) - 0.75; this.dy = (Math.random() * 1.5) - 0.75;
+                this.size = Math.random() * 2 + 0.5;
             }
             update() {
-                // เด้งกลับเมื่อชนขอบจอ
-                if (this.x > bgCanvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > bgCanvas.height || this.y < 0) this.directionY = -this.directionY;
-                this.x += this.directionX * 0.5;
-                this.y += this.directionY * 0.5;
+                if (this.x > bgCanvas.width || this.x < 0) this.dx = -this.dx;
+                if (this.y > bgCanvas.height || this.y < 0) this.dy = -this.dy;
+                this.x += this.dx * 0.5; this.y += this.dy * 0.5;
             }
             draw() {
-                bgCtx.beginPath();
-                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                bgCtx.fill();
+                bgCtx.beginPath(); bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)'; bgCtx.fill();
             }
         }
 
         function initParticles() {
             particlesArray = [];
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
+            const num = (bgCanvas.width * bgCanvas.height) / 18000;
+            for (let i = 0; i < num; i++) particlesArray.push(new Particle());
         }
 
         function animateParticles() {
@@ -1761,35 +1008,24 @@
             bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
             
             for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                
-                // เช็คระยะห่างเพื่อลากเส้นเชื่อมกัน
+                particlesArray[i].update(); particlesArray[i].draw();
                 for (let j = i; j < particlesArray.length; j++) {
-                    const dx = particlesArray[i].x - particlesArray[j].x;
-                    const dy = particlesArray[i].y - particlesArray[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    // ถ้าระยะห่างน้อยกว่า 120px ให้ลากเส้น
-                    if (distance < 120) {
-                        bgCtx.beginPath();
-                        // เส้นยิ่งสั้น ยิ่งสว่าง
-                        bgCtx.strokeStyle = `rgba(255, 255, 255, ${0.4 - distance/300})`;
-                        bgCtx.lineWidth = 0.8;
-                        bgCtx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                        bgCtx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                        bgCtx.stroke();
+                    const dist = Math.sqrt(Math.pow(particlesArray[i].x - particlesArray[j].x, 2) + Math.pow(particlesArray[i].y - particlesArray[j].y, 2));
+                    if (dist < 120) {
+                        bgCtx.beginPath(); bgCtx.strokeStyle = `rgba(255, 255, 255, ${0.4 - dist/300})`;
+                        bgCtx.lineWidth = 0.8; bgCtx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        bgCtx.lineTo(particlesArray[j].x, particlesArray[j].y); bgCtx.stroke();
                     }
                 }
             }
         }
+        window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; initParticles(); });
 
-        window.addEventListener('resize', () => {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-            initParticles();
-        });
-
+        // Initialize All
+        fetchShowcaseData();
+        initScrollReveal();
+        initCursorEvents();
+        typingEffect();
         initParticles();
         animateParticles();
     </script>
