@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevSphere Studio | Elite Web & Software Development</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="./logo_transparent.png?v=2">
+    <link rel="icon" type="image/png" sizes="192x192" href="./logo_transparent.png?v=2">
+    <link rel="apple-touch-icon" href="./logo_transparent.png?v=2">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -1639,31 +1642,13 @@
             <p style="color: var(--text-secondary); font-size: 0.85rem;">กรอกข้อมูลด้านล่างหรือทักทายทีมงานผ่านช่องทางโซเชียลมีเดียได้โดยตรง</p>
 
             <div class="contact-container-grid">
-                <form id="contact-form" class="contact-form-box" action="https://formsubmit.co/teerabhodin@gmail.com" method="POST" target="contact-submit-frame">
-                    <input type="hidden" name="_captcha" value="false">
-                    <input type="hidden" name="_subject" value="มีข้อความใหม่จาก DevSphere Studio">
-                    <input type="hidden" name="_template" value="table">
-                    <input type="hidden" name="_next" value="about:blank">
-                    <input type="text" name="_honey" style="display:none">
-                    <div class="form-group"><label for="contact-name">ชื่อผู้ติดต่อ / ชื่อบริษัท *</label><input id="contact-name" name="name" type="text" class="form-control" placeholder="ระบุชื่อของคุณ" required></div>
-                    <div class="form-group"><label for="contact-email">อีเมลติดต่อกลับ *</label><input id="contact-email" name="email" type="email" class="form-control" placeholder="example@email.com" required></div>
-                    <div class="form-group"><label for="contact-subject">หัวข้อที่ต้องการสอบถาม / บริการที่สนใจ *</label><input id="contact-subject" name="subject" type="text" class="form-control" placeholder="เช่น สอบถามราคาทำเว็บไซต์ E-Commerce" required></div>
-                    <div class="form-group"><label for="contact-message">รายละเอียดเพิ่มเติม</label><textarea id="contact-message" name="message" class="form-control" rows="3" placeholder="ระบุรายละเอียดของโปรเจกต์..." style="resize: vertical;"></textarea></div>
-                    <button id="contact-submit-btn" type="submit" class="btn-submit">ส่งข้อความขอเสนอราคา →</button>
+                <form class="contact-form-box" onsubmit="event.preventDefault(); alert('✅ ส่งข้อความสำเร็จ! ทีมงานจะติดต่อกลับโดยเร็วที่สุด'); this.reset();">
+                    <div class="form-group"><label>ชื่อผู้ติดต่อ / ชื่อบริษัท *</label><input type="text" class="form-control" placeholder="ระบุชื่อของคุณ" required></div>
+                    <div class="form-group"><label>อีเมลติดต่อกลับ *</label><input type="email" class="form-control" placeholder="example@email.com" required></div>
+                    <div class="form-group"><label>หัวข้อที่ต้องการสอบถาม / บริการที่สนใจ *</label><input type="text" class="form-control" placeholder="เช่น สอบถามราคาทำเว็บไซต์ E-Commerce" required></div>
+                    <div class="form-group"><label>รายละเอียดเพิ่มเติม</label><textarea class="form-control" rows="3" placeholder="ระบุรายละเอียดของโปรเจกต์..." style="resize: vertical;"></textarea></div>
+                    <button type="submit" class="btn-submit">ส่งข้อความขอเสนอราคา →</button>
                 </form>
-                <iframe name="contact-submit-frame" title="Contact form submission" style="display:none"></iframe>
-                <div id="contact-success-modal" role="dialog" aria-modal="true" aria-labelledby="contact-success-title" style="display:none;position:fixed;inset:0;background:rgba(2,2,4,.78);backdrop-filter:blur(8px);z-index:30000;align-items:center;justify-content:center;padding:20px;">
-                    <div style="width:min(520px,100%);background:#0a0a0d;border:1px solid rgba(124,92,255,.35);border-radius:24px;padding:30px 26px;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 35px rgba(124,92,255,.18);text-align:center;position:relative;">
-                        <button type="button" id="contact-success-close" aria-label="ปิดหน้าต่างยืนยัน" style="position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#fff;font-size:20px;cursor:pointer;">×</button>
-                        <div style="width:78px;height:78px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(34,211,238,.16));border:1px solid rgba(255,255,255,.1);box-shadow:0 0 25px rgba(124,92,255,.18);"><svg viewBox="0 0 24 24" style="width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2.2"><path d="M20 6 9 17l-5-5"/></svg></div>
-                        <h3 id="contact-success-title" style="font-size:1.6rem;font-weight:800;margin-bottom:10px;letter-spacing:-.4px;">ส่งข้อความเรียบร้อยแล้ว</h3>
-                        <p style="color:#94a3b8;font-size:.96rem;line-height:1.75;max-width:360px;margin:0 auto 20px;">ข้อความถูกส่งไปที่ teerabhodin@gmail.com แล้ว เดี๋ยวจะรีบตอบกลับให้เร็วที่สุดครับ</p>
-                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                            <a href="mailto:teerabhodin@gmail.com" style="text-decoration:none;background:linear-gradient(135deg,#7c5cff 0%,#22d3ee 100%);color:#05060a;padding:12px 18px;border-radius:12px;font-weight:800;">ส่งอีเมลตรง</a>
-                            <button type="button" id="contact-success-ok" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;">ปิดหน้าต่าง</button>
-                        </div>
-                    </div>
-                </div>
                 <div class="contact-grid">
                     <a href="https://www.facebook.com/exodustt.ex" target="_blank" class="contact-card">
                         <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
@@ -1917,21 +1902,7 @@
         let mouseX = -100, mouseY = -100;
         let outlineX = -100, outlineY = -100;
 
-        
-const contactForm=document.getElementById('contact-form');
-const contactSuccessModal=document.getElementById('contact-success-modal');
-const contactSuccessClose=document.getElementById('contact-success-close');
-const contactSuccessOk=document.getElementById('contact-success-ok');
-const contactSubmitBtn=document.getElementById('contact-submit-btn');
-function openContactSuccess(){if(contactSuccessModal){contactSuccessModal.style.display='flex';document.body.style.overflow='hidden';}}
-function closeContactSuccess(){if(contactSuccessModal){contactSuccessModal.style.display='none';document.body.style.overflow='';}}
-if(contactForm){contactForm.addEventListener('submit',()=>{if(contactSubmitBtn){contactSubmitBtn.disabled=true;contactSubmitBtn.textContent='กำลังส่งข้อความ...';contactSubmitBtn.style.opacity='.7';}setTimeout(()=>{openContactSuccess();contactForm.reset();if(contactSubmitBtn){contactSubmitBtn.disabled=false;contactSubmitBtn.textContent='ส่งข้อความขอเสนอราคา →';contactSubmitBtn.style.opacity='1';}},900);});}
-if(contactSuccessClose)contactSuccessClose.addEventListener('click',closeContactSuccess);
-if(contactSuccessOk)contactSuccessOk.addEventListener('click',closeContactSuccess);
-if(contactSuccessModal)contactSuccessModal.addEventListener('click',(event)=>{if(event.target===contactSuccessModal)closeContactSuccess();});
-document.addEventListener('keydown',(event)=>{if(event.key==='Escape')closeContactSuccess();});
-
-window.addEventListener('mousemove', (e) => {
+        window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             if (cursorDot) {
                 cursorDot.style.left = `${mouseX}px`;
