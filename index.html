@@ -36,6 +36,18 @@
             position: relative;
         }
 
+        /* Particle Network Background */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3; /* ให้อยู่ด้านหลังสุด */
+            pointer-events: none; /* ป้องกันไม่ให้ขวางการคลิก */
+            opacity: 0.35; /* ปรับความสว่างของเส้น */
+        }
+
         /* Cinematic Background Ambient Glow */
         body::before {
             content: '';
@@ -985,6 +997,8 @@
 </head>
 <body>
 
+    <canvas id="network-canvas"></canvas>
+
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
@@ -1699,6 +1713,85 @@
         fetchShowcaseData();
         initScrollReveal();
         setTimeout(updateRocketTimeline, 200);
+
+        // ==========================================
+        // ANIMATED BACKGROUND MOTION (PARTICLE NETWORK)
+        // ==========================================
+        const bgCanvas = document.getElementById("network-canvas");
+        const bgCtx = bgCanvas.getContext("2d");
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        // คำนวณจำนวนจุดให้เหมาะสมกับขนาดหน้าจอ (เลขยิ่งน้อย จุดยิ่งเยอะ)
+        const numberOfParticles = (bgCanvas.width * bgCanvas.height) / 18000; 
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = Math.random() * bgCanvas.height;
+                this.directionX = (Math.random() * 1.5) - 0.75; // ความเร็วแกน X
+                this.directionY = (Math.random() * 1.5) - 0.75; // ความเร็วแกน Y
+                this.size = Math.random() * 2 + 0.5; // ขนาดจุด
+            }
+            update() {
+                // เด้งกลับเมื่อชนขอบจอ
+                if (this.x > bgCanvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > bgCanvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX * 0.5;
+                this.y += this.directionY * 0.5;
+            }
+            draw() {
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                bgCtx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                // เช็คระยะห่างเพื่อลากเส้นเชื่อมกัน
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // ถ้าระยะห่างน้อยกว่า 120px ให้ลากเส้น
+                    if (distance < 120) {
+                        bgCtx.beginPath();
+                        // เส้นยิ่งสั้น ยิ่งสว่าง
+                        bgCtx.strokeStyle = `rgba(255, 255, 255, ${0.4 - distance/300})`;
+                        bgCtx.lineWidth = 0.8;
+                        bgCtx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        bgCtx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        bgCtx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        initParticles();
+        animateParticles();
     </script>
 </body>
 </html>
