@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TenantHub — Premium Multi-tenant Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050506; --bg-elev:#0a0a0c; --panel: rgba(255,255,255,0.028);
+  --panel-hover: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.14);
+  --text:#f7f7f8; --muted:#8a8b92; --muted2:#5c5d64;
+  --gold:#e8c874; --gold-dim: rgba(232,200,116,0.1);
+  --emerald:#4ade80; --rose:#fb7185;
+  --font-head:'Inter', sans-serif; --font-body:'Sarabun', sans-serif; --font-mono:'JetBrains Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+.container{max-width:1320px;margin:0 auto;padding:0 32px;}
+body::before{content:"";position:fixed;top:-30%;left:-10%;width:70%;height:70%;background:radial-gradient(circle, rgba(232,200,116,0.06) 0%, transparent 65%);z-index:-1;pointer-events:none;}
+body::after{content:"";position:fixed;bottom:-20%;right:-10%;width:60%;height:60%;background:radial-gradient(circle, rgba(139,124,255,0.05) 0%, transparent 65%);z-index:-1;pointer-events:none;}
+
+header{position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);background:rgba(5,5,6,0.75);backdrop-filter:blur(24px) saturate(150%);}
+nav{height:76px;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-family:var(--font-head);font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:10px;letter-spacing:-0.3px;}
+.brand .mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg, var(--gold) 0%, #b8935a 100%);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#0a0a0c;}
+.tenant-switcher{display:flex;align-items:center;gap:12px;}
+.tenant-select{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:10px;font-size:0.82rem;font-family:var(--font-mono);transition:all .25s;}
+.tenant-select:hover{border-color:var(--border-strong);}
+.btn-add-tenant{background:var(--gold);color:#0a0a0c;font-weight:700;font-size:0.8rem;padding:10px 18px;border-radius:10px;transition:all .25s;letter-spacing:0.2px;}
+.btn-add-tenant:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,200,116,0.25);}
+
+.banner{border-bottom:1px solid var(--border);padding:11px 0;text-align:center;font-family:var(--font-mono);font-size:0.74rem;color:var(--muted);background:var(--bg-elev);}
+.banner b{color:var(--gold);font-weight:500;}
+
+.layout{display:grid;grid-template-columns:272px 1fr;min-height:calc(100vh - 116px);}
+.sidebar{border-right:1px solid var(--border);padding:32px 22px;}
+.current-tenant-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:28px;position:relative;overflow:hidden;}
+.current-tenant-box::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, rgba(232,200,116,0.5), transparent);}
+.ct-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--muted2);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.ct-name{font-family:var(--font-head);font-weight:600;font-size:0.98rem;margin-bottom:5px;letter-spacing:-0.2px;}
+.ct-domain{font-family:var(--font-mono);font-size:0.72rem;color:var(--gold);}
+.nav-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:10px;font-size:0.85rem;color:var(--muted);margin-bottom:3px;transition:all .2s;font-weight:500;width:100%;text-align:left;}
+.nav-item.active{background:var(--gold-dim);color:var(--gold);}
+.nav-item:hover{background:var(--panel-hover);color:var(--text);}
+
+.main{padding:40px;}
+.page{display:none;}
+.page.active{display:block;}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;gap:14px;}
+.page-head h1{font-family:var(--font-head);font-size:1.75rem;font-weight:700;letter-spacing:-0.8px;}
+.page-head p{color:var(--muted);font-size:0.87rem;margin-top:6px;}
+.btn-primary{background:var(--gold);color:#0a0a0c;font-weight:700;font-size:0.82rem;padding:12px 22px;border-radius:10px;transition:all .25s;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(232,200,116,0.25);}
+
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px;}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;transition:all .3s;position:relative;overflow:hidden;}
+.stat-card:hover{border-color:var(--border-strong);transform:translateY(-2px);}
+.stat-val{font-family:var(--font-head);font-size:1.9rem;font-weight:700;letter-spacing:-1px;}
+.stat-lbl{font-size:0.76rem;color:var(--muted);margin-top:6px;font-weight:500;}
+.stat-card.gold .stat-val{color:var(--gold);}
+.stat-card.emerald .stat-val{color:var(--emerald);}
+
+.rls-alert{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:28px;font-size:0.83rem;display:flex;gap:14px;align-items:flex-start;color:var(--muted);}
+.rls-alert .ico{width:32px;height:32px;border-radius:9px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.9rem;}
+.rls-alert code{font-family:var(--font-mono);background:rgba(0,0,0,0.35);padding:3px 8px;border-radius:6px;color:var(--gold);font-size:0.78rem;}
+
+.table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.project-table{width:100%;border-collapse:collapse;}
+.project-table th{text-align:left;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted2);text-transform:uppercase;letter-spacing:1.2px;padding:16px 20px;border-bottom:1px solid var(--border);font-weight:500;}
+.project-table td{padding:17px 20px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.87rem;}
+.project-table tr:last-child td{border-bottom:none;}
+.project-table tr:hover td{background:var(--panel-hover);}
+.status-pill{font-size:0.7rem;padding:4px 12px;border-radius:20px;font-weight:600;background:rgba(74,222,128,0.1);color:var(--emerald);letter-spacing:0.3px;}
+.status-pill.paused{background:rgba(251,113,133,0.1);color:var(--rose);}
+.del-btn{color:var(--muted2);font-size:0.78rem;transition:color .2s;}
+.del-btn:hover{color:var(--rose);}
+
+.empty-state{text-align:center;padding:70px 20px;color:var(--muted);font-size:0.88rem;border:1px dashed var(--border);border-radius:16px;background:var(--panel);}
+
+.member-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(260px,1fr));gap:16px;}
+.member-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;align-items:center;gap:14px;}
+.member-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#b8935a);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0a0a0c;font-size:0.85rem;flex-shrink:0;}
+.member-name{font-weight:600;font-size:0.9rem;}
+.member-role{font-size:0.76rem;color:var(--muted);margin-top:2px;}
+
+.sec-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:26px;margin-bottom:16px;}
+.sec-card h4{font-family:var(--font-head);font-size:1rem;margin-bottom:10px;}
+.sec-card p{color:var(--muted);font-size:0.85rem;margin-bottom:14px;}
+.sec-code{background:#0a0a0c;border:1px solid var(--border);border-radius:10px;padding:16px;font-family:var(--font-mono);font-size:0.78rem;color:var(--gold);overflow-x:auto;}
+
+.bill-plan{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--gold);border-radius:16px;padding:26px 30px;margin-bottom:24px;}
+.bill-plan .p-name{font-family:var(--font-head);font-weight:700;font-size:1.1rem;color:var(--gold);}
+.bill-plan .p-desc{color:var(--muted);font-size:0.82rem;margin-top:4px;}
+.bill-plan .p-price{font-family:var(--font-head);font-size:1.8rem;font-weight:700;}
+.invoice-row{display:flex;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.85rem;}
+.invoice-row:last-child{border-bottom:none;}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,3,4,0.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#0d0d10;border:1px solid var(--border-strong);border-radius:18px;padding:34px;width:440px;box-shadow:0 40px 100px rgba(0,0,0,0.7);}
+.modal-box h3{font-family:var(--font-head);font-size:1.25rem;font-weight:700;margin-bottom:24px;letter-spacing:-0.5px;}
+.form-field{margin-bottom:18px;}
+.form-field label{font-size:0.78rem;color:var(--muted);display:block;margin-bottom:8px;font-weight:500;}
+.form-field input, .form-field select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-size:0.85rem;font-family:var(--font-body);transition:border-color .2s;}
+.form-field input:focus, .form-field select:focus{outline:none;border-color:var(--gold);}
+.modal-actions{display:flex;gap:12px;margin-top:28px;}
+.btn-cancel{flex:1;border:1px solid var(--border);padding:12px;border-radius:10px;font-size:0.83rem;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--border-strong);}
+.btn-confirm{flex:1;background:var(--gold);color:#0a0a0c;font-weight:700;padding:12px;border-radius:10px;font-size:0.83rem;transition:all .2s;}
+.btn-confirm:hover{transform:translateY(-1px);}
+
+.toast{position:fixed;bottom:28px;right:28px;background:#0d0d10;border:1px solid var(--gold);color:var(--gold);padding:15px 24px;border-radius:12px;font-family:var(--font-mono);font-size:0.8rem;z-index:2000;opacity:0;transform:translateY(20px);transition:all .35s cubic-bezier(.16,1,.3,1);box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:flex;flex-direction:row;overflow-x:auto;gap:6px;padding:16px;border-right:none;border-bottom:1px solid var(--border);}
+  .current-tenant-box{display:none;}
+  .nav-item{white-space:nowrap;}
+  .stat-cards{grid-template-columns:repeat(2,1fr);}
+  .main{padding:24px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <div class="brand"><span class="mark">TH</span>TenantHub</div>
+      <div class="tenant-switcher">
+        <select class="tenant-select" id="tenantSelect" onchange="switchTenant(this.value)"></select>
+        <button class="btn-add-tenant" onclick="openModal('tenantModal')">+ New Tenant</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="banner">ข้อมูลแต่ละ tenant แยกกันจริงด้วย <b>localStorage isolation</b> จำลอง Row-Level Security ระดับ production</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="current-tenant-box">
+      <div class="ct-label">Current Tenant</div>
+      <div class="ct-name" id="ctName">—</div>
+      <div class="ct-domain" id="ctDomain">—</div>
+    </div>
+    <button class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">Dashboard</button>
+    <button class="nav-item" data-page="projects" onclick="switchPage('projects')">Projects</button>
+    <button class="nav-item" data-page="members" onclick="switchPage('members')">Members</button>
+    <button class="nav-item" data-page="security" onclick="switchPage('security')">Security &amp; RLS</button>
+    <button class="nav-item" data-page="billing" onclick="switchPage('billing')">Billing</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-head">
+        <div>
+          <h1>Dashboard</h1>
+          <p>ภาพรวมการใช้งานของ tenant นี้ — อัปเดตแบบ real-time</p>
+        </div>
+      </div>
+      <div class="stat-cards" id="statCards"></div>
+      <div class="rls-alert">
+        <span class="ico">◆</span>
+        <div>Row-Level Security policy กำลังทำงาน: <code id="rlsQueryDash">WHERE tenant_id = '...'</code> — ข้อมูลของ tenant อื่นจะไม่ถูกดึงมาแสดงแม้อยู่ใน storage เดียวกัน</div>
+      </div>
+      <div class="table-wrap">
+        <table class="project-table">
+          <thead><tr><th>Recent Activity</th><th>Project</th><th>Status</th></tr></thead>
+          <tbody id="recentActivityBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROJECTS PAGE -->
+    <div class="page" id="page-projects">
+      <div class="page-head">
+        <div>
+          <h1>Projects</h1>
+          <p>โปรเจกต์ทั้งหมดของ tenant นี้เท่านั้น — เปลี่ยน tenant ด้านบนเพื่อดูว่าข้อมูลแยกกันจริง</p>
+        </div>
+        <button class="btn-primary" onclick="openModal('projectModal')">+ Add Project</button>
+      </div>
+      <div class="table-wrap">
+        <table class="project-table" id="projectTableWrap">
+          <thead><tr><th>Project Name</th><th>Owner</th><th>Status</th><th>Created</th><th></th></tr></thead>
+          <tbody id="projectTbody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none;">ยังไม่มีโปรเจกต์ใน tenant นี้ — กด "+ Add Project" เพื่อเริ่ม</div>
+      </div>
+    </div>
+
+    <!-- MEMBERS PAGE -->
+    <div class="page" id="page-members">
+      <div class="page-head">
+        <div>
+          <h1>Members</h1>
+          <p>ผู้ใช้งานที่มีสิทธิ์เข้าถึง tenant นี้</p>
+        </div>
+        <button class="btn-primary" onclick="addMember()">+ Invite Member</button>
+      </div>
+      <div class="member-grid" id="memberGrid"></div>
+    </div>
+
+    <!-- SECURITY PAGE -->
+    <div class="page" id="page-security">
+      <div class="page-head">
+        <div>
+          <h1>Security &amp; RLS</h1>
+          <p>นโยบายความปลอดภัยที่บังคับใช้กับ tenant นี้</p>
+        </div>
+      </div>
+      <div class="sec-card">
+        <h4>Row-Level Security Policy</h4>
+        <p>ทุก query ที่ดึงข้อมูลโปรเจกต์จะถูกกรองด้วย tenant_id ปัจจุบันโดยอัตโนมัติที่ระดับฐานข้อมูล</p>
+        <div class="sec-code" id="secCode">CREATE POLICY tenant_isolation ON projects USING (tenant_id = '...');</div>
+      </div>
+      <div class="sec-card">
+        <h4>Tenant Context Middleware</h4>
+        <p>กำหนด tenant identity ที่ authentication layer ก่อนแตะฐานข้อมูลเสมอ ผ่าน subdomain routing</p>
+        <div class="sec-code" id="secDomain">Host: ....tenanthub.com → tenant_id resolved</div>
+      </div>
+      <div class="sec-card">
+        <h4>Audit Log</h4>
+        <p>บันทึกทุกการเปลี่ยนแปลงข้อมูลของ tenant นี้ (ตัวอย่าง 3 รายการล่าสุด)</p>
+        <div id="auditLog" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--muted);line-height:2;"></div>
+      </div>
+    </div>
+
+    <!-- BILLING PAGE -->
+    <div class="page" id="page-billing">
+      <div class="page-head">
+        <div>
+          <h1>Billing</h1>
+          <p>แพ็กเกจและใบแจ้งหนี้ของ tenant นี้</p>
+        </div>
+      </div>
+      <div class="bill-plan">
+        <div>
+          <div class="p-name">Growth Plan</div>
+          <div class="p-desc">Schema-per-Tenant · Custom Subdomain · Priority Support</div>
+        </div>
+        <div class="p-price">฿5,990<span style="font-size:0.85rem;color:var(--muted);">/mo</span></div>
+      </div>
+      <div class="table-wrap">
+        <div class="invoice-row"><span>Invoice #INV-2026-08</span><span style="color:var(--emerald);">Paid — ฿5,990</span></div>
+        <div class="invoice-row"><span>Invoice #INV-2026-07</span><span style="color:var(--emerald);">Paid — ฿5,990</span></div>
+        <div class="invoice-row"><span>Invoice #INV-2026-06</span><span style="color:var(--emerald);">Paid — ฿5,990</span></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="modal-overlay" id="tenantModal">
+  <div class="modal-box">
+    <h3>สร้าง Tenant ใหม่</h3>
+    <div class="form-field"><label>ชื่อบริษัท / Tenant Name</label><input type="text" id="newTenantName" placeholder="เช่น Client E — Retail Co."></div>
+    <div class="form-field"><label>Subdomain</label><input type="text" id="newTenantDomain" placeholder="เช่น client-e"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('tenantModal')">ยกเลิก</button>
+      <button class="btn-confirm" onclick="createTenant()">สร้าง Tenant</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <h3>เพิ่มโปรเจกต์ใหม่</h3>
+    <div class="form-field"><label>ชื่อโปรเจกต์</label><input type="text" id="newProjName" placeholder="เช่น Website Redesign"></div>
+    <div class="form-field"><label>ผู้รับผิดชอบ</label><input type="text" id="newProjOwner" placeholder="เช่น สมชาย"></div>
+    <div class="form-field"><label>สถานะ</label>
+      <select id="newProjStatus"><option value="active">Active</option><option value="paused">Paused</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('projectModal')">ยกเลิก</button>
+      <button class="btn-confirm" onclick="createProject()">เพิ่มโปรเจกต์</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'tenanthub_demo_db_v3';
+
+function loadDB(){
+  let db = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if(!db){
+    db = {
+      tenants: [
+        { id: 't1', name: 'Client A — Construction Co.', domain: 'client-a' },
+        { id: 't2', name: 'Client B — Retail Group', domain: 'client-b' },
+        { id: 't3', name: 'Client C — Fintech Startup', domain: 'client-c' }
+      ],
+      projects: [
+        { id: 'p1', tenant_id: 't1', name: 'ระบบจัดซื้อวัสดุก่อสร้าง', owner: 'กิตติ', status: 'active', created: '2026-08-12' },
+        { id: 'p2', tenant_id: 't1', name: 'แอปติดตามงานหน้าไซต์', owner: 'มานี', status: 'paused', created: '2026-07-30' },
+        { id: 'p3', tenant_id: 't2', name: 'เว็บอีคอมเมิร์ซรีแบรนด์', owner: 'สุดา', status: 'active', created: '2026-08-20' },
+        { id: 'p4', tenant_id: 't3', name: 'Dashboard วิเคราะห์ธุรกรรม', owner: 'ปกรณ์', status: 'active', created: '2026-08-05' }
+      ],
+      members: {
+        t1: [{name:'กิตติ ใจดี', role:'Owner'},{name:'มานี สุขใจ', role:'Editor'}],
+        t2: [{name:'สุดา รักงาม', role:'Owner'}],
+        t3: [{name:'ปกรณ์ ชัยเจริญ', role:'Owner'},{name:'วีระ ทองแท้', role:'Viewer'}]
+      },
+      currentTenant: 't1'
+    };
+    saveDB(db);
+  }
+  if(!db.members) db.members = {};
+  return db;
+}
+function saveDB(db){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+
+let db = loadDB();
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function switchPage(pageName){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pageName).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${pageName}"]`).classList.add('active');
+}
+
+function renderTenantSelect(){
+  const sel = document.getElementById('tenantSelect');
+  sel.innerHTML = db.tenants.map(t => `<option value="${t.id}" ${t.id===db.currentTenant?'selected':''}>${t.domain}.tenanthub.com</option>`).join('');
+}
+
+function renderSidebar(){
+  const t = db.tenants.find(x=>x.id===db.currentTenant);
+  document.getElementById('ctName').textContent = t ? t.name : '—';
+  document.getElementById('ctDomain').textContent = t ? t.domain + '.tenanthub.com' : '—';
+  document.getElementById('rlsQueryDash').textContent = `WHERE tenant_id = '${db.currentTenant}'`;
+  document.getElementById('secCode').textContent = `CREATE POLICY tenant_isolation ON projects USING (tenant_id = '${db.currentTenant}');`;
+  document.getElementById('secDomain').textContent = `Host: ${t?t.domain:'...'}.tenanthub.com → tenant_id resolved = '${db.currentTenant}'`;
+}
+
+function renderStats(){
+  const items = db.projects.filter(p=>p.tenant_id===db.currentTenant);
+  const active = items.filter(p=>p.status==='active').length;
+  const paused = items.filter(p=>p.status==='paused').length;
+  document.getElementById('statCards').innerHTML = `
+    <div class="stat-card"><div class="stat-val">${items.length}</div><div class="stat-lbl">Total Projects</div></div>
+    <div class="stat-card emerald"><div class="stat-val">${active}</div><div class="stat-lbl">Active</div></div>
+    <div class="stat-card"><div class="stat-val">${paused}</div><div class="stat-lbl">Paused</div></div>
+    <div class="stat-card gold"><div class="stat-val">${db.tenants.length}</div><div class="stat-lbl">Total Tenants (all)</div></div>
+  `;
+  const recent = items.slice(-3).reverse();
+  document.getElementById('recentActivityBody').innerHTML = recent.length ? recent.map(p=>`
+    <tr><td>เพิ่มโปรเจกต์ใหม่</td><td>${p.name}</td><td><span class="status-pill ${p.status==='paused'?'paused':''}">${p.status}</span></td></tr>
+  `).join('') : `<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:30px;">ยังไม่มีกิจกรรม</td></tr>`;
+}
+
+function renderProjects(){
+  const items = db.projects.filter(p=>p.tenant_id===db.currentTenant);
+  const tbody = document.getElementById('projectTbody');
+  const table = document.getElementById('projectTableWrap');
+  const empty = document.getElementById('emptyState');
+  if(items.length===0){ table.style.display='none'; empty.style.display='block'; return; }
+  table.style.display='table'; empty.style.display='none';
+  tbody.innerHTML = items.map(p => `
+    <tr>
+      <td>${p.name}</td><td>${p.owner}</td>
+      <td><span class="status-pill ${p.status==='paused'?'paused':''}">${p.status}</span></td>
+      <td style="color:var(--muted);font-family:var(--font-mono);font-size:0.78rem;">${p.created}</td>
+      <td><button class="del-btn" onclick="deleteProject('${p.id}')">ลบ</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderMembers(){
+  const list = db.members[db.currentTenant] || [];
+  const grid = document.getElementById('memberGrid');
+  grid.innerHTML = list.length ? list.map(m=>`
+    <div class="member-card">
+      <div class="member-avatar">${m.name.slice(0,1)}</div>
+      <div><div class="member-name">${m.name}</div><div class="member-role">${m.role}</div></div>
+    </div>
+  `).join('') : `<div class="empty-state">ยังไม่มีสมาชิกใน tenant นี้</div>`;
+}
+
+function renderAudit(){
+  const items = db.projects.filter(p=>p.tenant_id===db.currentTenant).slice(-3).reverse();
+  const el = document.getElementById('auditLog');
+  el.innerHTML = items.length ? items.map(p=>`&gt; [${p.created}] project "${p.name}" created by ${p.owner}<br>`).join('') : '&gt; no recent activity';
+}
+
+function renderAll(){
+  renderTenantSelect();
+  renderSidebar();
+  renderStats();
+  renderProjects();
+  renderMembers();
+  renderAudit();
+}
+
+function switchTenant(tenantId){
+  db.currentTenant = tenantId;
+  saveDB(db);
+  renderAll();
+  const t = db.tenants.find(x=>x.id===tenantId);
+  showToast(`สลับไปยัง ${t.domain}.tenanthub.com — RLS filter อัปเดตแล้ว`);
+}
+
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function createTenant(){
+  const name = document.getElementById('newTenantName').value.trim();
+  const domain = document.getElementById('newTenantDomain').value.trim().toLowerCase().replace(/\\s+/g,'-');
+  if(!name || !domain){ showToast('กรอกข้อมูลให้ครบ'); return; }
+  const id = 't' + (db.tenants.length + 1) + '_' + Date.now();
+  db.tenants.push({ id, name, domain });
+  db.members[id] = [];
+  db.currentTenant = id;
+  saveDB(db);
+  renderAll();
+  closeModal('tenantModal');
+  document.getElementById('newTenantName').value='';
+  document.getElementById('newTenantDomain').value='';
+  showToast(`Provisioned tenant "${domain}" สำเร็จใน 0.4s`);
+}
+
+function createProject(){
+  const name = document.getElementById('newProjName').value.trim();
+  const owner = document.getElementById('newProjOwner').value.trim();
+  const status = document.getElementById('newProjStatus').value;
+  if(!name || !owner){ showToast('กรอกข้อมูลให้ครบ'); return; }
+  const id = 'p_' + Date.now();
+  const today = new Date().toISOString().slice(0,10);
+  db.projects.push({ id, tenant_id: db.currentTenant, name, owner, status, created: today });
+  saveDB(db);
+  renderAll();
+  closeModal('projectModal');
+  document.getElementById('newProjName').value='';
+  document.getElementById('newProjOwner').value='';
+  showToast('เพิ่มโปรเจกต์เรียบร้อย (บันทึกด้วย tenant_id ปัจจุบัน)');
+}
+
+function deleteProject(id){
+  db.projects = db.projects.filter(p=>p.id!==id);
+  saveDB(db);
+  renderAll();
+  showToast('ลบโปรเจกต์แล้ว');
+}
+
+function addMember(){
+  const name = prompt('ชื่อสมาชิกใหม่:');
+  if(!name) return;
+  if(!db.members[db.currentTenant]) db.members[db.currentTenant] = [];
+  db.members[db.currentTenant].push({name: name, role: 'Viewer'});
+  saveDB(db);
+  renderMembers();
+  showToast('เพิ่มสมาชิกแล้ว');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+renderAll();
+</script>
+</body>
+</html>
