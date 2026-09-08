@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070b14">
+  <title>DEVSPHERE — Public Portfolio Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><script type="module" src="app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="#top" class="brand"><span class="brand-mark">D</span><span>DEV<span>SPHERE</span></span></a>
+    <div class="mode"><i></i><div><b>PUBLIC · READ-ONLY</b><small>MT5 portfolio monitoring</small></div></div>
+    <p class="nav-label">PUBLIC PORTFOLIOS</p>
+    <div class="portfolio-list" id="portfolioList"><p class="empty-side">Loading portfolios…</p></div>
+    <div class="admin-area"><span id="identityLabel">Public visitor</span><button id="loginButton" type="button">🔒 Admin Login</button><button class="hidden" id="signOutButton" type="button">Sign out</button></div>
+  </aside>
+
+  <main class="main" id="top">
+    <header class="topbar"><div><p class="eyebrow">DEVSPHERE / CLOUD PORTFOLIO MONITOR</p><h1 id="pageTitle">Public Portfolio Dashboard</h1></div><div class="top-actions"><div class="live-status"><i id="liveDot"></i><div><b id="liveLabel">LOADING</b><small id="lastSync">Connecting to public portfolio data…</small></div></div><button class="btn secondary hidden" id="refreshButton" type="button">↻ Refresh</button><button class="btn primary" id="loginButtonTop" type="button">🔒 Admin Login</button></div></header>
+
+    <section class="empty-portfolio" id="emptyPortfolio"><p class="eyebrow">PUBLIC MONITORING</p><h2>No public portfolio is available yet.</h2><p>พอร์ตจะปรากฏตรงนี้เมื่อ Admin สร้าง Portfolio และ Monitoring Agent ส่ง public snapshot แรกจาก MT5 เข้ามา</p><button class="btn primary" id="loginButtonEmpty" type="button">🔒 Admin Login</button></section>
+
+    <div class="dashboard hidden" id="dashboard">
+      <section class="dashboard-title"><div><p class="eyebrow">PUBLIC PORTFOLIO VIEW</p><h2 id="selectedPortfolioName">Portfolio</h2><p id="selectedPortfolioMeta" class="portfolio-meta">—</p></div><span class="pill" id="portfolioStatus">—</span></section>
+      <section class="metrics"><article><span>Balance</span><strong id="balance">—</strong><small id="currency">Currency: —</small></article><article class="accent"><span>Equity</span><strong id="equity">—</strong><small>Balance + Floating P/L</small></article><article><span>Floating P/L</span><strong id="profit">—</strong><small id="positionHint">—</small></article><article><span>Margin Level</span><strong id="marginLevel">—</strong><small id="freeMargin">Free margin: —</small></article></section>
+      <section class="grid"><article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">EQUITY HISTORY</p><h2>Balance &amp; equity</h2></div><span id="snapshotCount" class="pill">0 points</span></div><div class="chart-wrap"><canvas id="chart"></canvas><p id="chartEmpty">Waiting for public equity history…</p></div><div class="legend"><span><i class="blue"></i> Balance</span><span><i class="cyan"></i> Equity</span></div></article><article class="panel health"><div class="panel-head"><div><p class="eyebrow">MONITORING STATUS</p><h2>Portfolio health</h2></div></div><div class="health-row"><span>Status</span><b id="agentStatus">Waiting</b></div><div class="health-row"><span>Last sequence</span><b id="sequence">—</b></div><div class="health-row"><span>Open positions</span><b id="openPositions">—</b></div><div class="health-row"><span>Pending orders</span><b id="pendingOrders">—</b></div><div class="readonly"><b>PUBLIC OBSERVER MODE</b><span>ข้อมูลนี้ดูได้สาธารณะ แต่ Dashboard ไม่มีความสามารถเปิด ปิด หรือแก้ไขคำสั่งเทรด</span></div></article></section>
+      <section class="table-section"><div class="section-title"><div><p class="eyebrow">OPEN POSITIONS</p><h2>Live exposure</h2></div><span id="positionCount" class="pill">0 positions</span></div><article class="panel table-panel"><div class="scroll"><table><thead><tr><th>Symbol</th><th>Side</th><th>Volume</th><th>Entry</th><th>Current</th><th>Floating P/L</th><th>Opened</th></tr></thead><tbody id="positions"><tr><td colspan="7" class="empty">No active positions</td></tr></tbody></table></div></article></section>
+      <section class="table-section"><div class="section-title"><div><p class="eyebrow">PUBLIC ACTIVITY</p><h2>Monitoring updates</h2></div></div><article class="panel events" id="events"><div class="event muted"><i></i><div><b>Waiting for live data</b><p>Public monitoring events will appear when the agent is connected.</p></div><time>—</time></div></article></section>
+      <section class="admin-controls hidden" id="adminControls"><div><p class="eyebrow">ADMIN MANAGEMENT</p><h2>Portfolio settings</h2><p>เฉพาะ Admin ที่ล็อกอินเท่านั้นที่เพิ่ม แก้ไข หรือลบพอร์ตได้</p></div><div class="admin-buttons"><button class="btn primary" id="openAddModal" type="button">＋ Add Portfolio</button><button class="btn secondary" id="openEditModal" type="button">✎ Edit Portfolio</button><button class="btn danger" id="deletePortfolio" type="button">Delete Portfolio</button></div></section>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="loginModal"><section class="modal" role="dialog" aria-modal="true"><button class="close" data-close="loginModal" type="button">×</button><p class="eyebrow">AUTHORIZED ADMIN ACCESS</p><h2>Admin Login</h2><p class="modal-copy">Login ใช้เฉพาะสำหรับเพิ่ม ลบ เปลี่ยน และแก้ไข Portfolio เท่านั้น ข้อมูลพอร์ตยังดูแบบ Public ได้โดยไม่ต้อง login</p><form id="loginForm"><label>Username<input id="username" autocomplete="username" required placeholder="Teerabhodin"></label><label>Password<input id="password" type="password" autocomplete="current-password" required placeholder="••••••••"></label><button class="btn primary" type="submit">Sign in securely →</button><small id="loginMessage"></small></form></section></div>
+<div class="modal-backdrop hidden" id="portfolioModal"><section class="modal" role="dialog" aria-modal="true"><button class="close" data-close="portfolioModal" type="button">×</button><p class="eyebrow" id="portfolioModalKicker">ADMIN PORTFOLIO MANAGEMENT</p><h2 id="portfolioModalTitle">Add Portfolio</h2><p class="modal-copy">Investor Password ไม่ถูกใส่หรือเก็บในหน้าเว็บนี้ ให้ตั้งไว้เฉพาะใน `.env` ของ Monitoring Agent บนเครื่อง MT5</p><form id="portfolioForm"><input type="hidden" id="portfolioMode" value="create"><label>Portfolio name<input id="displayName" required maxlength="100" placeholder="QUANTIX XAUUSD Demo"></label><label>Broker server<input id="brokerServer" required maxlength="160" placeholder="MetaQuotes-Demo"></label><label>MT5 login<input id="mt5Login" required inputmode="numeric" maxlength="32" placeholder="12345678"></label><button class="btn primary" id="portfolioSubmit" type="submit">Create Portfolio Setup →</button><small id="portfolioMessage"></small></form></section></div>
+<div class="modal-backdrop hidden" id="deleteModal"><section class="modal" role="dialog" aria-modal="true"><button class="close" data-close="deleteModal" type="button">×</button><p class="eyebrow">IRREVERSIBLE ACTION</p><h2>Delete Portfolio?</h2><p class="modal-copy" id="deleteDescription">This removes the public portfolio metadata. Historical data written by the agent may remain in Firestore unless deleted separately.</p><div class="modal-actions"><button class="btn secondary" data-close="deleteModal" type="button">Cancel</button><button class="btn danger" id="confirmDelete" type="button">Delete permanently</button></div></section></div>
+</body>
+</html>
