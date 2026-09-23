@@ -304,6 +304,12 @@
   body.no-webgl #scene, body.no-webgl #pins, body.no-webgl .hud, body.no-webgl .dots { display: none; }
   body.no-webgl #tour { background: radial-gradient(120% 80% at 70% 10%, #3b2b52 0, var(--ink) 60%), var(--ink); }
   body.no-webgl .chapter { height: auto; min-height: 90vh; }
+  .gl-note {
+    position: fixed; z-index: 25; left: var(--gutter); right: var(--gutter);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin: 0 auto; max-width: 560px;
+    background: var(--ink-3); border: 1px solid var(--gold); color: var(--cream);
+    padding: 12px 16px; font-size: 14px; line-height: 1.6;
+  }
 
   @media (max-width: 1000px) {
     .people { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -342,12 +348,6 @@
     .btn { transition: none; }
   }
 </style>
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
 </head>
 <body>
 
@@ -377,6 +377,7 @@
 </div>
 
 <canvas id="scene" aria-hidden="true"></canvas>
+<p class="gl-note" id="gl-note" role="status" hidden>เปิดแผนที่ 3D ในเบราว์เซอร์นี้ไม่ได้ (ต้องใช้ WebGL หรือโหลดไลบรารี 3D ไม่สำเร็จ) ข้อมูลทุกจุดยังอ่านได้ตามปกติ ลองเปิดด้วย Chrome, Safari หรือ Edge รุ่นล่าสุด</p>
 <div class="veil" aria-hidden="true"></div>
 <div id="pins" aria-hidden="true"></div>
 
@@ -732,11 +733,26 @@
     var m = new Date().getMonth();
     if (cells[m]) cells[m].classList.add('now');
   })();
+  // If the 3D scene has not drawn its first frame after a while, fall back to the text-only tour.
+  window.__sisaketFail = function () {
+    if (window.__sisaketStarted) return;
+    document.body.classList.add('no-webgl');
+    document.getElementById('loader').classList.add('done');
+    document.getElementById('gl-note').hidden = false;
+  };
+  setTimeout(window.__sisaketFail, 15000);
 </script>
 
 <script type="module">
-import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+const THREE_SOURCES = [
+  'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js',
+];
+let THREE = null;
+for (const url of THREE_SOURCES) {
+  try { THREE = await import(url); break; } catch (err) { console.warn('three.js failed to load from', url, err); }
+}
+if (!THREE) { window.__sisaketFail(); throw new Error('three.js unavailable'); }
 
 /* ------------------------------------------------------------------ *
  *  helpers
@@ -774,8 +790,7 @@ try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   if (!renderer.getContext()) throw new Error('no context');
 } catch (err) {
-  body.classList.add('no-webgl');
-  hideLoader();
+  window.__sisaketFail();
   throw err;
 }
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 1.75));
@@ -1408,11 +1423,21 @@ if (!reduceMotion) {
   for (let k = 0; k < 3; k++) {
     const s = new THREE.Shape();
     s.moveTo(0, 0); s.quadraticCurveTo(0.12, 0.1, 0, 0.28); s.quadraticCurveTo(-0.12, 0.1, 0, 0);
-    const g = new THREE.ShapeGeometry(s, 3);
+    const g = new THREE.ShapeGeometry(s, 3).toNonIndexed();
     g.rotateX(-Math.PI / 2 + 0.6);
     g.rotateY(k * Math.PI * 2 / 3);
     parts.push(g);
   }
+  const mergeGeometries = geos => {
+    const merged = new THREE.BufferGeometry();
+    for (const name of ['position', 'normal']) {
+      const arrays = geos.map(g => g.attributes[name].array);
+      const out = new Float32Array(arrays.reduce((n, a) => n + a.length, 0));
+      let o = 0; for (const a of arrays) { out.set(a, o); o += a.length; }
+      merged.setAttribute(name, new THREE.BufferAttribute(out, 3));
+    }
+    return merged;
+  };
   const n = isMobile ? 60 : 120;
   petalMesh = new THREE.InstancedMesh(mergeGeometries(parts), new THREE.MeshStandardMaterial({ color: '#fbe7a1', emissive: '#6b5314', side: THREE.DoubleSide, roughness: 0.7 }), n);
   petalMesh.frustumCulled = false;
@@ -1639,7 +1664,14 @@ function frame(now) {
   hudBar.style.transform = `scaleX(${(pSm / (NCH - 1)).toFixed(4)})`;
 
   renderer.render(scene, camera);
-  if (first) { first = false; hideLoader(); }
+  if (first) {
+    first = false;
+    window.__sisaketStarted = true;
+    // recover if the watchdog fired on a slow connection before we got here
+    body.classList.remove('no-webgl');
+    document.getElementById('gl-note').hidden = true;
+    hideLoader();
+  }
 }
 requestAnimationFrame(frame);
 </script>
