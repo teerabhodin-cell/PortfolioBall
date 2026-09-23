@@ -345,6 +345,60 @@
   .foot .credits ul { margin: 10px 0 0; padding-left: 1.1em; font-size: 13px; color: var(--muted); display: grid; gap: 2px; }
   .foot .credits a { color: var(--cream-2); }
 
+  /* giant chapter title */
+  .bigtitle {
+    position: fixed; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: 7vh;
+    display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; text-align: right;
+    transition: opacity .5s;
+  }
+  .bigtitle[data-side="right"] { align-items: flex-start; text-align: left; }
+  .bt-num { font: 600 13px/1 var(--f-ui); letter-spacing: .3em; color: var(--gold); margin-bottom: 10px; text-shadow: 0 2px 12px rgba(0, 0, 0, .7); }
+  .bt-word {
+    display: block; overflow: hidden; padding: .28em .04em .12em;
+    font-family: var(--f-display); font-size: min(12.5vw, 210px, calc(84vw / (var(--n, 6) * .74))); line-height: .95; letter-spacing: -.01em; white-space: nowrap;
+    color: rgba(243, 235, 221, .1); -webkit-text-stroke: 1.4px rgba(255, 244, 222, .72);
+    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, .35));
+  }
+  .bt-word span { display: inline-block; transform: translateY(115%) rotate(6deg); }
+  .bigtitle.in .bt-word span { animation: btIn .9s cubic-bezier(.2, .8, .2, 1) var(--d) forwards; }
+  @keyframes btIn { to { transform: none; } }
+  body.at-hero .bigtitle, body.in-guide .bigtitle, body.past-tour .bigtitle, body.no-webgl .bigtitle { opacity: 0; }
+
+  /* loader: counter + curtain lift */
+  #loader { transition: transform 1.15s cubic-bezier(.8, 0, .2, 1), visibility 0s 1.2s; }
+  #loader.done { opacity: 1; transform: translateY(-100%); }
+  .ld-count { font: 600 clamp(56px, 10vw, 120px)/1 var(--f-ui); color: var(--cream); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+
+  /* hero entrance once the curtain lifts */
+  body.loaded .hero-inner > * { animation: heroIn 1.1s cubic-bezier(.2, .8, .2, 1) both; }
+  body.loaded .hero-inner > :nth-child(2) { animation-delay: .08s; }
+  body.loaded .hero-inner > :nth-child(3) { animation-delay: .18s; }
+  body.loaded .hero-inner > :nth-child(4) { animation-delay: .26s; }
+  body.loaded .hero-inner > :nth-child(5) { animation-delay: .34s; }
+  body.loaded .hero-inner > :nth-child(6) { animation-delay: .42s; }
+  @keyframes heroIn { from { transform: translateY(40px); opacity: .001; filter: blur(8px); } }
+
+  /* cursor ring (fine pointers only) */
+  .cursor { display: none; }
+  @media (pointer: fine) {
+    .cursor {
+      display: block; position: fixed; left: 0; top: 0; z-index: 70; width: 34px; height: 34px; margin: -17px 0 0 -17px;
+      border: 1.5px solid rgba(255, 244, 222, .85); border-radius: 50%; pointer-events: none; mix-blend-mode: difference;
+      transition: width .25s, height .25s, margin .25s, background .25s;
+    }
+    .cursor.hover { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgba(255, 244, 222, .9); }
+  }
+
+  @media (max-width: 760px) {
+    .bigtitle { top: 78px; bottom: auto; align-items: flex-start !important; text-align: left !important; }
+    .bt-word { font-size: min(17vw, calc(92vw / (var(--n, 6) * .74))); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bt-word span, .bigtitle.in .bt-word span { transform: none; animation: none; }
+    body.loaded .hero-inner > * { animation: none; }
+    .cursor { display: none !important; }
+  }
+
   /* fallback when WebGL is unavailable */
   body.no-webgl #scene, body.no-webgl .hud, body.no-webgl .dots { display: none; }
   body.no-webgl #tour { background: radial-gradient(120% 80% at 70% 10%, #3b2b52 0, var(--ink) 60%), var(--ink); }
@@ -417,11 +471,14 @@
 <div id="loader" role="status" aria-live="polite">
   <div class="ld">
     <svg aria-hidden="true"><use href="#lamduan"/></svg>
+    <span class="ld-count" id="ld-count">00</span>
     <span>กำลังโหลดภาพศรีสะเกษ</span>
   </div>
 </div>
 
 <canvas id="scene" aria-hidden="true"></canvas>
+<div class="bigtitle" id="bigtitle" aria-hidden="true"><span class="bt-num" id="bt-num"></span><span class="bt-word" id="bt-word"></span></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
 <p class="gl-note" id="gl-note" role="status" hidden>เปิดแผนที่ 3D ในเบราว์เซอร์นี้ไม่ได้ (ต้องใช้ WebGL หรือโหลดไลบรารี 3D ไม่สำเร็จ) ข้อมูลทุกจุดยังอ่านได้ตามปกติ ลองเปิดด้วย Chrome, Safari หรือ Edge รุ่นล่าสุด</p>
 <div class="veil" aria-hidden="true"></div>
 
@@ -466,7 +523,7 @@
       </div>
     </section>
 
-    <section class="chapter" id="ch-1" style="--photo: url(photos/prasat.jpg)" data-side="left" data-name="ปราสาทสระกำแพงใหญ่">
+    <section class="chapter" id="ch-1" data-big="สระกำแพงใหญ่" style="--photo: url(photos/prasat.jpg)" data-side="left" data-name="ปราสาทสระกำแพงใหญ่">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 1/5</span><span>อ.อุทุมพรพิสัย</span></div>
         <h2>ปราสาทสระกำแพงใหญ่</h2>
@@ -481,7 +538,7 @@
       </article>
     </section>
 
-    <section class="chapter" id="ch-2" style="--photo: url(photos/rueangrong.jpg)" data-side="right" data-name="พระธาตุเรืองรอง & ลำดวน">
+    <section class="chapter" id="ch-2" data-big="เรืองรอง" style="--photo: url(photos/rueangrong.jpg)" data-side="right" data-name="พระธาตุเรืองรอง & ลำดวน">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 2/5</span><span>อ.เมืองศรีสะเกษ</span></div>
         <h2>วัดพระธาตุเรืองรอง<small>และสวนดอกลำดวน</small></h2>
@@ -496,7 +553,7 @@
       </article>
     </section>
 
-    <section class="chapter" id="ch-3" style="--photo: url(photos/bottle.jpg)" data-side="left" data-name="วัดล้านขวด">
+    <section class="chapter" id="ch-3" data-big="ล้านขวด" style="--photo: url(photos/bottle.jpg)" data-side="left" data-name="วัดล้านขวด">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 3/5</span><span>อ.ขุนหาญ</span></div>
         <h2>วัดป่ามหาเจดีย์แก้ว<small>หรือ “วัดล้านขวด”</small></h2>
@@ -511,7 +568,7 @@
       </article>
     </section>
 
-    <section class="chapter" id="ch-4" style="--photo: url(photos/durian.jpg)" data-side="right" data-name="ทุเรียนภูเขาไฟ">
+    <section class="chapter" id="ch-4" data-big="ภูเขาไฟ" style="--photo: url(photos/durian.jpg)" data-side="right" data-name="ทุเรียนภูเขาไฟ">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 4/5</span><span>กันทรลักษ์ · ขุนหาญ · ศรีรัตนะ</span></div>
         <h2>ทุเรียนภูเขาไฟ<small>และน้ำตกห้วยจันทร์</small></h2>
@@ -526,7 +583,7 @@
       </article>
     </section>
 
-    <section class="chapter" id="ch-5" style="--photo: url(photos/phamo.jpg)" data-side="left" data-name="ผามออีแดง">
+    <section class="chapter" id="ch-5" data-big="ผามออีแดง" style="--photo: url(photos/phamo.jpg)" data-side="left" data-name="ผามออีแดง">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 5/5</span><span>อุทยานแห่งชาติเขาพระวิหาร อ.กันทรลักษ์</span></div>
         <h2>ผามออีแดง</h2>
@@ -541,7 +598,7 @@
       </article>
     </section>
 
-    <section class="chapter" id="ch-6" style="--photo: url(photos/more.jpg)" data-side="left" data-name="ยังมีอีกมาก">
+    <section class="chapter" id="ch-6" data-big="ศรีสะเกษ" style="--photo: url(photos/more.jpg)" data-side="left" data-name="ยังมีอีกมาก">
       <article class="card">
         <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span>นอกเหนือจาก 5 จุดนี้</span></div>
         <h2>ศรีสะเกษยังมีอีกหลายที่</h2>
@@ -841,6 +898,20 @@
     document.getElementById('gl-note').hidden = false;
   };
   setTimeout(window.__sisaketFail, 15000);
+  (function () {
+    var el = document.getElementById('ld-count'), ld = document.getElementById('loader'), n = 0;
+    (function tick() {
+      if (ld.classList.contains('done')) { el.textContent = '100'; document.body.classList.add('loaded'); return; }
+      n += (92 - n) * 0.04; el.textContent = String(Math.floor(n)).padStart(2, '0');
+      requestAnimationFrame(tick);
+    })();
+    var c = document.getElementById('cursor');
+    if (!c || !matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var x = -100, y = -100, cx = -100, cy = -100;
+    addEventListener('pointermove', function (e) { x = e.clientX; y = e.clientY; });
+    addEventListener('pointerover', function (e) { c.classList.toggle('hover', !!(e.target.closest && e.target.closest('a, button, .mm-spot'))); });
+    (function loop() { cx += (x - cx) * 0.2; cy += (y - cy) * 0.2; c.style.transform = 'translate(' + cx + 'px,' + cy + 'px)'; requestAnimationFrame(loop); })();
+  })();
 </script>
 
 <script type="module">
@@ -892,13 +963,13 @@ const D = 10; // camera distance to the photo plane
 /* one entry per chapter: focus point (fx, fy from top-left), depth strength,
    how much to lift a flat overcast sky, and a colour grade */
 const PHOTOS = [
-  { key: 'hero',       fx: 0.52, fy: 0.5,  amp: 2.4, sky: 0.75, tint: [1.05, 1.0, 0.93] },
-  { key: 'prasat',     fx: 0.5,  fy: 0.52, amp: 3.0, sky: 0.6,  tint: [1.05, 1.0, 0.94] },
-  { key: 'rueangrong', fx: 0.5,  fy: 0.6,  amp: 2.4, sky: 0.0,  tint: [1.03, 1.0, 0.97], poster: true },
-  { key: 'bottle',     fx: 0.36, fy: 0.45, amp: 2.2, sky: 0.0,  tint: [1.02, 1.0, 0.98] },
-  { key: 'durian',     fx: 0.5,  fy: 0.5,  amp: 2.6, sky: 0.0,  tint: [1.03, 1.01, 0.95] },
-  { key: 'phamo',      fx: 0.42, fy: 0.55, amp: 3.2, sky: 0.35, tint: [1.06, 1.0, 0.92] },
-  { key: 'more',       fx: 0.5,  fy: 0.5,  amp: 2.6, sky: 0.75, tint: [1.06, 0.99, 0.9] },
+  { key: 'hero',       fx: 0.52, fy: 0.5,  amp: 2.4, sky: 0.75, tint: [1.05, 1.0, 0.93], sun: [0.8, 0.06], rays: 0.9 },
+  { key: 'prasat',     fx: 0.5,  fy: 0.52, amp: 3.0, sky: 0.6,  tint: [1.05, 1.0, 0.94], sun: [0.5, 0.44], rays: 0.75 },
+  { key: 'rueangrong', fx: 0.5,  fy: 0.6,  amp: 2.4, sky: 0.0,  tint: [1.03, 1.0, 0.97], poster: true, sun: [0.28, 0.1], rays: 0.6 },
+  { key: 'bottle',     fx: 0.36, fy: 0.45, amp: 2.2, sky: 0.0,  tint: [1.02, 1.0, 0.98], sun: [0.18, 0.08], rays: 0.6 },
+  { key: 'durian',     fx: 0.5,  fy: 0.5,  amp: 2.6, sky: 0.0,  tint: [1.03, 1.01, 0.95], sun: [0.55, -0.15], rays: 0.3 },
+  { key: 'phamo',      fx: 0.42, fy: 0.55, amp: 3.2, sky: 0.35, tint: [1.06, 1.0, 0.92], sun: [0.85, 0.12], rays: 1.0 },
+  { key: 'more',       fx: 0.5,  fy: 0.5,  amp: 2.6, sky: 0.75, tint: [1.06, 0.99, 0.9], sun: [0.8, 0.08], rays: 0.85 },
 ];
 
 const VS = `
@@ -1100,7 +1171,96 @@ function setActive(i) {
   mapSpots.forEach(el => el.classList.toggle('on', +el.dataset.ch === i));
   hudCount.textContent = String(i >= 6 ? 5 : clamp(i, 0, 5)).padStart(2, '0') + ' / 05';
   hudName.textContent = sections[i].dataset.name;
+  showBig(i);
 }
+const btWord = document.getElementById('bt-word'), btNum = document.getElementById('bt-num'), bt = document.getElementById('bigtitle');
+const seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'grapheme' }) : null;
+function showBig(i) {
+  const word = sections[i].dataset.big || '';
+  bt.dataset.side = sections[i].dataset.side;
+  btNum.textContent = i > 0 && i < 6 ? `${String(i).padStart(2, '0')} — ${sections[i].dataset.name}` : '';
+  const chars = seg ? [...seg.segment(word)].map(x => x.segment) : [word];
+  btWord.style.setProperty('--n', chars.length);
+  btWord.innerHTML = chars.map((c, k) => `<span style="--d:${k * 45}ms">${c}</span>`).join('');
+  bt.classList.remove('in'); void bt.offsetWidth; bt.classList.add('in');
+}
+
+
+/* ------------------------------------------------------------------ *
+ *  cinematic post: bloom, god rays toward the light, zoom-blur and
+ *  chromatic split during transitions, film grade, vignette, grain
+ * ------------------------------------------------------------------ */
+const POST_OK = renderer.capabilities.isWebGL2 && (renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float'));
+const FSQ = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
+const post = POST_OK ? (() => {
+  const mk = (s = 0, depth = false) => { const r = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: s, depthBuffer: depth }); r.texture.generateMipmaps = false; return r; };
+  const scn = mk(isMobile ? 0 : 4, true), bright = mk(), rays = mk();
+  const lv = [0, 1, 2].map(() => ({ h: mk(), v: mk() }));
+  const o = { vertexShader: FSQ, depthTest: false, depthWrite: false, toneMapped: false };
+  const brightM = new THREE.ShaderMaterial({ ...o, uniforms: { t: { value: null }, th: { value: 0.62 } }, fragmentShader: `uniform sampler2D t; uniform float th; varying vec2 vUv;
+    void main(){ vec3 c = texture2D(t, vUv).rgb; float l = dot(c, vec3(0.2126, 0.7152, 0.0722)); gl_FragColor = vec4(c * smoothstep(th, th + 0.3, l), 1.0); }` });
+  const blurM = new THREE.ShaderMaterial({ ...o, uniforms: { t: { value: null }, dir: { value: new THREE.Vector2() } }, fragmentShader: `uniform sampler2D t; uniform vec2 dir; varying vec2 vUv;
+    void main(){ vec3 c = texture2D(t, vUv).rgb * 0.227;
+      c += (texture2D(t, vUv + dir * 1.385).rgb + texture2D(t, vUv - dir * 1.385).rgb) * 0.316;
+      c += (texture2D(t, vUv + dir * 3.231).rgb + texture2D(t, vUv - dir * 3.231).rgb) * 0.070;
+      gl_FragColor = vec4(c, 1.0); }` });
+  const raysM = new THREE.ShaderMaterial({ ...o, uniforms: { t: { value: null }, sun: { value: new THREE.Vector2(0.5, 1) } }, fragmentShader: `uniform sampler2D t; uniform vec2 sun; varying vec2 vUv;
+    void main(){ vec2 d = (vUv - sun) / 56.0 * 0.92; vec2 uv = vUv; float decay = 1.0; vec3 acc = vec3(0.0);
+      for (int i = 0; i < 56; i++) { uv -= d; acc += texture2D(t, uv).rgb * decay; decay *= 0.962; }
+      gl_FragColor = vec4(acc / 56.0 * 2.4, 1.0); }` });
+  const cu = {
+    tScene: { value: scn.texture }, tB0: { value: lv[0].v.texture }, tB1: { value: lv[1].v.texture }, tB2: { value: lv[2].v.texture }, tRays: { value: rays.texture },
+    bloom: { value: 0.42 }, rays: { value: 0.6 }, tr: { value: 0 }, time: { value: 0 }, res: { value: new THREE.Vector2() }, rayCol: { value: new THREE.Color('#ffd49a') },
+  };
+  const compM = new THREE.ShaderMaterial({ ...o, uniforms: cu, fragmentShader: `
+    uniform sampler2D tScene; uniform sampler2D tB0; uniform sampler2D tB1; uniform sampler2D tB2; uniform sampler2D tRays;
+    uniform float bloom; uniform float rays; uniform float tr; uniform float time; uniform vec2 res; uniform vec3 rayCol; varying vec2 vUv;
+    vec3 ca(vec2 uv, float k){ vec2 d = (uv - 0.5) * k; return vec3(texture2D(tScene, uv + d).r, texture2D(tScene, uv).g, texture2D(tScene, uv - d).b); }
+    vec3 toSRGB(vec3 c){ return mix(pow(c, vec3(0.41666)) * 1.055 - vec3(0.055), c * 12.92, vec3(lessThanEqual(c, vec3(0.0031308)))); }
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main(){
+      vec2 uv = vUv;
+      float k = 0.004 + tr * 0.03, zb = tr * 0.12;
+      vec3 c = vec3(0.0);
+      for (int i = 0; i < 8; i++) { float t = float(i) / 7.0; c += ca(mix(uv, vec2(0.5), zb * t), k * (1.0 + t)); }
+      c /= 8.0;
+      c += (texture2D(tB0, uv).rgb * 0.5 + texture2D(tB1, uv).rgb * 0.8 + texture2D(tB2, uv).rgb * 1.1) * bloom;
+      c += texture2D(tRays, uv).rgb * rays * rayCol;
+      float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      c = mix(c * vec3(0.9, 1.0, 1.1), c * vec3(1.1, 1.0, 0.86), smoothstep(0.04, 0.55, l));
+      c = mix(vec3(l), c, 1.15);
+      vec3 s = toSRGB(clamp(c, 0.0, 1.0));
+      s = mix(s, s * s * (3.0 - 2.0 * s), 0.38);
+      vec2 q = uv - 0.5;
+      s *= 1.0 - dot(q * vec2(1.0, 1.25), q) * 1.05;
+      s += (hash(uv * res + fract(time) * 91.0) - 0.5) * 0.04;
+      gl_FragColor = vec4(s, 1.0);
+    }` });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), compM); quad.frustumCulled = false;
+  const qs = new THREE.Scene(); qs.add(quad); const qc = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const run = (m, t) => { quad.material = m; renderer.setRenderTarget(t); renderer.render(qs, qc); };
+  const blur = (src, a, b) => {
+    blurM.uniforms.t.value = src.texture; blurM.uniforms.dir.value.set(1 / a.width, 0); run(blurM, a);
+    blurM.uniforms.t.value = a.texture; blurM.uniforms.dir.value.set(0, 1 / b.height); run(blurM, b);
+  };
+  return {
+    u: cu, raysU: raysM.uniforms,
+    setSize(w, h) {
+      scn.setSize(w, h); bright.setSize(w >> 1, h >> 1); rays.setSize(w >> 1, h >> 1);
+      lv.forEach((l, i) => { const f = 4 << i; l.h.setSize(Math.max(2, w / f | 0), Math.max(2, h / f | 0)); l.v.setSize(Math.max(2, w / f | 0), Math.max(2, h / f | 0)); });
+      cu.res.value.set(w, h);
+    },
+    render() {
+      renderer.setRenderTarget(scn); renderer.render(scene, camera);
+      brightM.uniforms.t.value = scn.texture; run(brightM, bright);
+      let src = bright; lv.forEach(l => { blur(src, l.h, l.v); src = l.v; });
+      raysM.uniforms.t.value = bright.texture; run(raysM, rays);
+      run(compM, null);
+    },
+  };
+})() : null;
+const dbs = new THREE.Vector2();
+const sunV = new THREE.Vector3();
 
 /* ------------------------------------------------------------------ *
  *  loop
@@ -1111,6 +1271,7 @@ function onResize() {
   camera.aspect = W / Hh;
   camera.updateProjectionMatrix();
   secH = sections[0].offsetHeight;
+  if (post) { renderer.getDrawingBufferSize(dbs); post.setSize(dbs.x, dbs.y); }
 }
 addEventListener('resize', onResize);
 onResize();
@@ -1194,7 +1355,18 @@ function frame(now) {
 
   setActive(Math.round(pSm));
   body.classList.toggle('at-hero', pSm < 0.5);
-  renderer.render(scene, camera);
+  if (post) {
+    // light source of whichever photo dominates the frame
+    const lead = PHOTOS[w < 0.5 ? i : j];
+    if (lead.ready) {
+      sunV.set(lead.sun[0] - 0.5, 0.5 - lead.sun[1], 0); lead.mesh.localToWorld(sunV).project(camera);
+      post.raysU.sun.value.set(clamp(sunV.x * 0.5 + 0.5, -0.5, 1.5), clamp(sunV.y * 0.5 + 0.5, -0.5, 1.5));
+    }
+    post.u.rays.value = lerp(PHOTOS[i].rays, PHOTOS[j].rays, w) * (0.6 + 0.4 * Math.sin(time * 0.6) ** 2) * ie;
+    post.u.tr.value = reduceMotion ? 0 : Math.sin(Math.PI * w);
+    post.u.time.value = time;
+    post.render();
+  } else renderer.render(scene, camera);
   if (first) {
     first = false;
     window.__sisaketStarted = true;
