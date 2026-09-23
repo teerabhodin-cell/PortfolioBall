@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ศรีสะเกษ 3D</title>
+<meta name="description" content="บินชมแหล่งท่องเที่ยวจังหวัดศรีสะเกษบนแผนที่ 3D ปราสาทสระกำแพงใหญ่ วัดพระธาตุเรืองรอง วัดล้านขวด ทุเรียนภูเขาไฟ และผามออีแดง พร้อมคู่มือวางแผนเที่ยว">
+<meta name="theme-color" content="#0f1424">
+<link rel="icon" type="image/png" href="../logo_transparent.png"><!--repo-only-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chonburi&family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600&family=Chakra+Petch:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #0f1424;
+    --ink-2: #151b2f;
+    --ink-3: #1e263f;
+    --cream: #f3ebdd;
+    --cream-2: rgba(243, 235, 221, .82);
+    --muted: #a4a9bb;
+    --laterite: #c2623b;
+    --laterite-deep: #8f3f22;
+    --gold: #f2c75c;
+    --leaf: #6f9b56;
+    --rain: #6d8fbf;
+    --line: rgba(243, 235, 221, .14);
+    --glass: rgba(15, 20, 36, .68);
+    --f-display: 'Chonburi', 'Noto Serif Thai', 'Tahoma', serif;
+    --f-body: 'IBM Plex Sans Thai Looped', 'Noto Sans Thai', 'Leelawadee UI', system-ui, sans-serif;
+    --f-ui: 'Chakra Petch', 'IBM Plex Sans Thai Looped', system-ui, sans-serif;
+    --gutter: clamp(16px, 4vw, 56px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.75;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  h1, h2, h3 { text-wrap: balance; }
+
+  /* ---------- fixed layers ---------- */
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  .veil {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(15, 20, 36, .55) 0, rgba(15, 20, 36, 0) 140px),
+      linear-gradient(0deg, rgba(15, 20, 36, .5) 0, rgba(15, 20, 36, 0) 22%);
+  }
+  #pins { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+  .pin {
+    position: absolute; left: 0; top: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0; border: 0; background: none; color: var(--cream);
+    font: inherit; text-align: left; cursor: pointer;
+    opacity: 0; transform: translate(-9999px, 0);
+    will-change: transform, opacity;
+  }
+  .pin-dot {
+    flex: none; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 4px rgba(242, 199, 92, .25), 0 0 18px rgba(242, 199, 92, .6);
+  }
+  .pin-text {
+    background: rgba(15, 20, 36, .8); border: 1px solid var(--line);
+    padding: 3px 10px 4px; font-size: 13px; line-height: 1.35; white-space: nowrap;
+  }
+  .pin-text small { display: block; font-family: var(--f-ui); font-size: 11px; letter-spacing: .06em; color: var(--muted); }
+  .pin.minor .pin-dot { width: 6px; height: 6px; background: var(--cream); box-shadow: none; }
+  .pin.minor .pin-text { background: none; border: 0; padding: 0; font-size: 12px; text-shadow: 0 1px 8px rgba(0, 0, 0, .9); }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutter) 14px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand svg { width: 30px; height: 30px; }
+  .brand b { font-family: var(--f-display); font-weight: 400; font-size: 19px; line-height: 1.1; display: block; }
+  .brand small { display: block; font-family: var(--f-ui); font-size: 10px; letter-spacing: .28em; color: var(--muted); }
+  .topbar nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .topbar nav a {
+    text-decoration: none; font-size: 14px; padding: 6px 12px;
+    border: 1px solid transparent; transition: border-color .2s, background .2s;
+  }
+  .topbar nav a:hover { border-color: var(--line); background: rgba(15, 20, 36, .5); }
+  .topbar .nav-short { display: none; }
+
+  /* ---------- tour ---------- */
+  #tour { position: relative; z-index: 3; }
+  .chapter {
+    position: relative; min-height: 150vh; height: 150vh;
+    display: flex; align-items: center;
+    padding-inline: var(--gutter);
+  }
+  .chapter[data-side="right"] { justify-content: flex-end; }
+  .chapter[data-side="right"] .card { margin-right: 44px; }
+
+  .hero { align-items: flex-start; }
+  .hero-inner {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;
+    padding-block: 120px 72px; max-width: 640px;
+  }
+  .eyebrow {
+    font-family: var(--f-ui); font-weight: 600; font-size: 12px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--gold); margin: 0 0 10px;
+  }
+  .hero h1 {
+    font-family: var(--f-display); font-weight: 400;
+    font-size: clamp(64px, 11vw, 150px); line-height: 1.12; margin: 0;
+    letter-spacing: -.01em;
+    text-shadow: 0 6px 40px rgba(15, 20, 36, .55);
+  }
+  .hero h1 span { display: block; font-family: var(--f-ui); font-size: .16em; letter-spacing: .6em; color: var(--cream-2); margin-top: 4px; }
+  .lede { font-size: clamp(17px, 1.6vw, 20px); color: var(--cream); max-width: 34em; margin: 18px 0 26px; text-shadow: 0 2px 16px rgba(15, 20, 36, .8); }
+  .hero-stats { display: flex; gap: 0; margin: 0 0 28px; border: 1px solid var(--line); width: fit-content; max-width: 100%; background: var(--glass); backdrop-filter: blur(8px); }
+  .hero-stats div { padding: 10px 18px; border-left: 1px solid var(--line); }
+  .hero-stats div:first-child { border-left: 0; }
+  .hero-stats dt { font-family: var(--f-ui); font-size: 11px; letter-spacing: .12em; color: var(--muted); }
+  .hero-stats dd { margin: 0; font-family: var(--f-ui); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--gold); color: #1a1406; text-decoration: none; border: 0;
+    font: 600 15px/1 var(--f-body); padding: 14px 20px; cursor: pointer;
+    transition: transform .2s, background .2s;
+  }
+  .btn:hover { transform: translateY(-2px); background: #f7d77f; }
+  .btn.ghost { background: transparent; color: var(--cream); border: 1px solid var(--line); }
+  .btn.ghost:hover { background: rgba(15, 20, 36, .6); }
+  .fineprint { font-size: 12px; color: var(--muted); margin: 0; }
+
+  .card {
+    position: relative; width: min(460px, 100%);
+    background: var(--glass); border: 1px solid var(--line);
+    padding: 26px 28px 24px;
+    backdrop-filter: blur(12px) saturate(1.15); -webkit-backdrop-filter: blur(12px) saturate(1.15);
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .7);
+  }
+  .card-kicker {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-family: var(--f-ui); font-weight: 600; font-size: 12px; letter-spacing: .14em; color: var(--gold);
+  }
+  .card-kicker svg { width: 18px; height: 18px; flex: none; }
+  .card-kicker .step { color: var(--cream); font-variant-numeric: tabular-nums; }
+  .card h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(27px, 3vw, 38px); line-height: 1.3; margin: 10px 0 12px; }
+  .card h2 small { display: block; font-family: var(--f-body); font-size: 15px; color: var(--muted); margin-top: 2px; }
+  .card p { margin: 0 0 18px; color: var(--cream-2); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); }
+  .facts div { background: rgba(15, 20, 36, .72); padding: 9px 12px 10px; }
+  .facts dt { font-family: var(--f-ui); font-size: 11px; letter-spacing: .1em; color: var(--muted); }
+  .facts dd { margin: 2px 0 0; font-size: 14px; line-height: 1.45; }
+  .facts .warn dd { color: var(--gold); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none; }
+  .chips li { font-size: 13px; border: 1px solid var(--line); padding: 4px 10px; background: rgba(15, 20, 36, .5); }
+  .chips li small { color: var(--muted); }
+
+  /* HUD + chapter dots */
+  .hud {
+    position: fixed; z-index: 15; left: var(--gutter);
+    bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--f-ui); font-weight: 600; font-size: 12px; letter-spacing: .14em;
+    transition: opacity .3s;
+  }
+  .hud .count { font-variant-numeric: tabular-nums; }
+  .hud .bar { width: 120px; height: 2px; background: rgba(243, 235, 221, .2); position: relative; overflow: hidden; }
+  .hud .bar i { position: absolute; inset: 0; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+  .dots {
+    position: fixed; z-index: 15; right: calc(18px + env(safe-area-inset-right, 0px)); top: 50%;
+    transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px;
+    transition: opacity .3s;
+  }
+  .dots button {
+    position: relative; width: 12px; height: 12px; padding: 0; border-radius: 50%;
+    border: 1px solid rgba(243, 235, 221, .65); background: rgba(15, 20, 36, .4); cursor: pointer;
+  }
+  .dots button[aria-current="true"] { background: var(--gold); border-color: var(--gold); }
+  .dots button span {
+    position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+    white-space: nowrap; font: 13px/1.4 var(--f-body); color: var(--cream);
+    background: rgba(15, 20, 36, .85); padding: 3px 9px; border: 1px solid var(--line);
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .dots button:hover span, .dots button:focus-visible span { opacity: 1; }
+  body.past-tour .hud, body.past-tour .dots, body.past-tour #pins { opacity: 0; pointer-events: none; visibility: hidden; }
+  body.past-tour #scene, body.past-tour .veil { visibility: hidden; }
+
+  /* loader */
+  #loader {
+    position: fixed; inset: 0; z-index: 60; background: var(--ink);
+    display: grid; place-items: center; transition: opacity .7s, visibility .7s;
+  }
+  #loader.done { opacity: 0; visibility: hidden; }
+  #loader .ld { display: grid; justify-items: center; gap: 14px; font-family: var(--f-ui); font-size: 12px; letter-spacing: .24em; color: var(--muted); }
+  #loader svg { width: 64px; height: 64px; animation: spin 5s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- guide ---------- */
+  #guide { position: relative; z-index: 3; background: var(--ink); }
+  #guide::before {
+    content: ""; position: absolute; left: 0; right: 0; top: -160px; height: 160px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(15, 20, 36, 0), var(--ink));
+  }
+  .sec { padding-block: clamp(72px, 10vw, 128px); border-top: 1px solid var(--line); }
+  .sec:first-child { border-top: 0; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding-inline: var(--gutter); }
+  .sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 56px; align-items: end; margin-bottom: 48px; }
+  .sec-head h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.2; margin: 0; }
+  .sec-head p { margin: 0; color: var(--cream-2); max-width: 36em; }
+
+  .people { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .person { background: var(--ink-2); border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .weave { height: 92px; border-bottom: 1px solid var(--line); }
+  .w-lao {
+    background:
+      repeating-linear-gradient(45deg, rgba(242, 199, 92, .9) 0 5px, transparent 5px 17px),
+      repeating-linear-gradient(-45deg, rgba(194, 98, 59, .95) 0 5px, transparent 5px 17px),
+      var(--ink-3);
+  }
+  .w-khmer {
+    background: repeating-linear-gradient(90deg, #2d4e8a 0 12px, var(--gold) 12px 14px, var(--laterite-deep) 14px 30px, var(--cream) 30px 31px, #2d4e8a 31px 36px);
+  }
+  .w-kui {
+    background:
+      repeating-linear-gradient(0deg, rgba(243, 235, 221, .85) 0 3px, transparent 3px 16px),
+      repeating-linear-gradient(90deg, rgba(243, 235, 221, .85) 0 3px, transparent 3px 16px),
+      #4f7a41;
+  }
+  .w-yoe { background: radial-gradient(circle, var(--gold) 2.5px, transparent 3.2px) 0 0 / 14px 14px, radial-gradient(circle, rgba(243, 235, 221, .5) 1.5px, transparent 2px) 7px 7px / 14px 14px, var(--laterite-deep); }
+  .person-body { padding: 18px 20px 22px; }
+  .person h3 { font-family: var(--f-display); font-weight: 400; font-size: 24px; margin: 0 0 6px; line-height: 1.3; }
+  .person p { margin: 0; font-size: 15px; color: var(--cream-2); }
+
+  .ribbon-scroll { overflow-x: auto; padding-bottom: 6px; margin-bottom: 36px; }
+  .ribbon { min-width: 880px; display: grid; gap: 6px; padding-top: 18px; }
+  .ribbon .row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px; }
+  .ribbon .m { font-family: var(--f-ui); font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); text-align: center; padding: 6px 0; border-bottom: 1px solid var(--line); position: relative; }
+  .ribbon .m.now { color: var(--gold); border-bottom-color: var(--gold); }
+  .ribbon .m.now::after { content: "เดือนนี้"; position: absolute; left: 50%; top: -18px; transform: translateX(-50%); font-size: 10px; letter-spacing: .1em; white-space: nowrap; }
+  .ev { font-size: 13px; line-height: 1.3; padding: 7px 10px; color: #14100a; font-weight: 500; }
+  .ev.cool { background: #c9d6e8; }
+  .ev.fest { background: var(--gold); }
+  .ev.fruit { background: #a6c78c; }
+  .ev.rain { background: var(--rain); color: var(--cream); }
+  .ev.trad { background: var(--laterite); color: var(--cream); }
+  .season-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 40px; margin: 0; padding: 0; list-style: none; }
+  .season-list li { border-top: 1px solid var(--line); padding-top: 14px; }
+  .season-list .when { font-family: var(--f-ui); font-weight: 600; font-size: 13px; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; }
+  .season-list .when i { width: 10px; height: 10px; display: inline-block; }
+  .season-list h3 { font-size: 18px; font-weight: 600; margin: 6px 0 4px; line-height: 1.4; }
+  .season-list p { margin: 0; font-size: 15px; color: var(--cream-2); }
+  .note { font-size: 13px; color: var(--muted); margin: 32px 0 0; }
+
+  .goods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
+  .good { padding: 28px 30px 30px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 64px 1fr; gap: 6px 20px; align-items: start; }
+  .good:nth-child(2n) { border-right: 0; }
+  .good:nth-last-child(-n+2) { border-bottom: 0; }
+  .good svg { width: 64px; height: 64px; grid-row: span 3; }
+  .good h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1.35; }
+  .tag { display: inline-block; font-family: var(--f-ui); font-weight: 600; font-size: 11px; letter-spacing: .12em; border: 1px solid var(--gold); color: var(--gold); padding: 1px 7px; margin-right: 6px; }
+  .tag.plain { border-color: var(--line); color: var(--muted); }
+  .good p { margin: 4px 0 0; font-size: 15px; color: var(--cream-2); }
+
+  .days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+  .day { background: var(--ink-2); border: 1px solid var(--line); padding: 26px 28px 10px; }
+  .day h3 { font-family: var(--f-display); font-weight: 400; font-size: 24px; margin: 0 0 4px; line-height: 1.35; }
+  .day > p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+  .stops { list-style: none; margin: 0; padding: 0; }
+  .stops li { display: grid; grid-template-columns: 58px 1fr; gap: 14px; padding: 14px 0 16px; border-top: 1px solid var(--line); position: relative; }
+  .stops time { font-family: var(--f-ui); font-weight: 600; font-size: 15px; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .stops b { font-weight: 600; display: block; line-height: 1.45; }
+  .stops span { display: block; font-size: 14px; color: var(--cream-2); line-height: 1.6; }
+  .stops small { color: var(--muted); font-size: 13px; }
+
+  .modes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-bottom: 36px; }
+  .mode { border-top: 2px solid var(--laterite); padding-top: 16px; }
+  .mode .k { font-family: var(--f-ui); font-weight: 600; font-size: 12px; letter-spacing: .14em; color: var(--muted); }
+  .mode h3 { font-size: 19px; font-weight: 600; margin: 4px 0 6px; line-height: 1.4; }
+  .mode .big { font-family: var(--f-ui); font-weight: 600; font-size: 28px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .mode p { margin: 6px 0 0; font-size: 15px; color: var(--cream-2); }
+  .tips { background: var(--ink-2); border: 1px solid var(--line); padding: 24px 28px; display: grid; grid-template-columns: 200px 1fr; gap: 12px 32px; }
+  .tips h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1.35; }
+  .tips ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--cream-2); }
+  .tips li::marker { color: var(--gold); }
+  .tips strong { color: var(--cream); font-weight: 600; }
+
+  footer.foot { padding-block: 56px 40px; border-top: 1px solid var(--line); }
+  .foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 32px; align-items: end; }
+  .foot p { margin: 0; font-size: 13px; color: var(--muted); max-width: 60ch; }
+  .foot .again { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* fallback when WebGL is unavailable */
+  body.no-webgl #scene, body.no-webgl #pins, body.no-webgl .hud, body.no-webgl .dots { display: none; }
+  body.no-webgl #tour { background: radial-gradient(120% 80% at 70% 10%, #3b2b52 0, var(--ink) 60%), var(--ink); }
+  body.no-webgl .chapter { height: auto; min-height: 90vh; }
+
+  @media (max-width: 1000px) {
+    .people { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .modes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .season-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .topbar nav a:not(.nav-short) { display: none; }
+    .topbar .nav-short { display: inline-block; border-color: var(--line); background: rgba(15, 20, 36, .5); }
+    .chapter { align-items: flex-end; height: 140vh; min-height: 140vh; padding-bottom: 14vh; }
+    .chapter[data-side="right"] .card { margin-right: 0; }
+    .chapter .card { width: 100%; padding: 20px 20px 18px; }
+    .hero { align-items: flex-start; padding-bottom: 0; }
+    .hero-inner {
+      padding-block: 96px 40px; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter);
+      background: linear-gradient(180deg, rgba(15, 20, 36, 0) 38%, rgba(15, 20, 36, .78) 60%, rgba(15, 20, 36, .86));
+    }
+    .hero-stats div { padding: 8px 12px; }
+    .hero-stats dd { font-size: 18px; }
+    .dots, .hud { display: none; }
+    .sec-head { grid-template-columns: 1fr; margin-bottom: 32px; }
+    .people, .goods, .days, .season-list { grid-template-columns: 1fr; }
+    .good { border-right: 0 !important; border-bottom: 1px solid var(--line) !important; padding: 22px 20px; grid-template-columns: 48px 1fr; }
+    .good:last-child { border-bottom: 0 !important; }
+    .good svg { width: 48px; height: 48px; }
+    .day { padding: 22px 20px 6px; }
+    .tips { grid-template-columns: 1fr; padding: 22px 20px; }
+    .pin-text { font-size: 12px; }
+  }
+  @media (max-width: 480px) {
+    .modes { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    #loader svg { animation: none; }
+    .btn { transition: none; }
+  }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="lamduan" viewBox="-32 -32 64 64">
+      <g fill="#f2c75c">
+        <path d="M0 -4 C 10 -10 12 -24 0 -30 C -12 -24 -10 -10 0 -4Z"/>
+        <path d="M0 -4 C 10 -10 12 -24 0 -30 C -12 -24 -10 -10 0 -4Z" transform="rotate(120)"/>
+        <path d="M0 -4 C 10 -10 12 -24 0 -30 C -12 -24 -10 -10 0 -4Z" transform="rotate(240)"/>
+      </g>
+      <g fill="#c2623b">
+        <path d="M0 0 C 6 -3 7 -11 0 -15 C -7 -11 -6 -3 0 0Z" transform="rotate(60)"/>
+        <path d="M0 0 C 6 -3 7 -11 0 -15 C -7 -11 -6 -3 0 0Z" transform="rotate(180)"/>
+        <path d="M0 0 C 6 -3 7 -11 0 -15 C -7 -11 -6 -3 0 0Z" transform="rotate(300)"/>
+      </g>
+      <circle r="3.2" fill="#0f1424"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld">
+    <svg aria-hidden="true"><use href="#lamduan"/></svg>
+    <span>กำลังสร้างแผนที่ศรีสะเกษ</span>
+  </div>
+</div>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div id="pins" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="กลับขึ้นด้านบน">
+    <svg aria-hidden="true"><use href="#lamduan"/></svg>
+    <span><b>ศรีสะเกษ</b><small>SISAKET · TH</small></span>
+  </a>
+  <nav aria-label="เมนูหลัก">
+    <a href="#ch-1">แผนที่ 3D</a>
+    <a href="#people">4 ชาติพันธุ์</a>
+    <a href="#seasons">ฤดูเที่ยว</a>
+    <a href="#trip">ทริป 2 วัน</a>
+    <a href="#travel">การเดินทาง</a>
+    <a class="nav-short" href="#guide">คู่มือเที่ยว</a>
+  </nav>
+</header>
+
+<div class="hud" aria-hidden="true">
+  <span class="count" id="hud-count">00 / 05</span>
+  <span class="bar"><i id="hud-bar"></i></span>
+  <span id="hud-name">ภาพรวมจังหวัด</span>
+</div>
+<nav class="dots" id="dots" aria-label="จุดเที่ยวบนแผนที่"></nav>
+
+<main>
+  <div id="tour">
+    <section class="chapter hero" id="top" data-side="left" data-name="ภาพรวมจังหวัด">
+      <div class="hero-inner">
+        <p class="eyebrow">อีสานใต้ · ริมเทือกเขาพนมดงรัก</p>
+        <h1>ศรีสะเกษ<span>SISAKET</span></h1>
+        <p class="lede">ปราสาทขอมเกือบพันปี ดอกลำดวนส่งกลิ่นหอมทั้งเมือง ทุเรียนที่ปลูกบนดินภูเขาไฟ และวัดที่สร้างจากขวดแก้วนับล้านใบ เลื่อนลงเพื่อบินชม 5 จุดเด่นบนแผนที่ 3D</p>
+        <dl class="hero-stats">
+          <div><dt>อำเภอ</dt><dd>22</dd></div>
+          <div><dt>ชาติพันธุ์หลัก</dt><dd>4</dd></div>
+          <div><dt>จากกรุงเทพฯ</dt><dd>≈570 กม.</dd></div>
+        </dl>
+        <div class="cta-row">
+          <a class="btn" href="#ch-1">เริ่มบินชม <span aria-hidden="true">↓</span></a>
+          <p class="fineprint">แผนที่จำลองย่อส่วน ตำแหน่งและขนาดไม่ได้อิงมาตราส่วนจริง</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-1" data-side="left" data-name="ปราสาทสระกำแพงใหญ่">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 1/5</span><span>อ.อุทุมพรพิสัย</span></div>
+        <h2>ปราสาทสระกำแพงใหญ่</h2>
+        <p>ปราสาทหินขอมที่ใหญ่ที่สุดของศรีสะเกษ สร้างราวพุทธศตวรรษที่ 16–17 เดิมเป็นเทวสถานในศาสนาฮินดู ปรางค์อิฐเรียงบนฐานเดียวกัน ล้อมด้วยระเบียงคดและซุ้มประตู ทับหลังและหน้าบันยังเห็นลายสลักชัดเจน</p>
+        <dl class="facts">
+          <div><dt>ศิลปะ</dt><dd>ขอมแบบบาปวน</dd></div>
+          <div><dt>ช่วงแสงสวย</dt><dd>เช้าตรู่และเย็น</dd></div>
+          <div><dt>ไปต่อใกล้ ๆ</dt><dd>ปราสาทสระกำแพงน้อย</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-2" data-side="right" data-name="พระธาตุเรืองรอง & ลำดวน">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 2/5</span><span>อ.เมืองศรีสะเกษ</span></div>
+        <h2>วัดพระธาตุเรืองรอง<small>และสวนดอกลำดวน</small></h2>
+        <p>พระธาตุทรงสูงหลายชั้นที่ผสมศิลปะของ 4 ชาติพันธุ์ คือ ลาว เขมร ส่วย (กูย) และเยอ ภายในจัดแสดงข้าวของเครื่องใช้พื้นบ้าน ใกล้ตัวเมืองมีสวนสมเด็จศรีนครินทร์ ร่มรื่นด้วยต้นลำดวน ดอกไม้ประจำจังหวัด ซึ่งออกดอกหอมราวเดือนมีนาคม</p>
+        <dl class="facts">
+          <div><dt>จุดเด่น</dt><dd>สถาปัตยกรรม 4 ชาติพันธุ์</dd></div>
+          <div><dt>ลำดวนบาน</dt><dd>ราวเดือนมีนาคม</dd></div>
+          <div><dt>การเดินทาง</dt><dd>ใกล้ตัวเมือง</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-3" data-side="left" data-name="วัดล้านขวด">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 3/5</span><span>อ.ขุนหาญ</span></div>
+        <h2>วัดป่ามหาเจดีย์แก้ว<small>หรือ “วัดล้านขวด”</small></h2>
+        <p>ทั้งอุโบสถ ศาลา และกุฏิ ประดับด้วยขวดแก้วสีเขียวและสีน้ำตาลนับล้านใบ ก้นขวดเรียงกันเป็นลวดลายระยิบระยับยามแดดส่อง เป็นงานพุทธศิลป์ที่นำของเหลือใช้กลับมาสร้างเป็นศาสนสถาน</p>
+        <dl class="facts">
+          <div><dt>วัสดุ</dt><dd>ขวดแก้วนับล้านใบ</dd></div>
+          <div><dt>ช่วงแสงสวย</dt><dd>แดดเฉียงช่วงเช้าหรือบ่าย</dd></div>
+          <div><dt>มารยาท</dt><dd>แต่งกายสุภาพ</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-4" data-side="right" data-name="ทุเรียนภูเขาไฟ">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 4/5</span><span>กันทรลักษ์ · ขุนหาญ · ศรีรัตนะ</span></div>
+        <h2>ทุเรียนภูเขาไฟ<small>และน้ำตกห้วยจันทร์</small></h2>
+        <p>ดินบะซอลต์จากภูเขาไฟที่ดับสนิทแล้วทำให้ทุเรียนที่นี่เนื้อแน่น หวานมัน จนได้ขึ้นทะเบียนสิ่งบ่งชี้ทางภูมิศาสตร์ (GI) ในชื่อ “ทุเรียนภูเขาไฟศรีสะเกษ” แถบเดียวกันยังมีสวนเงาะ มังคุด และน้ำตกห้วยจันทร์ที่ไหลแรงช่วงหน้าฝน</p>
+        <dl class="facts">
+          <div><dt>ฤดูทุเรียน</dt><dd>ราว พ.ค.–ก.ค.</dd></div>
+          <div><dt>ตรารับรอง</dt><dd>GI ทุเรียนภูเขาไฟ</dd></div>
+          <div><dt>น้ำตกสวย</dt><dd>หน้าฝน ก.ค.–ต.ค.</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-5" data-side="left" data-name="ผามออีแดง">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span class="step">จุดที่ 5/5</span><span>อุทยานแห่งชาติเขาพระวิหาร อ.กันทรลักษ์</span></div>
+        <h2>ผามออีแดง</h2>
+        <p>หน้าผาบนเทือกเขาพนมดงรัก ยืนที่ขอบผาจะเห็นที่ราบฝั่งกัมพูชากว้างสุดตา ใต้หน้าผามีภาพสลักนูนต่ำรูปเทพ 3 องค์ ซึ่งนับเป็นภาพสลักนูนต่ำที่เก่าแก่ที่สุดแห่งหนึ่งของไทย ใกล้ทางเดินมีสถูปคู่ศิลาทรายและสระตราว</p>
+        <dl class="facts">
+          <div><dt>ไฮไลต์</dt><dd>แสงแรกของวันเหนือที่ราบ</dd></div>
+          <div><dt>เดินชม</dt><dd>ภาพสลัก · สถูปคู่ · สระตราว</dd></div>
+          <div class="warn"><dt>พื้นที่ชายแดน</dt><dd>เช็กประกาศเปิด–ปิดก่อนไป</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-6" data-side="left" data-name="ยังมีอีกมาก">
+      <article class="card">
+        <div class="card-kicker"><svg aria-hidden="true"><use href="#lamduan"/></svg><span>นอกเหนือจาก 5 จุดนี้</span></div>
+        <h2>ศรีสะเกษยังมีอีกหลายที่</h2>
+        <ul class="chips">
+          <li>ปราสาทสระกำแพงน้อย <small>อ.เมือง</small></li>
+          <li>วัดมหาพุทธาราม (หลวงพ่อโต) <small>อ.เมือง</small></li>
+          <li>ปราสาทบ้านปราสาท <small>อ.ห้วยทับทัน</small></li>
+          <li>ปราสาทตำหนักไทร <small>อ.อุทุมพรพิสัย</small></li>
+          <li>ปราสาทปรางค์กู่ <small>อ.ปรางค์กู่</small></li>
+          <li>น้ำตกสำโรงเกียรติ <small>อ.ขุนหาญ</small></li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn" href="#guide">เปิดคู่มือวางแผนเที่ยว <span aria-hidden="true">↓</span></a>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <div id="guide">
+    <section class="sec" id="people">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow">ผู้คน</p>
+            <h2>สี่ชาติพันธุ์ หนึ่งศรีสะเกษ</h2>
+          </div>
+          <p>ศรีสะเกษเป็นบ้านของ 4 กลุ่มชาติพันธุ์หลัก แต่ละกลุ่มมีภาษา ประเพณี และผ้าทอเป็นของตัวเอง งานเทศกาลดอกลำดวนบานทุกปีจึงมักมีขบวนแห่และการแสดงของทั้งสี่กลุ่ม</p>
+        </div>
+        <div class="people">
+          <article class="person"><div class="weave w-lao" aria-hidden="true"></div><div class="person-body">
+            <h3>ลาว</h3>
+            <p>กลุ่มที่มีจำนวนมากที่สุด พูดภาษาอีสาน ถือฮีตสิบสองคองสิบสี่ มีงานบุญประจำปีอย่างบุญบั้งไฟและบุญผะเหวด</p>
+          </div></article>
+          <article class="person"><div class="weave w-khmer" aria-hidden="true"></div><div class="person-body">
+            <h3>เขมร</h3>
+            <p>พูดภาษาเขมรถิ่นไทย อาศัยหนาแน่นทางตอนใต้ใกล้ชายแดน มีดนตรีกันตรึมและพิธีแซนโฎนตาเพื่อระลึกถึงบรรพบุรุษ</p>
+          </div></article>
+          <article class="person"><div class="weave w-kui" aria-hidden="true"></div><div class="person-body">
+            <h3>ส่วย (กูย)</h3>
+            <p>มีภาษากูยเป็นของตัวเอง ผูกพันกับวิถีคนกับช้างมาแต่โบราณ และยังสืบทอดพิธีเซ่นไหว้ผีปะกำ</p>
+          </div></article>
+          <article class="person"><div class="weave w-yoe" aria-hidden="true"></div><div class="person-body">
+            <h3>เยอ</h3>
+            <p>กลุ่มที่มีจำนวนน้อยที่สุดในสี่กลุ่ม ภาษาเยอเป็นเครือเดียวกับภาษากูย หลายชุมชนยังรักษาภาษาและพิธีดั้งเดิมไว้</p>
+          </div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="seasons">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow">ปฏิทิน</p>
+            <h2>ไปเดือนไหนดี</h2>
+          </div>
+          <p>ปลายฝนต้นหนาวเที่ยวสบายที่สุด แต่ถ้าอยากกินทุเรียนหรือดูดอกลำดวนบาน ต้องเลือกเดือนให้ตรงฤดู</p>
+        </div>
+        <div class="ribbon-scroll">
+          <div class="ribbon" aria-hidden="true">
+            <div class="row" id="months">
+              <div class="m">ม.ค.</div><div class="m">ก.พ.</div><div class="m">มี.ค.</div><div class="m">เม.ย.</div><div class="m">พ.ค.</div><div class="m">มิ.ย.</div><div class="m">ก.ค.</div><div class="m">ส.ค.</div><div class="m">ก.ย.</div><div class="m">ต.ค.</div><div class="m">พ.ย.</div><div class="m">ธ.ค.</div>
+            </div>
+            <div class="row"><span class="ev cool" style="grid-column:1 / 3">อากาศเย็น</span><span class="ev cool" style="grid-column:11 / 13">อากาศเย็น เที่ยวสบาย</span></div>
+            <div class="row"><span class="ev fest" style="grid-column:3 / 4">ลำดวนบาน</span><span class="ev trad" style="grid-column:4 / 5">สงกรานต์</span></div>
+            <div class="row"><span class="ev fruit" style="grid-column:5 / 8">ทุเรียน เงาะ มังคุด</span></div>
+            <div class="row"><span class="ev rain" style="grid-column:7 / 11">หน้าฝน น้ำตกไหลแรง ทุ่งนาเขียว</span></div>
+            <div class="row"><span class="ev trad" style="grid-column:9 / 11">แซนโฎนตา</span></div>
+          </div>
+        </div>
+        <ul class="season-list">
+          <li>
+            <div class="when"><i style="background:#c9d6e8"></i>พ.ย. – ก.พ.</div>
+            <h3>หน้าหนาว เที่ยวสบายที่สุด</h3>
+            <p>อากาศเย็นและแห้ง เหมาะกับเดินชมปราสาทกลางแจ้งและขึ้นไปรอแสงเช้าที่ผามออีแดง</p>
+          </li>
+          <li>
+            <div class="when"><i style="background:#f2c75c"></i>มี.ค.</div>
+            <h3>เทศกาลดอกลำดวนบาน</h3>
+            <p>จัดที่สวนสมเด็จศรีนครินทร์ ช่วงที่ต้นลำดวนออกดอกพร้อมกัน มีการแสดงวัฒนธรรมของ 4 ชาติพันธุ์</p>
+          </li>
+          <li>
+            <div class="when"><i style="background:#a6c78c"></i>พ.ค. – ก.ค.</div>
+            <h3>ฤดูทุเรียนภูเขาไฟ</h3>
+            <p>ผลไม้ออกพร้อมกันทั้งทุเรียน เงาะ และมังคุด มักมีงานเทศกาลผลไม้ประจำปีที่ อ.กันทรลักษ์</p>
+          </li>
+          <li>
+            <div class="when"><i style="background:#6d8fbf"></i>ก.ค. – ต.ค.</div>
+            <h3>หน้าฝน</h3>
+            <p>น้ำตกห้วยจันทร์และน้ำตกสำโรงเกียรติมีน้ำเต็มที่ ทุ่งนารอบเมืองเขียวทั้งจังหวัด ถนนบนเขาอาจลื่น</p>
+          </li>
+          <li>
+            <div class="when"><i style="background:#c2623b"></i>ราว ก.ย. – ต.ค.</div>
+            <h3>แซนโฎนตา</h3>
+            <p>ประเพณีเซ่นไหว้บรรพบุรุษของชาวเขมร วันจัดขึ้นกับปฏิทินจันทรคติ จึงเลื่อนไปมาทุกปี</p>
+          </li>
+          <li>
+            <div class="when"><i style="background:#c2623b"></i>เม.ย.</div>
+            <h3>สงกรานต์</h3>
+            <p>ช่วงร้อนที่สุดของปี แต่บรรยากาศงานบุญและรดน้ำดำหัวตามหมู่บ้านคึกคัก</p>
+          </li>
+        </ul>
+        <p class="note">วันจัดงานเทศกาลเปลี่ยนทุกปี ตรวจสอบกับจังหวัด ททท. หรือสำนักงานการท่องเที่ยวและกีฬาจังหวัดศรีสะเกษก่อนเดินทาง</p>
+      </div>
+    </section>
+
+    <section class="sec" id="taste">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow">ของดี</p>
+            <h2>ติดมือกลับบ้าน</h2>
+          </div>
+          <p>ศรีสะเกษมีสินค้าที่ได้ขึ้นทะเบียนสิ่งบ่งชี้ทางภูมิศาสตร์ (GI) หลายรายการ เพราะดินและแหล่งปลูกของที่นี่ให้รสชาติที่ปลูกที่อื่นแล้วไม่เหมือน</p>
+        </div>
+        <div class="goods">
+          <article class="good">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="36" rx="20" ry="23" fill="#8d9a3a"/><g fill="#b5bf4c"><path d="M32 13l3 6h-6z"/><path d="M20 20l5 4-6 2z"/><path d="M44 20l1 6-6-2z"/><path d="M14 34l6-2-1 6z"/><path d="M50 34l-5 4-1-6z"/><path d="M22 50l3-5 3 5z"/><path d="M36 50l3-5 3 5z"/><path d="M28 30l4-5 4 5z"/><path d="M26 40l3-4 3 4z"/><path d="M35 40l3-4 3 4z"/></g><rect x="30" y="6" width="4" height="9" fill="#6b5a2e"/></svg>
+            <h3>ทุเรียนภูเขาไฟศรีสะเกษ</h3>
+            <div><span class="tag">GI</span><span class="tag plain">พ.ค.–ก.ค.</span></div>
+            <p>ปลูกบนดินภูเขาไฟใน อ.กันทรลักษ์ ขุนหาญ และศรีรัตนะ เนื้อละเอียด หวานมัน ซื้อได้ทั้งหน้าสวนและร้านริมทาง</p>
+          </article>
+          <article class="good">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c-2 8-16 16-16 32a16 16 0 0032 0C48 24 34 16 32 8z" fill="#b0424d"/><path d="M32 12c-1 10-8 18-8 30 0 7 4 12 8 12" fill="none" stroke="#e7a0a6" stroke-width="2"/><path d="M26 56h12" stroke="#d8c7a0" stroke-width="3"/></svg>
+            <h3>หอมแดงศรีสะเกษ</h3>
+            <div><span class="tag">GI</span><span class="tag plain">ยางชุมน้อย · ราษีไศล</span></div>
+            <p>หัวเล็ก สีแดงเข้ม กลิ่นหอมฉุน เป็นวัตถุดิบหลักของน้ำพริกและเครื่องแกง ตลาดในเมืองมีขายแบบมัดจุก</p>
+          </article>
+          <article class="good">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 58V20" stroke="#c9b061" stroke-width="3"/><g fill="#e7d596"><ellipse cx="26" cy="22" rx="4" ry="7" transform="rotate(-25 26 22)"/><ellipse cx="38" cy="22" rx="4" ry="7" transform="rotate(25 38 22)"/><ellipse cx="25" cy="34" rx="4" ry="7" transform="rotate(-25 25 34)"/><ellipse cx="39" cy="34" rx="4" ry="7" transform="rotate(25 39 34)"/><ellipse cx="32" cy="12" rx="4" ry="7"/><ellipse cx="25" cy="46" rx="4" ry="7" transform="rotate(-25 25 46)"/><ellipse cx="39" cy="46" rx="4" ry="7" transform="rotate(25 39 46)"/></g></svg>
+            <h3>ข้าวหอมมะลิทุ่งกุลาร้องไห้</h3>
+            <div><span class="tag">GI</span><span class="tag plain">บางอำเภอ</span></div>
+            <p>ทุ่งกุลาร้องไห้ส่วนหนึ่งอยู่ในเขตศรีสะเกษ ข้าวหอมมะลิจากทุ่งนี้เมล็ดเรียวยาว หุงแล้วนุ่มและหอม</p>
+          </article>
+          <article class="good">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="10" width="44" height="44" fill="#2d4e8a"/><g fill="#f2c75c"><path d="M32 16l8 8-8 8-8-8z"/><path d="M32 32l8 8-8 8-8-8z"/><path d="M16 24l4 4-4 4-4-4z"/><path d="M48 24l4 4-4 4-4-4z"/></g><path d="M10 14h44M10 50h44" stroke="#c2623b" stroke-width="3"/></svg>
+            <h3>ผ้าทอ 4 ชาติพันธุ์</h3>
+            <div><span class="tag plain">ไหม · ฝ้าย</span></div>
+            <p>ผ้าไหมและผ้าฝ้ายทอมือที่แต่ละชุมชนมีลวดลายของตัวเอง หาซื้อได้จากกลุ่มทอผ้าในหมู่บ้านและงานเทศกาลประจำจังหวัด</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="trip">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow">เส้นทางแนะนำ</p>
+            <h2>ทริป 2 วัน 1 คืน</h2>
+          </div>
+          <p>วันแรกเที่ยวรอบตัวเมืองกับฝั่งตะวันตก วันที่สองขึ้นใต้ไปแนวเทือกเขาพนมดงรัก พักในตัวเมืองคืนเดียวก็เที่ยวครบทั้ง 5 จุดบนแผนที่ ควรมีรถส่วนตัวหรือเช่ารถ</p>
+        </div>
+        <div class="days">
+          <article class="day">
+            <h3>วันที่ 1 · มรดกขอมและเมืองลำดวน</h3>
+            <p>ตัวเมือง · อุทุมพรพิสัย</p>
+            <ol class="stops">
+              <li><time>08:00</time><div><b>ปราสาทสระกำแพงใหญ่</b><span>ไปถึงตอนเช้า แดดยังอ่อน ปรางค์อิฐเป็นสีส้ม</span><small>อ.อุทุมพรพิสัย</small></div></li>
+              <li><time>10:30</time><div><b>ปราสาทสระกำแพงน้อย</b><span>อยู่บนทางกลับเข้าเมือง แวะชมได้ในครึ่งชั่วโมง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
+              <li><time>12:00</time><div><b>อาหารกลางวันในเมือง + วัดมหาพุทธาราม</b><span>ไหว้หลวงพ่อโต พระคู่บ้านคู่เมือง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
+              <li><time>15:00</time><div><b>วัดพระธาตุเรืองรอง</b><span>ขึ้นชั้นบนชมวิวทุ่งนา และดูเครื่องใช้พื้นบ้านที่จัดแสดง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
+              <li><time>17:00</time><div><b>สวนสมเด็จศรีนครินทร์</b><span>เดินเล่นใต้ต้นลำดวนตอนเย็น แล้วหาของกินที่ตลาดในเมือง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
+            </ol>
+          </article>
+          <article class="day">
+            <h3>วันที่ 2 · ขึ้นเทือกเขาพนมดงรัก</h3>
+            <p>กันทรลักษ์ · ขุนหาญ</p>
+            <ol class="stops">
+              <li><time>05:00</time><div><b>ออกจากตัวเมือง</b><span>ขับรถลงใต้ราว 1.5–2 ชั่วโมง ตรวจเวลาเปิดอุทยานฯ ไว้ก่อน</span><small>ระยะทางราว 100 กม.</small></div></li>
+              <li><time>07:00</time><div><b>ผามออีแดง</b><span>ชมแสงเช้าเหนือที่ราบ เดินลงไปดูภาพสลักนูนต่ำและสถูปคู่</span><small>อ.กันทรลักษ์</small></div></li>
+              <li><time>10:30</time><div><b>วัดป่ามหาเจดีย์แก้ว (วัดล้านขวด)</b><span>แดดสายทำให้ก้นขวดเป็นประกาย แต่งกายสุภาพ</span><small>อ.ขุนหาญ</small></div></li>
+              <li><time>13:00</time><div><b>สวนทุเรียนและร้านผลไม้ริมทาง</b><span>ถ้าตรงฤดู พ.ค.–ก.ค. หลายสวนเปิดให้ชมและกินที่สวน</span><small>ขุนหาญ · กันทรลักษ์</small></div></li>
+              <li><time>15:00</time><div><b>น้ำตกห้วยจันทร์</b><span>พักเท้าก่อนขับกลับ ช่วงหน้าฝนน้ำแรงเป็นพิเศษ</span><small>อ.ขุนหาญ</small></div></li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="travel">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow">การเดินทาง</p>
+            <h2>ไปศรีสะเกษอย่างไร</h2>
+          </div>
+          <p>ตัวเมืองอยู่ห่างจากกรุงเทพฯ ราว 570 กิโลเมตร มาได้ทั้งรถยนต์ รถไฟ รถทัวร์ และเครื่องบินผ่านอุบลราชธานี</p>
+        </div>
+        <div class="modes">
+          <article class="mode">
+            <div class="k">รถยนต์</div>
+            <div class="big">7–8 ชม.</div>
+            <h3>ขับรถเอง</h3>
+            <p>ถนนมิตรภาพ (ทางหลวง 2) ถึงนครราชสีมา แล้วต่อทางหลวง 226 ผ่านบุรีรัมย์–สุรินทร์</p>
+          </article>
+          <article class="mode">
+            <div class="k">รถไฟ</div>
+            <div class="big">สายอีสาน</div>
+            <h3>ลงสถานีศรีสะเกษ</h3>
+            <p>ขบวนสายกรุงเทพฯ–อุบลราชธานี ออกจากสถานีกลางกรุงเทพอภิวัฒน์ สถานีอยู่กลางเมือง</p>
+          </article>
+          <article class="mode">
+            <div class="k">รถทัวร์</div>
+            <div class="big">หมอชิต 2</div>
+            <h3>รถโดยสารประจำทาง</h3>
+            <p>มีรถออกหลายรอบทุกวันจากสถานีขนส่งหมอชิต 2 ปลายทางสถานีขนส่งศรีสะเกษ</p>
+          </article>
+          <article class="mode">
+            <div class="k">เครื่องบิน</div>
+            <div class="big">≈60 กม.</div>
+            <h3>บินลงอุบลราชธานี</h3>
+            <p>จากสนามบินอุบลราชธานีต่อรถเข้าเมืองศรีสะเกษราว 1 ชั่วโมง</p>
+          </article>
+        </div>
+        <div class="tips">
+          <h3>ก่อนออกเดินทาง</h3>
+          <ul>
+            <li><strong>เช่ารถหรือขับรถเอง</strong> สะดวกที่สุด จุดเที่ยวอยู่ห่างกันหลายสิบกิโลเมตร และรถสาธารณะไปถึงบางจุดได้ยาก</li>
+            <li><strong>พื้นที่ชายแดน</strong> เช่น ผามออีแดงและปราสาทโดนตวล อาจปิดให้เข้าชมชั่วคราว ตรวจสอบประกาศจากอุทยานแห่งชาติเขาพระวิหารก่อนเดินทางทุกครั้ง</li>
+            <li><strong>แต่งกายสุภาพ</strong> เมื่อเข้าวัดและโบราณสถาน และไม่ปีนป่ายตัวปราสาท</li>
+            <li><strong>พกน้ำและหมวก</strong> ปราสาทส่วนใหญ่เป็นลานโล่ง แดดแรงตั้งแต่สายจนบ่าย</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wrap">
+        <p>ข้อมูลในหน้านี้ใช้วางแผนเบื้องต้น เวลาเปิด–ปิดและวันจัดงานอาจเปลี่ยน ตรวจสอบกับหน่วยงานท้องถิ่นก่อนเดินทาง ภาพทั้งหมดเป็นโมเดล 3D ที่สร้างด้วยโค้ด ไม่ใช่ภาพถ่ายจริง<!--repo-only-start--> · ออกแบบและพัฒนาโดย <a href="../index.html">DevSphere Studio</a><!--repo-only-end--></p>
+        <div class="again">
+          <a class="btn ghost" href="#top">ดูแผนที่ 3D อีกครั้ง ↑</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<script>
+  // Mark the current month on the seasons ribbon (runs even without WebGL).
+  (function () {
+    var cells = document.querySelectorAll('#months .m');
+    var m = new Date().getMonth();
+    if (cells[m]) cells[m].classList.add('now');
+  })();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* ------------------------------------------------------------------ *
+ *  helpers
+ * ------------------------------------------------------------------ */
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+function mulberry(seed) {
+  return () => {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry(3301);
+const R = (a, b) => a + (b - a) * rand();
+const pick = arr => arr[Math.floor(rand() * arr.length)];
+
+const body = document.body;
+const isMobile = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const loader = document.getElementById('loader');
+function hideLoader() {
+  Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 1500))])
+    .then(() => loader.classList.add('done'));
+}
+
+/* ------------------------------------------------------------------ *
+ *  renderer
+ * ------------------------------------------------------------------ */
+const canvas = document.getElementById('scene');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+  if (!renderer.getContext()) throw new Error('no context');
+} catch (err) {
+  body.classList.add('no-webgl');
+  hideLoader();
+  throw err;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.5 : 1.75));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = !isMobile;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xf5b27c, 80, 300);
+const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.5, 1400);
+
+/* sky dome (gradient + sun glow), follows the camera */
+const skyU = {
+  top: { value: new THREE.Color('#1d2c59') },
+  bottom: { value: new THREE.Color('#f5b27c') },
+  sunDir: { value: new THREE.Vector3(0.6, 0.4, 0.5).normalize() },
+  sunColor: { value: new THREE.Color('#ffd3a3') },
+};
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(900, 32, 16),
+  new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false, uniforms: skyU,
+    vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `
+      uniform vec3 top; uniform vec3 bottom; uniform vec3 sunDir; uniform vec3 sunColor; varying vec3 vDir;
+      void main(){
+        vec3 d = normalize(vDir);
+        float h = clamp(d.y * 1.5 + 0.12, 0.0, 1.0);
+        vec3 c = mix(bottom, top, pow(h, 0.75));
+        float s = max(dot(d, normalize(sunDir)), 0.0);
+        c += sunColor * (pow(s, 900.0) * 2.0 + pow(s, 12.0) * 0.28);
+        gl_FragColor = vec4(c, 1.0);
+        #include <colorspace_fragment>
+      }`,
+  })
+);
+sky.renderOrder = -1;
+scene.add(sky);
+
+const hemi = new THREE.HemisphereLight('#cfdcff', '#6b5a3a', 1);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight('#ffffff', 3);
+sun.castShadow = !isMobile;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.04;
+scene.add(sun, sun.target);
+
+/* materials */
+const matCache = new Map();
+function M(color, opts = {}) {
+  const key = color + JSON.stringify(opts);
+  if (!matCache.has(key)) matCache.set(key, new THREE.MeshStandardMaterial({ color, roughness: 0.88, metalness: 0, flatShading: true, ...opts }));
+  return matCache.get(key);
+}
+const WATER = new THREE.MeshStandardMaterial({ color: '#3f8fc0', roughness: 0.12, metalness: 0.15 });
+const WHITE_INST = M('#ffffff');
+
+function add(geo, mat, x = 0, y = 0, z = 0, parent = scene, opts = {}) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(x, y, z);
+  m.castShadow = opts.cast !== false;
+  m.receiveShadow = opts.receive !== false;
+  parent.add(m);
+  return m;
+}
+const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+const dummy = new THREE.Object3D();
+const tmpColor = new THREE.Color();
+function inst(geo, mat, list, opts = {}) {
+  if (!list.length) return null;
+  const m = new THREE.InstancedMesh(geo, mat, list.length);
+  let hasColor = false;
+  list.forEach((it, i) => {
+    dummy.position.set(it.x, it.y, it.z);
+    dummy.rotation.set(it.rx || 0, it.ry || 0, it.rz || 0);
+    if (Array.isArray(it.s)) dummy.scale.set(it.s[0], it.s[1], it.s[2]);
+    else dummy.scale.setScalar(it.s || 1);
+    dummy.updateMatrix();
+    m.setMatrixAt(i, dummy.matrix);
+    if (it.c) { m.setColorAt(i, tmpColor.set(it.c)); hasColor = true; }
+  });
+  if (hasColor) m.instanceColor.needsUpdate = true;
+  m.castShadow = opts.cast !== false;
+  m.receiveShadow = opts.receive !== false;
+  (opts.parent || scene).add(m);
+  return m;
+}
+/* colour each face of a geometry by its normal / height */
+function paint(geo, fn) {
+  const g = geo.index ? geo.toNonIndexed() : geo;
+  g.computeVertexNormals();
+  const pos = g.attributes.position, nor = g.attributes.normal;
+  const cols = new Float32Array(pos.count * 3);
+  const c = new THREE.Color();
+  for (let i = 0; i < pos.count; i += 3) {
+    const ny = (nor.getY(i) + nor.getY(i + 1) + nor.getY(i + 2)) / 3;
+    const y = (pos.getY(i) + pos.getY(i + 1) + pos.getY(i + 2)) / 3;
+    fn(c, ny, y, rand());
+    for (let k = 0; k < 3; k++) { cols[(i + k) * 3] = c.r; cols[(i + k) * 3 + 1] = c.g; cols[(i + k) * 3 + 2] = c.b; }
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+  return g;
+}
+const vtxMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, flatShading: true });
+/* triangular prism, ridge along Z, base at y = 0 */
+function prism(w, h, L) {
+  const s = new THREE.Shape();
+  s.moveTo(-w / 2, 0); s.lineTo(w / 2, 0); s.lineTo(0, h); s.lineTo(-w / 2, 0);
+  const g = new THREE.ExtrudeGeometry(s, { depth: L, bevelEnabled: false });
+  g.translate(0, 0, -L / 2);
+  return g;
+}
+/* flat ribbon following a polyline (roads, rivers) */
+function ribbon(pts, width, yFn, mat) {
+  const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(p[0], 0, p[1])));
+  const N = Math.max(8, Math.floor(curve.getLength() * 1.5));
+  const pos = [], idx = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, p = curve.getPointAt(t), tg = curve.getTangentAt(t);
+    const l = Math.hypot(tg.x, tg.z) || 1, ox = -tg.z / l * width / 2, oz = tg.x / l * width / 2;
+    pos.push(p.x + ox, yFn(p.x + ox, p.z + oz), p.z + oz, p.x - ox, yFn(p.x - ox, p.z - oz), p.z - oz);
+    if (i < N) { const a = i * 2; idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, mat);
+  m.receiveShadow = true;
+  scene.add(m);
+  return m;
+}
+function distSeg(px, pz, ax, az, bx, bz) {
+  const dx = bx - ax, dz = bz - az;
+  const t = clamp(((px - ax) * dx + (pz - az) * dz) / (dx * dx + dz * dz || 1), 0, 1);
+  return Math.hypot(px - (ax + dx * t), pz - (az + dz * t));
+}
+const distPoly = (x, z, pl) => { let d = 1e9; for (let i = 0; i < pl.length - 1; i++) d = Math.min(d, distSeg(x, z, pl[i][0], pl[i][1], pl[i + 1][0], pl[i + 1][1])); return d; };
+
+/* ------------------------------------------------------------------ *
+ *  terrain: lowland rice plain (north) rising to the Phanom Dong Rak
+ *  plateau (south) which ends at the border escarpment
+ * ------------------------------------------------------------------ */
+const PH = 3.5;
+const groundH = z => z <= 4 ? 0 : z >= 12 ? PH : PH * smooth(4, 12, z);
+const riverZ = x => -35 + Math.sin(x * 0.08) * 1.6 + Math.sin(x * 0.21 + 1) * 0.6;
+const RAIL_Z = -29.5;
+
+const ROADS = [
+  [[4, -13], [-4, -11.6], [-11, -10.4], [-15.6, -10]],
+  [[5, -12], [4, -5], [2.5, 2], [2, 8], [3, 13], [4, 16]],
+  [[4, 16], [-4, 15.5], [-10, 17.4], [-15.6, 19.8]],
+  [[4, 16], [12, 12.8], [22, 12.6], [28, 17], [29.5, 23], [27.5, 28.6]],
+  [[9, -26.4], [7.4, -23.6], [6.2, -22.6]],
+];
+const ZONES = [
+  { x: -24, z: -10, r: 10.5 },   // prasat
+  { x: -36.5, z: -10, r: 5.6 },  // baray
+  { x: 15, z: -11, r: 7.4 },     // lamduan park
+  { x: -6, z: 3, r: 4.4 },       // waterfall pool
+  { x: -31, z: 0.5, r: 4.6 },    // village west
+  { x: -13, z: -1, r: 3.6 },     // village mid
+];
+const TOWN = { x0: -9, x1: 19.5, z0: -27.6, z1: -9 };
+const inTown = (x, z, pad = 0) => x > TOWN.x0 - pad && x < TOWN.x1 + pad && z > TOWN.z0 - pad && z < TOWN.z1 + pad;
+const inZone = (x, z, pad = 0) => ZONES.some(c => Math.hypot(x - c.x, z - c.z) < c.r + pad) || inTown(x, z, pad);
+const nearRoad = (x, z, d) => ROADS.some(pl => distPoly(x, z, pl) < d);
+
+// ground slab
+const slab = paint(new THREE.BoxGeometry(90, 9, 72, 1, 3, 1), (c, ny, y) => {
+  if (ny > 0.5) c.set('#6d8b3c');
+  else c.set(y > -3 ? '#9a5534' : y > -6 ? '#7a4631' : '#5b3527');
+});
+add(slab, vtxMat, 0, -4.5, -4);
+
+// plateau (extruded side profile)
+{
+  const sh = new THREE.Shape();
+  sh.moveTo(3.6, 0);
+  for (let z = 4; z <= 12.001; z += 0.5) sh.lineTo(z, groundH(z));
+  sh.lineTo(32, PH); sh.lineTo(32, 0); sh.lineTo(3.6, 0);
+  const g = new THREE.ExtrudeGeometry(sh, { depth: 90, bevelEnabled: false, steps: 1 });
+  g.rotateY(-Math.PI / 2);
+  g.translate(45, 0, 0);
+  add(paint(g, (c, ny, y, r) => {
+    if (ny > 0.97) c.set(r < 0.5 ? '#5f8438' : '#58803a');
+    else if (ny > 0.45) c.set('#6a8a3a');
+    else c.set(y > 1.5 ? '#8a5a3c' : '#9a5534');
+  }), vtxMat);
+}
+// far plain below the escarpment
+add(new THREE.PlaneGeometry(1400, 1400).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#4a6a3b', roughness: 1 }), 0, -9.02, 0, scene, { cast: false });
+
+// river Mun + sandy banks
+{
+  const pts = []; for (let x = -46; x <= 46; x += 4) pts.push([x, riverZ(x)]);
+  ribbon(pts, 4.6, () => 0.03, M('#cdb98a'));
+  ribbon(pts, 3.0, () => 0.06, WATER);
+}
+// roads
+ROADS.forEach(pl => ribbon(pl, 1.1, (x, z) => groundH(z) + 0.07, M('#b08d6c')));
+
+// railway (north-eastern line)
+{
+  add(box(90, 0.14, 1.9), M('#8f877d'), 0, 0.07, RAIL_Z, scene, { cast: false });
+  for (const dz of [-0.36, 0.36]) add(box(90, 0.08, 0.08), M('#c9c3b8', { metalness: 0.6, roughness: 0.4 }), 0, 0.2, RAIL_Z + dz, scene, { cast: false });
+  const sl = []; for (let x = -44.6; x <= 44.6; x += 0.75) sl.push({ x, y: 0.15, z: RAIL_Z, s: [0.2, 0.06, 1.3] });
+  inst(box(1, 1, 1), M('#5b4636'), sl, { cast: false });
+}
+
+/* ------------------------------------------------------------------ *
+ *  vegetation & villages (instanced)
+ * ------------------------------------------------------------------ */
+const TREES = [];
+const HOUSES = [];
+const GREENS = ['#4f7f36', '#5b8a3c', '#467532', '#6a9443', '#3f6d31'];
+const FOREST = ['#3a6530', '#2f5a2c', '#446e33', '#355f2e'];
+
+function placeHouses(cx, cz, rad, n, reject) {
+  let tries = 0;
+  while (n > 0 && tries++ < 600) {
+    const a = rand() * Math.PI * 2, d = Math.sqrt(rand()) * rad;
+    const x = cx + Math.cos(a) * d, z = cz + Math.sin(a) * d;
+    if (reject && reject(x, z)) continue;
+    if (HOUSES.some(h => Math.hypot(h.x - x, h.z - z) < 2.4)) continue;
+    if (nearRoad(x, z, 1.5)) continue;
+    HOUSES.push({ x, z, ry: (rand() < 0.5 ? 0 : Math.PI / 2) + R(-0.15, 0.15), s: R(0.85, 1.15) });
+    n--;
+  }
+}
+placeHouses(5, -18, 14, isMobile ? 18 : 30, (x, z) =>
+  !inTown(x, z, -0.6) || Math.hypot(x - 4, z - 18 * -1) < 6.6 || Math.hypot(x - 15, z + 11) < 7.6 || z < RAIL_Z + 2.3 || Math.hypot(x - 11, z + 25.6) < 3.4);
+placeHouses(-31, 0.5, 4, 7);
+placeHouses(-13, -1, 3.2, 4);
+placeHouses(-4, 21, 4.5, 6, (x, z) => z < 13.5);
+placeHouses(27, 21.5, 2.6, 3);
+
+{
+  const posts = [], bodies = [], roofs = [];
+  for (const h of HOUSES) {
+    const y = groundH(h.z), s = h.s, c = Math.cos(h.ry), sn = Math.sin(h.ry);
+    for (const [ox, oz] of [[-0.65, -0.5], [0.65, -0.5], [-0.65, 0.5], [0.65, 0.5]]) {
+      posts.push({ x: h.x + (ox * c + oz * sn) * s, y, z: h.z + (-ox * sn + oz * c) * s, s: [s, 0.62 * s, s] });
+    }
+    bodies.push({ x: h.x, y: y + 0.6 * s + 0.47 * s, z: h.z, ry: h.ry, s: [1.5 * s, 0.94 * s, 1.2 * s], c: pick(['#a37450', '#b98b62', '#8c6444', '#d9c7a6', '#c9b08a']) });
+    roofs.push({ x: h.x, y: y + 1.54 * s, z: h.z, ry: h.ry, s: [1.85 * s, 0.8 * s, 1.55 * s], c: pick(['#8f3b2b', '#6d6660', '#a9542f', '#4f5e70', '#7b3326']) });
+  }
+  inst(new THREE.CylinderGeometry(0.06, 0.06, 1, 4).translate(0, 0.5, 0), M('#4e3b2c'), posts);
+  inst(box(1, 1, 1), WHITE_INST, bodies);
+  inst(prism(1, 1, 1).rotateY(Math.PI / 2), WHITE_INST, roofs);
+}
+
+// rice paddies + sugar palms on the dikes
+{
+  const PADDY = ['#86b84f', '#8fc15a', '#a9c95b', '#c7c05a', '#79ad48', '#9cc257'];
+  const cells = [];
+  for (let x = -43.6; x <= 43.6; x += 2.5) {
+    for (let z = -38.6; z <= 2.2; z += 2.5) {
+      if (Math.abs(z - riverZ(x)) < 3.1 || Math.abs(z - RAIL_Z) < 1.8) continue;
+      if (inZone(x, z, 1) || nearRoad(x, z, 1.8)) continue;
+      if (HOUSES.some(h => Math.hypot(h.x - x, h.z - z) < 2.2)) continue;
+      if (rand() < 0.05) continue;
+      cells.push({ x, y: 0.03, z, s: [2.2, 0.08 + rand() * 0.04, 2.2], c: pick(PADDY) });
+      if (rand() < (isMobile ? 0.05 : 0.08)) TREES.push({ kind: 'palm', x: x + 1.25, y: 0, z: z + 1.25, s: R(0.8, 1.1) });
+    }
+  }
+  inst(box(1, 1, 1), WHITE_INST, cells, { cast: false });
+}
+// river banks & roadsides
+for (let x = -44; x <= 44; x += R(1.2, 3)) {
+  for (const side of [-1, 1]) if (rand() < 0.55) {
+    const z = riverZ(x) + side * R(2.6, 3.4);
+    if (Math.abs(z - RAIL_Z) > 1.5) TREES.push({ kind: 'round', x, y: 0, z, s: R(0.7, 1.15) });
+  }
+}
+ROADS.forEach(pl => {
+  for (let i = 0; i < pl.length - 1; i++) {
+    const [ax, az] = pl[i], [bx, bz] = pl[i + 1], L = Math.hypot(bx - ax, bz - az);
+    for (let t = 0; t < L; t += R(2, 4)) {
+      const f = t / L, x = ax + (bx - ax) * f, z = az + (bz - az) * f;
+      const nx = -(bz - az) / L, nz = (bx - ax) / L, side = rand() < 0.5 ? -1 : 1;
+      const tx = x + nx * side * 1.5, tz = z + nz * side * 1.5;
+      if (!inZone(tx, tz, 0.5) && rand() < 0.6) TREES.push({ kind: 'round', x: tx, y: groundH(tz), z: tz, s: R(0.6, 0.95) });
+    }
+  }
+});
+HOUSES.forEach(h => { if (rand() < 0.6) { const a = rand() * 6.28; const x = h.x + Math.cos(a) * 1.7, z = h.z + Math.sin(a) * 1.7; TREES.push({ kind: rand() < 0.3 ? 'palm' : 'round', x, y: groundH(z), z, s: R(0.6, 0.9) }); } });
+
+// plateau forest (Phanom Dong Rak)
+function plateauFree(x, z) {
+  if (Math.hypot(x + 17, z - 20) < 8.5) return false;          // bottle temple
+  if (x > 10.5 && x < 25.5 && z > 13.4 && z < 21) return false; // orchard
+  if (Math.hypot(x - 6, z - 25) < 7) return false;             // volcano
+  if (Math.hypot(x - 27, z - 29.6) < 5.5) return false;        // cliff viewpoint
+  if (Math.hypot(x + 6, z - 5.5) < 4) return false;            // waterfall rocks
+  if (Math.hypot(x + 4, z - 21) < 5.5) return false;           // hill village
+  if (Math.hypot(x - 27, z - 21.5) < 3.2) return false;
+  return !nearRoad(x, z, 1.5);
+}
+for (let i = 0, n = isMobile ? 190 : 300; i < n; i++) {
+  const x = R(-44, 44), z = R(5, 31.4);
+  if (!plateauFree(x, z)) continue;
+  if (z < 12 && rand() < 0.55) continue;
+  TREES.push({ kind: rand() < 0.6 ? 'tall' : 'round', x, y: groundH(z), z, s: R(0.75, 1.3), c: pick(FOREST) });
+}
+// scattered trees on the plain below the escarpment
+for (let i = 0, n = isMobile ? 50 : 90; i < n; i++) {
+  TREES.push({ kind: 'round', x: R(-70, 70), y: -9, z: R(34, 90), s: R(1.1, 1.9), c: pick(FOREST) });
+}
+
+/* ------------------------------------------------------------------ *
+ *  landmark 1 · Prasat Sa Kamphaeng Yai
+ * ------------------------------------------------------------------ */
+const PRANG_PROFILE = [[0, 0], [.95, 0], [.95, .12], [.8, .16], [.8, .5], [.88, .54], [.7, .6], [.7, .92], [.76, .96], [.56, 1.04], [.56, 1.32], [.6, 1.36], [.4, 1.44], [.4, 1.66], [.26, 1.8], [.14, 2.0], [.05, 2.2], [0, 2.3]]
+  .map(([r, y]) => new THREE.Vector2(r, y));
+const PRANG_TOP = new THREE.LatheGeometry(PRANG_PROFILE, 8).rotateY(Math.PI / 8);
+function prang(parent, x, z, s, color) {
+  const m = M(color), dark = M('#35261e');
+  add(box(2.1 * s, 0.5 * s, 2.1 * s), m, x, 0.25 * s, z, parent);
+  add(box(1.6 * s, 1.9 * s, 1.6 * s), m, x, 0.5 * s + 0.95 * s, z, parent);
+  add(box(0.5 * s, 1.5 * s, 0.9 * s), m, x + 0.95 * s, 0.5 * s + 0.75 * s, z, parent);
+  add(box(0.06 * s, 1.0 * s, 0.44 * s), dark, x + 1.21 * s, 0.5 * s + 0.5 * s, z, parent, { cast: false });
+  const t = add(PRANG_TOP, m, x, 0.5 * s + 1.9 * s, z, parent);
+  t.scale.setScalar(s);
+}
+{
+  const C = new THREE.Group(); C.position.set(-24, 0, -10); scene.add(C);
+  const lat = M('#a4553a'), cap = M('#b98c6a'), sand = M('#b08868');
+  // gallery walls
+  add(box(16, 1.4, 0.9), lat, 0, 0.7, -6, C); add(box(16, 1.4, 0.9), lat, 0, 0.7, 6, C);
+  add(box(0.9, 1.4, 12), lat, -8, 0.7, 0, C); add(box(0.9, 1.4, 12), lat, 8, 0.7, 0, C);
+  add(box(16.2, 0.18, 1.1), cap, 0, 1.49, -6, C); add(box(16.2, 0.18, 1.1), cap, 0, 1.49, 6, C);
+  add(box(1.1, 0.18, 12.2), cap, -8, 1.49, 0, C); add(box(1.1, 0.18, 12.2), cap, 8, 1.49, 0, C);
+  // gopura gates east & west
+  for (const gx of [8, -8]) {
+    add(box(1.6, 2.6, 3.2), sand, gx, 1.3, 0, C);
+    add(box(0.06, 1.6, 0.9), M('#35261e'), gx + Math.sign(gx) * 0.82, 0.8, 0, C, { cast: false });
+    const t = add(PRANG_TOP, sand, gx, 2.6, 0, C); t.scale.set(0.9, 0.5, 0.9);
+  }
+  // shared base + three prangs in a row, facing east
+  add(box(3.8, 0.7, 11.6), M('#a9805e'), 0, 0.35, 0, C);
+  const row = new THREE.Group(); row.position.y = 0.7; C.add(row);
+  prang(row, 0, -3.5, 1.0, '#a85c3c');
+  prang(row, 0, 0, 1.22, '#b3653f');
+  prang(row, 0, 3.5, 1.0, '#a85c3c');
+  // fallen stones
+  const st = []; for (let i = 0; i < 14; i++) st.push({ x: R(-6, 6), y: 0.12, z: R(-5, 5), ry: rand() * 3, s: [R(.3, .7), R(.2, .35), R(.3, .5)], c: pick(['#b08868', '#a4553a', '#9b7b5f']) });
+  inst(box(1, 1, 1), WHITE_INST, st.filter(s => Math.abs(s.x) > 2.4), { parent: C });
+  // baray (ancient pond) to the west
+  add(box(5.6, 0.12, 9.6), lat, -12.5, 0.06, 0, C, { cast: false });
+  add(new THREE.BoxGeometry(4.8, 0.1, 8.8), WATER, -12.5, 0.1, 0, C, { cast: false });
+  for (let i = 0; i < 8; i++) { const a = rand() * 6.28; TREES.push({ kind: 'round', x: -24 + Math.cos(a) * R(9, 10.5), y: 0, z: -10 + Math.sin(a) * R(7.5, 9.5), s: R(0.9, 1.3) }); }
+}
+
+/* ------------------------------------------------------------------ *
+ *  landmark 2 · Wat Phra That Rueang Rong + lamduan park
+ * ------------------------------------------------------------------ */
+{
+  const T = new THREE.Group(); T.position.set(4, 0, -18); scene.add(T);
+  const white = M('#f1ece2'), gold = M('#c98a33', { metalness: 0.35, roughness: 0.45 }), dark = M('#6b4128');
+  add(box(8.5, 0.6, 8.5), white, 0, 0.3, 0, T);
+  add(box(7.2, 0.5, 7.2), white, 0, 0.85, 0, T);
+  let y = 1.1;
+  for (let k = 0; k < 6; k++) {
+    const w = 5.2 - k * 0.72, h = 0.95 - k * 0.05;
+    add(box(w, h, w), white, 0, y + h / 2, 0, T);
+    add(box(w + 0.04, h * 0.42, w * 0.34), dark, 0, y + h / 2, 0, T, { cast: false });
+    add(box(w * 0.34, h * 0.42, w + 0.04), dark, 0, y + h / 2, 0, T, { cast: false });
+    y += h;
+    add(new THREE.CylinderGeometry(w * 0.5, w * 0.8, 0.42, 4, 1).rotateY(Math.PI / 4), gold, 0, y + 0.21, 0, T);
+    y += 0.42;
+  }
+  add(new THREE.CylinderGeometry(0.35, 0.55, 0.6, 8), gold, 0, y + 0.3, 0, T); y += 0.6;
+  add(new THREE.ConeGeometry(0.35, 2.6, 8), gold, 0, y + 1.3, 0, T); y += 2.6;
+  add(new THREE.SphereGeometry(0.13, 10, 8), M('#ffe08a', { metalness: 0.6, roughness: 0.3, emissive: '#6b4a00' }), 0, y + 0.05, 0, T);
+  for (const [cx, cz] of [[-3.25, -3.25], [3.25, -3.25], [-3.25, 3.25], [3.25, 3.25]]) {
+    add(box(0.7, 0.6, 0.7), white, cx, 1.4, cz, T);
+    add(new THREE.ConeGeometry(0.3, 1.3, 6), gold, cx, 2.35, cz, T);
+  }
+  // park
+  const P = { x: 15, z: -11 };
+  add(new THREE.RingGeometry(3.1, 4.0, 40).rotateX(-Math.PI / 2), M('#d8c7a0', { flatShading: false }), P.x, 0.05, P.z, scene, { cast: false });
+  add(new THREE.CircleGeometry(2.3, 32).rotateX(-Math.PI / 2), WATER, P.x, 0.07, P.z, scene, { cast: false });
+  add(new THREE.CircleGeometry(7.2, 40).rotateX(-Math.PI / 2), M('#5f8a3a', { flatShading: false }), P.x, 0.03, P.z, scene, { cast: false });
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; TREES.push({ kind: 'lamduan', x: P.x + Math.cos(a) * 5.3, y: 0, z: P.z + Math.sin(a) * 5.3, s: R(0.8, 1.0) }); }
+  for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2 + 0.3; TREES.push({ kind: 'lamduan', x: P.x + Math.cos(a) * 6.6, y: 0, z: P.z + Math.sin(a) * 6.6, s: R(0.65, 0.8) }); }
+  // a few lamduan trees around the pagoda too
+  for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + 0.5; TREES.push({ kind: 'lamduan', x: 4 + Math.cos(a) * 5.4, y: 0, z: -18 + Math.sin(a) * 5.4, s: 0.7 }); }
+}
+// railway station
+{
+  const S = { x: 11, z: -27.6 };
+  add(box(9, 0.36, 1.5), M('#bdb4a6'), S.x, 0.18, S.z + 0.2);
+  add(box(3.2, 1.6, 1.8), M('#e9dcc3'), S.x + 1.5, 0.8, S.z + 1.9);
+  add(prism(2.3, 0.8, 3.6).rotateY(Math.PI / 2), M('#a9542f'), S.x + 1.5, 1.6, S.z + 1.9);
+  add(box(6.4, 0.12, 1.7), M('#7a3a2a'), S.x - 1.2, 2.1, S.z + 0.2);
+  for (const dx of [-4, -1.6, 0.8]) add(new THREE.CylinderGeometry(0.06, 0.06, 1.9, 5), M('#e9dcc3'), S.x + dx, 1.1, S.z + 0.4);
+}
+// train
+const TRAIN = [];
+{
+  const colors = [['#d9532b', '#f2c75c'], ['#e7dfcc', '#2d4e8a'], ['#e7dfcc', '#2d4e8a'], ['#e7dfcc', '#2d4e8a']];
+  colors.forEach(([base, band], i) => {
+    const g = new THREE.Group();
+    add(box(i === 0 ? 3.1 : 3.5, 1.15, 1.15), M(base), 0, 0.85, 0, g);
+    add(box(i === 0 ? 3.12 : 3.52, 0.28, 1.17), M(band), 0, i === 0 ? 0.55 : 1.0, 0, g, { cast: false });
+    if (i > 0) add(box(3.1, 0.22, 1.18), M('#1d2433'), 0, 1.05, 0, g, { cast: false });
+    g.position.set(0, 0.2, RAIL_Z);
+    scene.add(g);
+    TRAIN.push(g);
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ *  landmark 3 · Wat Pa Maha Chedi Kaew (the bottle temple)
+ * ------------------------------------------------------------------ */
+const glassGlow = { value: 0 };
+const glassMat = new THREE.MeshPhongMaterial({ color: '#ffffff', shininess: 110, specular: '#ffffff' });
+glassMat.onBeforeCompile = sh => {
+  sh.uniforms.glow = glassGlow;
+  sh.fragmentShader = 'uniform float glow;\n' + sh.fragmentShader.replace(
+    '#include <emissivemap_fragment>',
+    '#include <emissivemap_fragment>\n totalEmissiveRadiance += vColor.rgb * glow;'
+  );
+};
+const glowLight = new THREE.PointLight('#ffc27a', 0, 28, 1.4);
+glowLight.position.set(-13, 8, 14.5);
+scene.add(glowLight);
+{
+  const B = new THREE.Group(); B.position.set(-20, PH, 20); scene.add(B);
+  const white = M('#ece6da');
+  const bottleColor = () => { const r = rand(); return r < 0.55 ? pick(['#2f8d55', '#3aa065', '#24724a']) : r < 0.9 ? pick(['#7a4a1e', '#8d5a26', '#5f3816']) : '#d3e6dd'; };
+  add(box(8.4, 0.5, 5.6), white, 0, 0.25, 0, B);
+  add(box(7.6, 0.2, 4.8), white, 0, 0.6, 0, B);
+  const L = 6.4, W = 3.6, H = 2.4, y0 = 0.7, sp = isMobile ? 0.21 : 0.17;
+  add(box(L - 0.16, H, W - 0.16), M('#d9d2c4'), 0, y0 + H / 2, 0, B);
+  for (const px of [-L / 2, -L / 6, L / 6, L / 2]) for (const pz of [-W / 2, W / 2]) add(box(0.26, H + 0.1, 0.26), white, px, y0 + H / 2, pz, B);
+  const discs = [];
+  for (let x = -L / 2 + 0.22; x <= L / 2 - 0.2; x += sp) for (let y = y0 + 0.12; y <= y0 + H - 0.1; y += sp) for (const sg of [-1, 1]) discs.push({ x, y, z: sg * (W / 2 - 0.02), rx: Math.PI / 2, c: bottleColor() });
+  for (let z = -W / 2 + 0.22; z <= W / 2 - 0.2; z += sp) for (let y = y0 + 0.12; y <= y0 + H - 0.1; y += sp) for (const sg of [-1, 1]) {
+    if (sg > 0 && Math.abs(z) < 0.5 && y < y0 + 1.7) continue;
+    discs.push({ x: sg * (L / 2 - 0.02), y, z, rz: Math.PI / 2, c: bottleColor() });
+  }
+  inst(new THREE.CylinderGeometry(0.07, 0.07, 0.12, 8), glassMat, discs, { parent: B, cast: false });
+  add(box(0.06, 1.65, 0.9), M('#2a2622'), L / 2 + 0.05, y0 + 0.83, 0, B, { cast: false });
+  // two-tier Thai roof
+  const roofMats = [M('#d6a444', { metalness: 0.3, roughness: 0.5 }), M('#c2502e')];
+  add(prism(W + 1.2, 1.25, L + 1.0).rotateY(Math.PI / 2), roofMats, 0, y0 + H, 0, B);
+  add(prism(W + 0.1, 1.45, L - 1.2).rotateY(Math.PI / 2), roofMats, 0, y0 + H + 0.7, 0, B);
+  const chofa = new THREE.ConeGeometry(0.08, 0.7, 5);
+  for (const sx of [-1, 1]) {
+    const c1 = add(chofa, roofMats[0], sx * (L + 1.0) / 2, y0 + H + 1.45, 0, B); c1.rotation.z = -sx * 0.5;
+    const c2 = add(chofa, roofMats[0], sx * (L - 1.2) / 2, y0 + H + 2.35, 0, B); c2.rotation.z = -sx * 0.5;
+  }
+  // chedi built from rings of bottles
+  const CH = new THREE.Group(); CH.position.set(7.5, 0, 1.5); B.add(CH);
+  add(box(3.4, 0.4, 3.4), white, 0, 0.2, 0, CH);
+  add(box(2.9, 0.4, 2.9), white, 0, 0.6, 0, CH);
+  const N = isMobile ? 14 : 18, ringH = 0.3;
+  add(new THREE.ConeGeometry(1.3, N * ringH + 0.3, 14), white, 0, 0.8 + (N * ringH + 0.3) / 2, 0, CH);
+  const bottles = [];
+  for (let i = 0; i < N; i++) {
+    const r = 1.32 * Math.pow(1 - i / N, 1.1) + 0.12, y = 0.8 + i * ringH;
+    const n = Math.max(5, Math.floor(2 * Math.PI * r / 0.19));
+    const col = ['#7a4a1e', '#2f8d55', '#3aa065'][i % 3];
+    for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2 + i * 0.3; bottles.push({ x: Math.cos(a) * r, y, z: Math.sin(a) * r, ry: -a, c: rand() < 0.1 ? '#d3e6dd' : col }); }
+  }
+  const BOTTLE = new THREE.LatheGeometry([[0, 0], [.075, 0], [.08, .02], [.08, .19], [.06, .24], [.03, .27], [.03, .33], [.036, .34], [0, .34]].map(([r, y]) => new THREE.Vector2(r, y)), 7);
+  inst(BOTTLE, glassMat, bottles, { parent: CH, cast: false });
+  add(new THREE.ConeGeometry(0.16, 1.3, 8), M('#d6a444', { metalness: 0.5, roughness: 0.35 }), 0, 0.8 + N * ringH + 0.8, 0, CH);
+}
+
+/* ------------------------------------------------------------------ *
+ *  landmark 4 · volcanic-soil durian orchards, extinct volcano, waterfall
+ * ------------------------------------------------------------------ */
+for (let x = 12.4; x <= 24; x += 2.5) for (let z = 14.8; z <= 20; z += 2.55) {
+  if (nearRoad(x, z, 1.3)) continue;
+  TREES.push({ kind: 'durian', x: x + R(-0.25, 0.25), y: PH, z: z + R(-0.25, 0.25), s: R(0.8, 1.0) });
+}
+{
+  const hash = (x, y, z) => { const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453; return s - Math.floor(s); };
+  const vg = new THREE.CylinderGeometry(2.2, 6.2, 4.2, 12, 3);
+  const p = vg.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    if (Math.abs(y) > 2.09) continue;
+    const k = 1 + (hash(Math.round(x * 100), Math.round(y * 100), Math.round(z * 100)) - 0.5) * 0.22;
+    p.setXYZ(i, x * k, y, z * k);
+  }
+  add(paint(vg, (c, ny, y, r) => c.set(y > 0.8 ? (r < 0.5 ? '#7b5a44' : '#6e5040') : y > -0.8 ? '#5f7a3a' : '#577535')), vtxMat, 6, PH + 2.1, 25);
+  add(new THREE.CylinderGeometry(1.9, 1.1, 0.6, 12), M('#3f3129'), 6, PH + 4.2 - 0.28, 25, scene, { cast: false });
+  for (let i = 0; i < 10; i++) { const a = rand() * 6.28, d = R(4.8, 6.6); TREES.push({ kind: 'round', x: 6 + Math.cos(a) * d, y: PH, z: 25 + Math.sin(a) * d, s: R(0.6, 0.9), c: pick(FOREST) }); }
+}
+const durian = new THREE.Group();
+durian.position.set(18, 9.6, 17);
+scene.add(durian);
+{
+  const inner = new THREE.Group(); inner.scale.set(1.2, 1.38, 1.2); durian.add(inner);
+  const ball = new THREE.IcosahedronGeometry(1, 2);
+  add(ball, M('#8d9a3a'), 0, 0, 0, inner);
+  const pos = ball.attributes.position, seen = new Set(), dirs = [];
+  for (let i = 0; i < pos.count; i++) {
+    const v = new THREE.Vector3().fromBufferAttribute(pos, i).normalize();
+    const key = v.toArray().map(n => n.toFixed(3)).join();
+    if (!seen.has(key)) { seen.add(key); dirs.push(v); }
+  }
+  const spikes = new THREE.InstancedMesh(new THREE.ConeGeometry(0.11, 0.34, 4), M('#aab447'), dirs.length);
+  const up = new THREE.Vector3(0, 1, 0);
+  dirs.forEach((v, i) => { dummy.position.copy(v).multiplyScalar(1.07); dummy.quaternion.setFromUnitVectors(up, v); dummy.scale.set(1, 1, 1); dummy.updateMatrix(); spikes.setMatrixAt(i, dummy.matrix); });
+  spikes.castShadow = true;
+  inner.add(spikes);
+  add(new THREE.CylinderGeometry(0.07, 0.11, 0.55, 6), M('#6b5a2e'), 0, 1.2, 0, inner);
+}
+// waterfall (Huai Chan) at the plateau's foot
+const fallU = { time: { value: 0 } };
+{
+  const rock = M('#6f645a');
+  add(box(4.2, 4.4, 3), rock, -6, 2.2, 5.5);
+  add(box(2.2, 3.2, 2.4), M('#7b6e62'), -8.6, 1.6, 6.2).rotation.y = 0.3;
+  add(box(2.4, 2.4, 2.2), M('#665b52'), -3.3, 1.2, 6.4).rotation.y = -0.25;
+  add(box(1.3, 0.06, 3.02), WATER, -6, 4.43, 5.5, scene, { cast: false });
+  const fall = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 4.35), new THREE.ShaderMaterial({
+    uniforms: fallU, transparent: true, depthWrite: false,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `uniform float time; varying vec2 vUv;
+      void main(){
+        float x = vUv.x;
+        float s = fract(vUv.y * 5.0 + time * 1.4 + sin(x * 31.0) * 0.15 + sin(x * 13.0) * 0.1);
+        float streak = smoothstep(0.0, 0.35, s) * smoothstep(1.0, 0.55, s);
+        vec3 c = mix(vec3(0.42, 0.68, 0.86), vec3(1.0), 0.3 + streak * 0.6);
+        float edge = smoothstep(0.0, 0.14, x) * smoothstep(1.0, 0.86, x);
+        gl_FragColor = vec4(c, 0.92 * edge);
+        #include <colorspace_fragment>
+      }`,
+  }));
+  fall.position.set(-6, 2.2, 3.97);
+  fall.rotation.y = Math.PI;
+  scene.add(fall);
+  add(new THREE.CircleGeometry(2.4, 28).rotateX(-Math.PI / 2), WATER, -6, 0.06, 2.1, scene, { cast: false });
+  add(new THREE.CircleGeometry(0.9, 20).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#e8f4fb', transparent: true, opacity: 0.7 }), -6, 0.08, 3.3, scene, { cast: false });
+}
+
+/* ------------------------------------------------------------------ *
+ *  landmark 5 · Pha Mo I Daeng (cliff, twin stupas, bas-relief)
+ * ------------------------------------------------------------------ */
+{
+  const sand = M('#b89a78'), wood = M('#8a6242');
+  const STUPA_TOP = new THREE.LatheGeometry([[0, 0], [.42, 0], [.42, .1], [.32, .16], [.32, .4], [.22, .5], [.22, .7], [.1, .85], [0, 1.0]].map(([r, y]) => new THREE.Vector2(r, y)), 8).rotateY(Math.PI / 8);
+  for (const sx of [27.4, 29.4]) {
+    add(box(1.3, 0.4, 1.3), sand, sx, PH + 0.2, 29.6);
+    add(box(0.95, 1.2, 0.95), sand, sx, PH + 1.0, 29.6);
+    add(STUPA_TOP, sand, sx, PH + 1.6, 29.6);
+  }
+  // viewing deck + railing at the edge
+  add(box(6, 0.22, 2.1), wood, 23.8, PH + 0.11, 30.8);
+  const posts = []; for (let x = 21; x <= 26.6; x += 0.7) posts.push({ x, y: PH + 0.2, z: 31.75, s: 1 });
+  inst(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 4).translate(0, 0.4, 0), wood, posts);
+  add(box(5.8, 0.06, 0.06), wood, 23.8, PH + 1.0, 31.75);
+  // bas-relief panel on the cliff face with three deities
+  add(box(3.6, 1.9, 0.08), M('#c9a986'), 24.4, 1.3, 32.03, scene, { cast: false });
+  for (const fx of [23.4, 24.4, 25.4]) {
+    add(new THREE.CapsuleGeometry(0.17, 0.6, 3, 6), M('#94725a'), fx, 1.1, 32.12, scene, { cast: false });
+    add(new THREE.SphereGeometry(0.14, 8, 6), M('#94725a'), fx, 1.72, 32.12, scene, { cast: false });
+  }
+  for (let i = 0; i < 6; i++) TREES.push({ kind: 'round', x: R(20, 32), y: PH, z: R(25, 28), s: R(0.7, 1) });
+}
+
+/* ------------------------------------------------------------------ *
+ *  build all trees as a handful of instanced meshes
+ * ------------------------------------------------------------------ */
+{
+  const trunks = [], ico = [], ico1 = [], cones = [], flowers = [], fruits = [];
+  for (const t of TREES) {
+    const { x, y, z, s } = t;
+    if (t.kind === 'round') {
+      trunks.push({ x, y, z, s: [s, s * 1.1, s] });
+      ico.push({ x, y: y + 1.35 * s, z, s: [s * 0.95, s * 0.8, s * 0.95], ry: rand() * 6, c: t.c || pick(GREENS) });
+    } else if (t.kind === 'tall') {
+      trunks.push({ x, y, z, s: [s * 1.1, s * 2, s * 1.1] });
+      ico.push({ x, y: y + 2.3 * s, z, s: [s * 1.15, s * 1.05, s * 1.15], ry: rand() * 6, c: t.c || pick(FOREST) });
+    } else if (t.kind === 'palm') {
+      trunks.push({ x, y, z, s: [s * 0.55, s * 4.2, s * 0.55] });
+      ico.push({ x, y: y + 4.3 * s, z, s: [s * 0.85, s * 0.5, s * 0.85], ry: rand() * 6, c: pick(['#557a2e', '#4a6d2a', '#62853a']) });
+    } else if (t.kind === 'lamduan') {
+      trunks.push({ x, y, z, s: [s, s * 0.9, s] });
+      const cy = y + 1.5 * s;
+      ico1.push({ x, y: cy, z, s: [s * 1.2, s, s * 1.2], c: pick(['#2d5a32', '#335f36', '#285230']) });
+      for (let k = 0; k < 12; k++) {
+        const a = rand() * 6.283, b = R(-0.2, 1.2);
+        flowers.push({ x: x + Math.cos(a) * Math.cos(b) * 1.2 * s, y: cy + Math.sin(b) * s, z: z + Math.sin(a) * Math.cos(b) * 1.2 * s, s: s * R(0.8, 1.3), rx: rand() * 3, ry: rand() * 3 });
+      }
+    } else if (t.kind === 'durian') {
+      trunks.push({ x, y, z, s: [s * 1.1, s * 1.6, s * 1.1] });
+      cones.push({ x, y: y + 1.3 * s, z, s: [s * 1.15, s * 2.6, s * 1.15], ry: rand() * 6, c: pick(['#3d6a34', '#47763a', '#35602f']) });
+      for (let k = 0; k < 4; k++) { const a = rand() * 6.283; fruits.push({ x: x + Math.cos(a) * 0.78 * s, y: y + 1.45 * s, z: z + Math.sin(a) * 0.78 * s, s: s * R(0.9, 1.2), ry: rand() * 3 }); }
+    }
+  }
+  inst(new THREE.CylinderGeometry(0.12, 0.17, 1, 5).translate(0, 0.5, 0), M('#6b4a33'), trunks);
+  inst(new THREE.IcosahedronGeometry(1, 0), WHITE_INST, ico);
+  inst(new THREE.IcosahedronGeometry(1, 1), WHITE_INST, ico1);
+  inst(new THREE.ConeGeometry(1, 1, 7).translate(0, 0.5, 0), WHITE_INST, cones);
+  inst(new THREE.OctahedronGeometry(0.1), M('#ffe27a', { emissive: '#7a5a00', emissiveIntensity: 0.8 }), flowers, { cast: false });
+  inst(new THREE.IcosahedronGeometry(0.2, 0), M('#9aa63b'), fruits, { cast: false });
+}
+
+/* clouds */
+const CLOUDS = [];
+{
+  const geo = new THREE.IcosahedronGeometry(1, 1), mat = M('#ffffff', { roughness: 1, emissive: '#3a3a48' });
+  for (let i = 0, n = isMobile ? 6 : 10; i < n; i++) {
+    const g = new THREE.Group();
+    const k = 3 + Math.floor(rand() * 3);
+    for (let j = 0; j < k; j++) add(geo, mat, (j - k / 2) * 1.3 + R(-0.3, 0.3), R(0, 0.6), R(-0.6, 0.6), g, { receive: false }).scale.setScalar(R(1, 1.8));
+    g.position.set(R(-65, 65), R(25, 31), R(-38, 30));
+    g.userData.v = R(0.5, 1.1);
+    scene.add(g);
+    CLOUDS.push(g);
+  }
+}
+
+/* falling lamduan flowers */
+const PETALS = [];
+let petalMesh = null;
+if (!reduceMotion) {
+  const parts = [];
+  for (let k = 0; k < 3; k++) {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0); s.quadraticCurveTo(0.12, 0.1, 0, 0.28); s.quadraticCurveTo(-0.12, 0.1, 0, 0);
+    const g = new THREE.ShapeGeometry(s, 3);
+    g.rotateX(-Math.PI / 2 + 0.6);
+    g.rotateY(k * Math.PI * 2 / 3);
+    parts.push(g);
+  }
+  const n = isMobile ? 60 : 120;
+  petalMesh = new THREE.InstancedMesh(mergeGeometries(parts), new THREE.MeshStandardMaterial({ color: '#fbe7a1', emissive: '#6b5314', side: THREE.DoubleSide, roughness: 0.7 }), n);
+  petalMesh.frustumCulled = false;
+  for (let i = 0; i < n; i++) PETALS.push({ x: R(-1, 1), y: rand(), z: R(-1, 1), v: R(0.6, 1.2), ph: rand() * 6.28, spin: R(0.5, 1.8) });
+  scene.add(petalMesh);
+}
+
+/* ------------------------------------------------------------------ *
+ *  camera keyframes, one per chapter
+ * ------------------------------------------------------------------ */
+const K = [
+  { t: [0, 0, -2], r: 122, az: 0.75, el: 0.62, top: '#1d2c59', bot: '#f5b27c', sun: [0.65, 0.42, 0.5], sc: '#ffd3a3', si: 2.8, hemi: 0.9, glow: 0.25, side: -1.35 },
+  { t: [-24, 2, -10], r: 24, az: 0.95, el: 0.42, top: '#3a6fb5', bot: '#ffd9a8', sun: [0.75, 0.45, 0.45], sc: '#ffe2bd', si: 3.1, hemi: 1.0, glow: 0, side: -1 },
+  { t: [5, 4.8, -17], r: 27, az: 0.35, el: 0.3, top: '#3f82d2', bot: '#d6ecf7', sun: [-0.3, 0.8, 0.5], sc: '#fff4e2', si: 3.3, hemi: 1.1, glow: 0, side: 1 },
+  { t: [-17, 5.5, 20.5], r: 17.5, az: 2.35, el: 0.28, top: '#291d4f', bot: '#ff8a5c', sun: [-0.8, 0.16, -0.35], sc: '#ffa36b', si: 1.9, hemi: 0.55, glow: 1.0, side: -1 },
+  { t: [13, 5, 17], r: 31, az: 3.45, el: 0.42, top: '#3a8bd6', bot: '#eaf4d4', sun: [0.4, 0.75, -0.4], sc: '#fff1d6', si: 3.2, hemi: 1.05, glow: 0, side: 1 },
+  { t: [26, 2.6, 30.5], r: 20, az: 0.4, el: 0.24, top: '#233a6d', bot: '#ffb46b', sun: [1, 0.12, 0.35], sc: '#ffb070', si: 2.5, hemi: 0.7, glow: 0.2, side: -1 },
+  { t: [0, 0, -2], r: 116, az: -0.6, el: 0.7, top: '#10173a', bot: '#7a4f8f', sun: [-0.5, 0.35, 0.6], sc: '#ffb8a0', si: 1.5, hemi: 0.6, glow: 0.9, side: -1 },
+].map(k => ({ ...k, top: new THREE.Color(k.top), bot: new THREE.Color(k.bot), sc: new THREE.Color(k.sc), sun: new THREE.Vector3(...k.sun).normalize() }));
+
+function stateAt(p) {
+  const i = Math.floor(p), j = Math.min(i + 1, K.length - 1), f = p - i;
+  const w = smooth(0.15, 0.85, f), a = K[i], b = K[j];
+  const bump = i !== j ? Math.sin(w * Math.PI) : 0;
+  return {
+    a, b, w,
+    t: new THREE.Vector3(lerp(a.t[0], b.t[0], w), lerp(a.t[1], b.t[1], w), lerp(a.t[2], b.t[2], w)),
+    r: Math.exp(lerp(Math.log(a.r), Math.log(b.r), w)) * (1 + bump * 0.35),
+    az: lerp(a.az, b.az, w),
+    el: lerp(a.el, b.el, w) + bump * 0.16,
+    side: lerp(a.side, b.side, w),
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ *  UI: pins, chapter dots, HUD
+ * ------------------------------------------------------------------ */
+const sections = [...document.querySelectorAll('#tour .chapter')];
+const NCH = sections.length;
+const tour = document.getElementById('tour');
+function scrollToChapter(i) {
+  const H = sections[0].offsetHeight;
+  const y = i === 0 ? 0 : tour.offsetTop + (i + 0.5) * H - innerHeight / 2;
+  window.scrollTo({ top: Math.max(0, y), behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+// in-page links to chapters land on the camera "hold" point
+document.querySelectorAll('a[href^="#ch-"], a[href="#top"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const i = sections.findIndex(s => s.id === id);
+    if (i < 0) return;
+    e.preventDefault();
+    scrollToChapter(i);
+  });
+});
+
+const PINS = [
+  { ch: 1, name: 'ปราสาทสระกำแพงใหญ่', sub: 'อ.อุทุมพรพิสัย', p: [-24, 7.6, -10] },
+  { ch: 2, name: 'วัดพระธาตุเรืองรอง', sub: 'อ.เมืองศรีสะเกษ', p: [4, 13.4, -18] },
+  { ch: 3, name: 'วัดล้านขวด', sub: 'อ.ขุนหาญ', p: [-17, 11, 20.5] },
+  { ch: 4, name: 'ทุเรียนภูเขาไฟ', sub: 'กันทรลักษ์ · ขุนหาญ', p: [18, 12.4, 17] },
+  { ch: 5, name: 'ผามออีแดง', sub: 'อ.กันทรลักษ์', p: [28.4, 7.4, 29.6] },
+  { ch: 0, minor: true, name: 'แม่น้ำมูล', p: [-30, 0.6, riverZ(-30)] },
+  { ch: 2, minor: true, name: 'สถานีรถไฟศรีสะเกษ', p: [11, 2.8, -27.4] },
+  { ch: 2, minor: true, name: 'สวนสมเด็จศรีนครินทร์', p: [15, 3.4, -11] },
+  { ch: 4, minor: true, name: 'น้ำตกห้วยจันทร์', p: [-6, 5.2, 4] },
+  { ch: 4, minor: true, name: 'ภูเขาไฟที่ดับแล้ว', p: [6, 9, 25] },
+  { ch: 5, minor: true, name: 'ที่ราบฝั่งกัมพูชา', p: [30, -8, 58] },
+  { ch: 0, minor: true, name: 'เทือกเขาพนมดงรัก', p: [-34, 6, 25] },
+];
+const pinLayer = document.getElementById('pins');
+PINS.forEach(pin => {
+  const el = document.createElement('button');
+  el.type = 'button';
+  el.tabIndex = -1;
+  el.className = 'pin' + (pin.minor ? ' minor' : '');
+  el.innerHTML = `<span class="pin-dot"></span><span class="pin-text">${pin.name}${pin.sub ? `<small>${pin.sub}</small>` : ''}</span>`;
+  if (!pin.minor) el.addEventListener('click', () => scrollToChapter(pin.ch));
+  pinLayer.appendChild(el);
+  pin.el = el;
+  pin.v = new THREE.Vector3(...pin.p);
+});
+
+const dots = document.getElementById('dots');
+sections.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.setAttribute('aria-label', s.dataset.name);
+  b.innerHTML = `<span>${s.dataset.name}</span>`;
+  b.addEventListener('click', () => scrollToChapter(i));
+  dots.appendChild(b);
+});
+const dotBtns = [...dots.children];
+const hudCount = document.getElementById('hud-count'), hudName = document.getElementById('hud-name'), hudBar = document.getElementById('hud-bar');
+let activeCh = -1;
+function setActive(i) {
+  if (i === activeCh) return;
+  activeCh = i;
+  dotBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false'));
+  const landmark = clamp(i, 0, 5);
+  hudCount.textContent = String(i >= 6 ? 5 : landmark).padStart(2, '0') + ' / 05';
+  hudName.textContent = sections[i].dataset.name;
+}
+
+/* ------------------------------------------------------------------ *
+ *  loop
+ * ------------------------------------------------------------------ */
+let W = innerWidth, Hh = innerHeight, secH = sections[0].offsetHeight;
+function onResize() {
+  W = innerWidth; Hh = innerHeight;
+  renderer.setSize(W, Hh);
+  camera.aspect = W / Hh;
+  camera.fov = W < Hh ? 50 : 38;
+  camera.updateProjectionMatrix();
+  secH = sections[0].offsetHeight;
+}
+addEventListener('resize', onResize);
+onResize();
+
+const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
+addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { mouse.x = e.clientX / W * 2 - 1; mouse.y = e.clientY / Hh * 2 - 1; } });
+
+const WHITE = new THREE.Color('#ffffff');
+const v3 = new THREE.Vector3();
+const cur = { t: new THREE.Vector3(), r: 100, az: 0, el: 0.6, side: -1 };
+let pSm = 0, first = true, last = performance.now(), time = 0, pastTour = false;
+
+function progress() {
+  const rect = tour.getBoundingClientRect();
+  return { p: clamp((-rect.top + Hh / 2) / secH - 0.5, 0, NCH - 1), bottom: rect.bottom };
+}
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  const { p, bottom } = progress();
+  const past = bottom < 0;
+  if (past !== pastTour) { pastTour = past; body.classList.toggle('past-tour', past); }
+  if (past && !first) return;
+  time += dt;
+
+  pSm = first ? p : lerp(pSm, p, 1 - Math.exp(-dt * (reduceMotion ? 14 : 3.6)));
+  if (Math.abs(pSm - p) < 1e-4) pSm = p;
+  const st = stateAt(pSm);
+  const k = first ? 1 : 1 - Math.exp(-dt * 6);
+  cur.t.lerp(st.t, k); cur.r = lerp(cur.r, st.r, k); cur.az = lerp(cur.az, st.az, k); cur.el = lerp(cur.el, st.el, k); cur.side = lerp(cur.side, st.side, k);
+
+  mouse.sx = lerp(mouse.sx, mouse.x, 1 - Math.exp(-dt * 3));
+  mouse.sy = lerp(mouse.sy, mouse.y, 1 - Math.exp(-dt * 3));
+  const aspect = W / Hh;
+  const rScale = aspect < 1 ? 1 + (1 - aspect) * 1.6 : 1;
+  const drift = reduceMotion ? 0 : Math.sin(time * 0.12) * 0.05;
+  const az = cur.az + drift + mouse.sx * 0.06;
+  const el = clamp(cur.el - mouse.sy * 0.035, 0.05, 1.35);
+  const r = cur.r * rScale;
+  camera.position.set(cur.t.x + r * Math.cos(el) * Math.sin(az), cur.t.y + r * Math.sin(el), cur.t.z + r * Math.cos(el) * Math.cos(az));
+  camera.lookAt(cur.t);
+  // push the subject away from the text card
+  if (aspect >= 1) camera.setViewOffset(W, Hh, cur.side * W * 0.15, 0, W, Hh);
+  else camera.setViewOffset(W, Hh, 0, Hh * lerp(0.14, 0.2, clamp(1 - pSm, 0, 1)), W, Hh);
+  camera.updateProjectionMatrix();
+  sky.position.copy(camera.position);
+
+  // environment
+  const { a, b, w } = st;
+  skyU.top.value.copy(a.top).lerp(b.top, w);
+  skyU.bottom.value.copy(a.bot).lerp(b.bot, w);
+  skyU.sunDir.value.copy(a.sun).lerp(b.sun, w).normalize();
+  skyU.sunColor.value.copy(a.sc).lerp(b.sc, w);
+  sun.color.copy(skyU.sunColor.value);
+  sun.intensity = lerp(a.si, b.si, w);
+  hemi.intensity = lerp(a.hemi, b.hemi, w);
+  hemi.color.copy(skyU.top.value).lerp(WHITE, 0.55);
+  scene.fog.color.copy(skyU.bottom.value);
+  scene.fog.near = r * 0.9; scene.fog.far = r * 3 + 70;
+  glassGlow.value = lerp(a.glow, b.glow, w);
+  glowLight.intensity = glassGlow.value * 70;
+  sun.position.copy(cur.t).addScaledVector(skyU.sunDir.value, 90);
+  sun.target.position.copy(cur.t);
+  const sh = clamp(r * 0.62, 22, 72), sc = sun.shadow.camera;
+  sc.left = -sh; sc.right = sh; sc.top = sh; sc.bottom = -sh; sc.near = 1; sc.far = 220; sc.updateProjectionMatrix();
+
+  // ambient motion
+  if (!reduceMotion || first) {
+    fallU.time.value = time;
+    durian.rotation.y = time * 0.35;
+    durian.position.y = 9.6 + Math.sin(time * 1.2) * 0.25;
+    CLOUDS.forEach(c => { c.position.x += c.userData.v * dt; if (c.position.x > 70) c.position.x = -70; });
+    const tx = (time * 3.4) % 140 - 70;
+    TRAIN.forEach((car, i) => { const x = tx - i * 3.8; car.position.x = x; car.visible = Math.abs(x) < 43; });
+  }
+  if (petalMesh) {
+    const S = clamp(r * 0.38, 9, 42), Hs = clamp(r * 0.45, 10, 46), sz = clamp(r / 24, 0.8, 3.2);
+    PETALS.forEach((pt, i) => {
+      pt.y -= pt.v * dt * 0.06;
+      if (pt.y < 0) pt.y += 1;
+      const x = cur.t.x + pt.x * S + Math.sin(time * 0.7 + pt.ph) * 0.8;
+      const z = cur.t.z + pt.z * S + Math.cos(time * 0.5 + pt.ph) * 0.8;
+      dummy.position.set(x, cur.t.y - 3 + pt.y * Hs, z);
+      dummy.rotation.set(time * pt.spin + pt.ph, time * pt.spin * 0.7, pt.ph);
+      dummy.scale.setScalar(sz);
+      dummy.updateMatrix();
+      petalMesh.setMatrixAt(i, dummy.matrix);
+    });
+    petalMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  // pins
+  const ovEnd = Math.max(0, 1 - Math.abs(pSm - (NCH - 1)));
+  const ov = Math.max(1 - pSm, ovEnd, 0);
+  PINS.forEach(pin => {
+    const wch = Math.max(0, 1 - Math.abs(pSm - pin.ch) * 1.6);
+    let o = pin.minor ? Math.max(pin.ch === 0 ? ovEnd : 0, pin.ch ? wch : 0) : Math.max(ov * 0.95, wch);
+    v3.copy(pin.v).project(camera);
+    if (v3.z > 1 || Math.abs(v3.x) > 1.1 || Math.abs(v3.y) > 1.1) o = 0;
+    // keep the hero copy clear of labels
+    if (pSm < 0.5 && (W < Hh || v3.x < 0.05)) o = 0;
+    pin.el.style.opacity = o.toFixed(3);
+    pin.el.style.pointerEvents = o > 0.4 && !pin.minor ? 'auto' : 'none';
+    if (o > 0) pin.el.style.transform = `translate(${((v3.x * 0.5 + 0.5) * W - 5.5).toFixed(1)}px, ${((-v3.y * 0.5 + 0.5) * Hh - 5.5).toFixed(1)}px)`;
+  });
+
+  setActive(Math.round(pSm));
+  hudBar.style.transform = `scaleX(${(pSm / (NCH - 1)).toFixed(4)})`;
+
+  renderer.render(scene, camera);
+  if (first) { first = false; hideLoader(); }
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
