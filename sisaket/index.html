@@ -399,6 +399,149 @@
     .cursor { display: none !important; }
   }
 
+  /* ---------- UI polish ---------- */
+  .topbar { transition: background .4s, backdrop-filter .4s, padding .4s; }
+  body.scrolled .topbar {
+    background: rgba(12, 16, 30, .62); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-bottom: 10px;
+    box-shadow: 0 1px 0 rgba(243, 235, 221, .08);
+  }
+  .topbar-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; overflow: hidden; pointer-events: none; }
+  .topbar-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--laterite), var(--gold)); transform-origin: left; transform: scaleX(0); }
+  .topbar nav a { position: relative; }
+  .topbar nav a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 2px; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+  .topbar nav a:hover::after, .topbar nav a[aria-current="true"]::after { transform: scaleX(1); }
+  .topbar nav a[aria-current="true"] { color: var(--gold); }
+  .topbar nav a:hover { background: none; border-color: transparent; }
+
+  .menu-btn { display: none; align-items: center; gap: 10px; background: rgba(15, 20, 36, .55); border: 1px solid var(--line); color: var(--cream); padding: 8px 12px; font: 500 14px var(--f-body); cursor: pointer; position: relative; z-index: 31; }
+  .menu-btn span { display: block; width: 16px; height: 1.5px; background: currentColor; transition: transform .3s; }
+  .menu-btn span + span { margin-left: -26px; transform: translateY(5px); }
+  .menu-btn span:first-child { transform: translateY(-2px); }
+  .menu-btn[aria-expanded="true"] span:first-child { transform: rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span + span { transform: rotate(-45deg); }
+  .menu {
+    position: fixed; inset: 0; z-index: 19; background: rgba(10, 13, 25, .94); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    display: flex; align-items: flex-end; padding: 96px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px));
+  }
+  .menu[hidden], .to-top[hidden] { display: none; }
+  .menu nav { display: grid; gap: 4px; width: 100%; }
+  .menu a { display: flex; align-items: baseline; gap: 14px; text-decoration: none; font: 400 clamp(28px, 8vw, 44px)/1.35 var(--f-display); padding: 6px 0; border-bottom: 1px solid var(--line); animation: menuIn .5s cubic-bezier(.2, .8, .2, 1) both; }
+  .menu a small { font: 600 12px var(--f-ui); color: var(--gold); letter-spacing: .12em; }
+  .menu a:nth-child(2) { animation-delay: .04s; } .menu a:nth-child(3) { animation-delay: .08s; } .menu a:nth-child(4) { animation-delay: .12s; } .menu a:nth-child(5) { animation-delay: .16s; } .menu a:nth-child(6) { animation-delay: .2s; }
+  @keyframes menuIn { from { transform: translateY(24px); opacity: .001; } }
+
+  /* chapter cards: hairline gold gradient edge + refined controls */
+  .card {
+    border: 1px solid transparent;
+    background: linear-gradient(var(--glass), var(--glass)) padding-box,
+                linear-gradient(140deg, rgba(242, 199, 92, .55), rgba(243, 235, 221, .08) 38%, rgba(243, 235, 221, .06) 70%, rgba(194, 98, 59, .45)) border-box;
+    border-radius: 2px;
+  }
+  .card h2 { letter-spacing: -.005em; }
+  .facts { border-radius: 2px; overflow: hidden; }
+  .maplink {
+    gap: 8px; padding: 8px 14px 8px 12px; border: 1px solid rgba(242, 199, 92, .45); border-radius: 999px;
+    transition: background .25s, color .25s, border-color .25s;
+  }
+  .maplink::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(242, 199, 92, .18); }
+  .maplink:hover { background: var(--gold); color: #1a1406; border-color: var(--gold); }
+  .maplink:hover::before { background: #1a1406; }
+
+  /* buttons: shine sweep + magnetic hover */
+  .btn { position: relative; overflow: hidden; border-radius: 999px; padding: 15px 24px; will-change: transform; }
+  .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .55) 50%, transparent 65%); transform: translateX(-120%); transition: transform .7s; }
+  .btn:hover::after { transform: translateX(120%); }
+  .btn.ghost::after { background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .18) 50%, transparent 65%); }
+
+  /* scroll reveal (starts dimmed, never hidden) */
+  .rv { transition: opacity .9s ease, transform 1s cubic-bezier(.2, .8, .2, 1); }
+  .js-rv .rv:not(.in) { opacity: .28; transform: translateY(34px); }
+  .people .rv:nth-child(2), .goods .rv:nth-child(2), .modes .rv:nth-child(2), .days .rv:nth-child(2) { transition-delay: .08s; }
+  .people .rv:nth-child(3), .modes .rv:nth-child(3), .goods .rv:nth-child(3) { transition-delay: .16s; }
+  .people .rv:nth-child(4), .modes .rv:nth-child(4), .goods .rv:nth-child(4) { transition-delay: .24s; }
+
+  /* section headings: gold rule grows in */
+  .sec-head .eyebrow { display: flex; align-items: center; gap: 12px; }
+  .sec-head .eyebrow::before { content: ""; width: 36px; height: 1px; background: var(--gold); transform-origin: left; transition: transform 1s .2s cubic-bezier(.2, .8, .2, 1); }
+  .js-rv .sec-head:not(.in) .eyebrow::before { transform: scaleX(0); }
+
+  /* photo bands */
+  .band { position: relative; height: clamp(180px, 30vw, 340px); margin-bottom: clamp(40px, 6vw, 72px); overflow: hidden; border-radius: 2px; }
+  .band i { position: absolute; inset: -18% 0; background: var(--img) var(--pos) / cover no-repeat; transform: translateY(var(--py, 0)); will-change: transform; }
+  .band::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(15, 20, 36, .75), rgba(15, 20, 36, .05) 55%), linear-gradient(90deg, rgba(15, 20, 36, .35), transparent 50%); }
+  .band span { position: absolute; left: 20px; bottom: 16px; z-index: 1; font: 600 12px var(--f-ui); letter-spacing: .16em; color: var(--cream-2); }
+
+  /* people: pattern drifts on hover */
+  .person { transition: transform .45s cubic-bezier(.2, .8, .2, 1), border-color .3s, box-shadow .45s; }
+  .person:hover { transform: translateY(-6px); border-color: rgba(242, 199, 92, .4); box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .8); }
+  .weave { transition: background-position 2.4s linear; }
+  .person:hover .weave { background-position: 60px 30px; }
+
+  /* goods */
+  .good { transition: background .35s; }
+  .good:hover { background: linear-gradient(135deg, rgba(242, 199, 92, .07), transparent 60%); }
+  .good svg { transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+  .good:hover svg { transform: rotate(-8deg) scale(1.08); }
+
+  /* seasons: choose a month */
+  .pick-hint { margin: -20px 0 14px; font-size: 14px; color: var(--muted); }
+  .pick-hint b { color: var(--gold); font-weight: 600; }
+  .ribbon .m { background: none; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; font-family: var(--f-ui); transition: color .2s, background .2s; border-radius: 2px 2px 0 0; }
+  .ribbon .m:hover { color: var(--cream); background: rgba(243, 235, 221, .05); }
+  .ribbon .m[aria-pressed="true"] { color: #1a1406; background: var(--gold); border-bottom-color: var(--gold); }
+  .ribbon .m.now[aria-pressed="true"]::after { color: var(--gold); }
+  .ev { transition: opacity .35s, filter .35s; border-radius: 2px; }
+  .ribbon.picked .ev:not(.hit) { opacity: .22; filter: saturate(.3); }
+  .season-list li { transition: opacity .35s, transform .35s, border-color .35s; }
+  .season-list.picked li:not(.hit) { opacity: .3; }
+  .season-list.picked li.hit { border-top-color: var(--gold); }
+
+  /* trip: timeline rail + route button */
+  .stops { position: relative; }
+  .stops::before { content: ""; position: absolute; left: 66px; top: 22px; bottom: 22px; width: 1px; background: linear-gradient(180deg, var(--gold), rgba(242, 199, 92, .1)); }
+  .stops li { grid-template-columns: 58px 1fr; padding-left: 0; }
+  .stops li > div { position: relative; padding-left: 24px; }
+  .stops li > div::before { content: ""; position: absolute; left: -12px; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--ink-2); border: 2px solid var(--gold); transition: background .3s, transform .3s; }
+  .stops li:hover > div::before { background: var(--gold); transform: scale(1.3); }
+  .route { display: inline-flex; align-items: center; gap: 8px; margin: 6px 0 20px; padding: 10px 16px; border-radius: 999px; background: rgba(242, 199, 92, .1); border: 1px solid rgba(242, 199, 92, .4); color: var(--gold); text-decoration: none; font-size: 14px; transition: background .25s, color .25s; }
+  .route svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .route:hover { background: var(--gold); color: #1a1406; }
+  .day { border-radius: 2px; }
+
+  /* travel icons */
+  .mode-ico { width: 34px; height: 34px; fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; margin-bottom: 10px; transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+  .mode:hover .mode-ico { transform: translateX(6px); }
+
+  /* postcards: 3D tilt */
+  .pc-row { perspective: 900px; }
+  .postcard { transform-style: preserve-3d; }
+  .postcard.tilting { transition: transform .12s linear, box-shadow .4s; }
+
+  /* outro CTA */
+  .outro { position: relative; padding-block: clamp(90px, 14vw, 180px); overflow: hidden; border-top: 1px solid var(--line); background: radial-gradient(80% 90% at 80% 20%, rgba(194, 98, 59, .22), transparent 60%), radial-gradient(60% 70% at 10% 90%, rgba(242, 199, 92, .1), transparent 60%); }
+  .outro h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(56px, 11vw, 168px); line-height: 1.05; margin: 8px 0 36px; }
+  .outro h2 span { color: transparent; -webkit-text-stroke: 1.4px var(--gold); }
+
+  /* back to top with scroll ring */
+  .to-top { position: fixed; z-index: 16; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 50%; background: rgba(15, 20, 36, .8); backdrop-filter: blur(8px); display: grid; place-items: center; opacity: 0; transform: translateY(16px) scale(.9); pointer-events: none; transition: opacity .35s, transform .35s; }
+  body.in-guide .to-top { opacity: 1; transform: none; pointer-events: auto; }
+  .to-top svg { width: 52px; height: 52px; fill: none; stroke-linecap: round; }
+  .to-top .tt-track { stroke: rgba(243, 235, 221, .15); stroke-width: 2; }
+  .to-top .tt-ring { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 132; stroke-dashoffset: 132; transform: rotate(-90deg); transform-origin: 24px 24px; }
+  .to-top path { stroke: var(--cream); stroke-width: 2; }
+
+  @media (max-width: 760px) {
+    .topbar nav { display: none; }
+    .menu-btn { display: inline-flex; }
+    .stops::before { left: 66px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js-rv .rv:not(.in) { opacity: 1; transform: none; }
+    .rv, .person, .btn::after, .band i { transition: none; }
+    .menu a { animation: none; }
+  }
+
   /* fallback when WebGL is unavailable */
   body.no-webgl #scene, body.no-webgl .hud, body.no-webgl .dots { display: none; }
   body.no-webgl #tour { background: radial-gradient(120% 80% at 70% 10%, #3b2b52 0, var(--ink) 60%), var(--ink); }
@@ -493,9 +636,21 @@
     <a href="#seasons">ฤดูเที่ยว</a>
     <a href="#trip">ทริป 2 วัน</a>
     <a href="#travel">การเดินทาง</a>
-    <a class="nav-short" href="#guide">คู่มือเที่ยว</a>
   </nav>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span></span><span></span><b>เมนู</b></button>
+  <span class="topbar-progress" aria-hidden="true"><i id="topbar-progress"></i></span>
 </header>
+<div class="menu" id="menu" hidden>
+  <nav aria-label="เมนูมือถือ">
+    <a href="#ch-1"><small>01</small>ภาพ 3D ห้าจุดเด่น</a>
+    <a href="#postcards"><small>02</small>โปสการ์ด</a>
+    <a href="#people"><small>03</small>สี่ชาติพันธุ์</a>
+    <a href="#seasons"><small>04</small>ไปเดือนไหนดี</a>
+    <a href="#trip"><small>05</small>ทริป 2 วัน 1 คืน</a>
+    <a href="#travel"><small>06</small>การเดินทาง</a>
+  </nav>
+</div>
+<a class="to-top" id="to-top" href="#top" aria-label="กลับขึ้นด้านบน"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-ring" id="tt-ring"/><path d="M24 31V17M17 23l7-7 7 7"/></svg></a>
 
 <div class="hud" aria-hidden="true">
   <svg id="minimap" viewBox="-6 -6 212 263.9"><path class="mm-land" d="M0.0 148.1 L3.3 152.3 L18.6 158.4 L20.2 164.4 L19.8 173.5 L29.3 184.2 L30.7 188.7 L29.7 191.8 L31.3 196.6 L30.5 203.5 L28.6 206.3 L28.8 208.5 L25.9 210.9 L26.5 220.3 L30.2 221.1 L28.9 223.5 L31.1 226.3 L29.5 233.6 L30.1 237.8 L28.8 238.9 L29.6 244.9 L28.2 248.5 L30.8 251.8 L34.5 251.9 L38.1 250.2 L41.0 245.0 L46.7 246.0 L46.8 249.3 L48.4 249.9 L53.7 249.0 L53.5 245.4 L56.7 243.7 L58.9 243.9 L61.6 247.1 L65.7 246.5 L68.8 245.2 L69.7 242.3 L74.3 238.8 L85.2 246.6 L90.2 246.9 L94.4 243.9 L96.3 246.4 L98.8 245.8 L100.0 247.5 L102.0 246.3 L106.5 249.2 L111.2 248.7 L111.7 251.8 L114.7 250.4 L114.7 248.1 L118.8 245.4 L126.0 249.7 L134.7 249.2 L134.8 245.6 L147.0 235.8 L149.4 236.2 L150.7 240.4 L155.8 240.9 L158.5 234.9 L161.3 233.5 L163.5 236.1 L163.5 239.9 L166.5 237.6 L169.7 239.5 L172.1 235.7 L179.9 232.9 L182.1 234.5 L182.6 236.8 L185.4 237.3 L186.2 241.0 L193.0 236.8 L200.0 240.7 L199.9 238.1 L193.9 232.9 L188.9 235.6 L186.3 235.0 L184.4 231.8 L190.6 225.7 L191.0 220.2 L184.2 213.6 L181.8 209.4 L184.4 203.4 L184.1 197.7 L186.2 195.9 L185.9 191.8 L188.1 189.6 L188.3 187.2 L192.0 186.3 L196.8 188.7 L193.9 184.5 L193.9 178.7 L188.6 174.9 L187.1 171.1 L182.7 167.9 L181.8 160.4 L178.3 157.2 L178.5 154.2 L181.6 151.1 L180.7 148.3 L182.0 146.8 L179.8 138.1 L174.3 137.8 L173.0 135.3 L171.1 134.7 L171.2 133.3 L169.6 133.4 L165.7 129.7 L162.9 132.3 L162.6 131.0 L158.7 130.2 L155.6 126.8 L156.5 123.7 L155.2 121.7 L155.7 116.0 L152.7 110.3 L153.9 110.1 L153.6 108.7 L155.1 109.7 L156.1 108.2 L154.9 107.0 L156.6 104.9 L156.0 102.0 L157.4 99.9 L154.1 99.4 L156.5 96.4 L154.8 96.3 L154.1 97.9 L152.9 96.7 L155.0 94.7 L154.0 93.6 L154.7 91.6 L159.5 90.2 L166.1 83.4 L164.0 81.8 L158.4 84.5 L158.8 81.1 L162.5 78.0 L161.4 76.8 L159.2 78.8 L159.5 75.7 L155.0 75.4 L156.7 74.4 L155.3 72.1 L157.7 71.8 L154.7 70.4 L151.7 63.9 L150.4 63.8 L149.3 66.3 L151.3 67.4 L151.9 69.3 L148.2 67.8 L147.3 60.9 L143.1 60.3 L142.0 62.7 L140.7 58.9 L139.2 61.7 L137.0 61.7 L134.0 64.1 L124.0 65.0 L119.8 61.9 L113.4 61.8 L108.4 59.2 L95.6 56.3 L96.7 52.6 L95.9 49.2 L94.4 49.0 L93.1 50.9 L89.8 46.0 L78.5 46.0 L74.1 41.6 L68.0 39.1 L58.7 23.3 L54.2 22.0 L53.2 18.7 L45.9 11.5 L46.3 8.9 L47.6 8.2 L45.1 1.6 L40.8 0.0 L39.0 0.8 L40.5 4.4 L37.8 3.4 L35.8 4.2 L34.2 5.9 L35.0 7.4 L34.2 9.4 L30.5 10.9 L31.4 13.6 L25.8 16.3 L22.8 22.0 L18.6 25.0 L17.3 33.2 L18.2 36.0 L20.2 34.8 L20.3 32.6 L22.1 34.0 L23.1 32.2 L24.8 33.9 L26.2 33.1 L29.4 34.2 L29.6 35.5 L31.4 33.6 L34.4 36.3 L33.9 38.5 L36.3 38.0 L35.4 39.7 L36.4 42.2 L36.3 43.4 L37.8 43.2 L37.6 45.3 L34.4 44.1 L31.8 45.2 L31.7 46.4 L30.1 46.9 L28.4 46.6 L28.3 48.5 L26.7 49.6 L24.0 48.7 L25.5 50.0 L25.3 51.5 L21.6 51.9 L22.5 57.4 L20.0 57.4 L18.8 56.2 L19.2 60.7 L18.0 61.6 L14.1 59.3 L15.1 62.7 L18.9 65.2 L16.6 66.1 L17.9 68.3 L16.3 69.2 L17.2 70.5 L14.8 70.4 L13.6 71.6 L16.3 75.6 L14.8 75.8 L15.0 77.8 L12.8 78.8 L13.8 79.9 L13.0 83.1 L15.2 84.3 L16.1 83.5 L16.3 85.1 L19.5 86.2 L19.4 88.9 L17.5 89.0 L16.8 90.3 L19.6 92.2 L17.8 93.8 L19.2 97.6 L17.9 98.4 L18.4 99.8 L19.8 99.1 L19.8 100.9 L22.4 100.1 L23.6 100.9 L23.1 102.5 L21.4 101.8 L22.1 103.4 L20.6 104.8 L22.1 105.1 L23.6 108.0 L21.9 108.3 L22.9 110.3 L21.6 113.0 L18.5 113.7 L19.9 117.8 L16.4 120.3 L15.8 122.2 L14.6 121.3 L12.9 122.4 L13.5 127.3 L10.7 129.8 L8.7 128.7 L7.4 135.9 L4.5 137.7 L2.9 141.1 L3.8 143.3 L0.0 148.1 Z"/><rect class="mm-city" x="81.9" y="90.5" width="6" height="6"/><text class="mm-label" x="92.9" y="97.5">ตัวเมือง</text><text class="mm-label" x="100.0" y="253.9" text-anchor="middle">ชายแดนกัมพูชา</text><g class="mm-spot" data-ch="1" transform="translate(44.9 96.1)"><circle class="halo" r="10"/><circle r="4.6"/></g><g class="mm-spot" data-ch="2" transform="translate(79.1 82.9)"><circle class="halo" r="10"/><circle r="4.6"/></g><g class="mm-spot" data-ch="3" transform="translate(102.9 195.6)"><circle class="halo" r="10"/><circle r="4.6"/></g><g class="mm-spot" data-ch="4" transform="translate(128.9 207.6)"><circle class="halo" r="10"/><circle r="4.6"/></g><g class="mm-spot" data-ch="5" transform="translate(154.8 240.9)"><circle class="halo" r="10"/><circle r="4.6"/></g></svg>
@@ -516,7 +671,7 @@
           <div><dt>จากกรุงเทพฯ</dt><dd>≈570 กม.</dd></div>
         </dl>
         <div class="cta-row">
-          <a class="btn" href="#ch-1">เริ่มชม <span aria-hidden="true">↓</span></a>
+          <a class="btn magnetic" href="#ch-1">เริ่มชม <span aria-hidden="true">↓</span></a>
           <p class="fineprint">ภาพถ่ายจริงจาก Wikimedia Commons ทำเป็นภาพ 3D ด้วยการประมาณความลึกของภาพ</p>
         </div>
         <p class="credit">ในภาพ: ปราสาทสระกำแพงใหญ่ · ภาพ <a href="https://commons.wikimedia.org/wiki/File:%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88_(Wat_Sa_Kamphaeng_Yai_Sanctuary)_2_(2019).jpg" target="_blank" rel="noopener">PEAK99</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></p>
@@ -611,7 +766,7 @@
           <li>น้ำตกสำโรงเกียรติ <small>อ.ขุนหาญ</small></li>
         </ul>
         <div class="cta-row">
-          <a class="btn" href="#guide">เปิดคู่มือวางแผนเที่ยว <span aria-hidden="true">↓</span></a>
+          <a class="btn magnetic" href="#guide">เปิดคู่มือวางแผนเที่ยว <span aria-hidden="true">↓</span></a>
         </div>
         <p class="credit">ในภาพ: ปราสาทสระกำแพงใหญ่ · ภาพ <a href="https://commons.wikimedia.org/wiki/File:%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88_(Wat_Sa_Kamphaeng_Yai_Sanctuary)_DSCN0340_(2019).jpg" target="_blank" rel="noopener">PEAK99</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></p>
       </article>
@@ -621,7 +776,7 @@
   <div id="guide">
     <section class="sec" id="postcards">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">โปสการ์ด</p>
             <h2>ห้าจุดที่ต้องไป</h2>
@@ -662,7 +817,7 @@
 
     <section class="sec" id="people">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">ผู้คน</p>
             <h2>สี่ชาติพันธุ์ หนึ่งศรีสะเกษ</h2>
@@ -670,19 +825,19 @@
           <p>ศรีสะเกษเป็นบ้านของ 4 กลุ่มชาติพันธุ์หลัก แต่ละกลุ่มมีภาษา ประเพณี และผ้าทอเป็นของตัวเอง งานเทศกาลดอกลำดวนบานทุกปีจึงมักมีขบวนแห่และการแสดงของทั้งสี่กลุ่ม</p>
         </div>
         <div class="people">
-          <article class="person"><div class="weave w-lao" aria-hidden="true"></div><div class="person-body">
+          <article class="person rv"><div class="weave w-lao" aria-hidden="true"></div><div class="person-body">
             <h3>ลาว</h3>
             <p>กลุ่มที่มีจำนวนมากที่สุด พูดภาษาอีสาน ถือฮีตสิบสองคองสิบสี่ มีงานบุญประจำปีอย่างบุญบั้งไฟและบุญผะเหวด</p>
           </div></article>
-          <article class="person"><div class="weave w-khmer" aria-hidden="true"></div><div class="person-body">
+          <article class="person rv"><div class="weave w-khmer" aria-hidden="true"></div><div class="person-body">
             <h3>เขมร</h3>
             <p>พูดภาษาเขมรถิ่นไทย อาศัยหนาแน่นทางตอนใต้ใกล้ชายแดน มีดนตรีกันตรึมและพิธีแซนโฎนตาเพื่อระลึกถึงบรรพบุรุษ</p>
           </div></article>
-          <article class="person"><div class="weave w-kui" aria-hidden="true"></div><div class="person-body">
+          <article class="person rv"><div class="weave w-kui" aria-hidden="true"></div><div class="person-body">
             <h3>ส่วย (กูย)</h3>
             <p>มีภาษากูยเป็นของตัวเอง ผูกพันกับวิถีคนกับช้างมาแต่โบราณ และยังสืบทอดพิธีเซ่นไหว้ผีปะกำ</p>
           </div></article>
-          <article class="person"><div class="weave w-yoe" aria-hidden="true"></div><div class="person-body">
+          <article class="person rv"><div class="weave w-yoe" aria-hidden="true"></div><div class="person-body">
             <h3>เยอ</h3>
             <p>กลุ่มที่มีจำนวนน้อยที่สุดในสี่กลุ่ม ภาษาเยอเป็นเครือเดียวกับภาษากูย หลายชุมชนยังรักษาภาษาและพิธีดั้งเดิมไว้</p>
           </div></article>
@@ -692,52 +847,54 @@
 
     <section class="sec" id="seasons">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="band rv" style="--img:url(photos/phamo.jpg);--pos:50% 55%" aria-hidden="true"><i></i><span>หน้าผาริมเทือกเขาพนมดงรัก</span></div>
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">ปฏิทิน</p>
             <h2>ไปเดือนไหนดี</h2>
           </div>
           <p>ปลายฝนต้นหนาวเที่ยวสบายที่สุด แต่ถ้าอยากกินทุเรียนหรือดูดอกลำดวนบาน ต้องเลือกเดือนให้ตรงฤดู</p>
         </div>
+        <p class="pick-hint" id="pick-hint">แตะชื่อเดือนเพื่อดูว่าไปช่วงนั้นจะเจออะไร</p>
         <div class="ribbon-scroll">
-          <div class="ribbon" aria-hidden="true">
+          <div class="ribbon">
             <div class="row" id="months">
-              <div class="m">ม.ค.</div><div class="m">ก.พ.</div><div class="m">มี.ค.</div><div class="m">เม.ย.</div><div class="m">พ.ค.</div><div class="m">มิ.ย.</div><div class="m">ก.ค.</div><div class="m">ส.ค.</div><div class="m">ก.ย.</div><div class="m">ต.ค.</div><div class="m">พ.ย.</div><div class="m">ธ.ค.</div>
+              <button type="button" class="m" data-m="1" aria-pressed="false">ม.ค.</button><button type="button" class="m" data-m="2" aria-pressed="false">ก.พ.</button><button type="button" class="m" data-m="3" aria-pressed="false">มี.ค.</button><button type="button" class="m" data-m="4" aria-pressed="false">เม.ย.</button><button type="button" class="m" data-m="5" aria-pressed="false">พ.ค.</button><button type="button" class="m" data-m="6" aria-pressed="false">มิ.ย.</button><button type="button" class="m" data-m="7" aria-pressed="false">ก.ค.</button><button type="button" class="m" data-m="8" aria-pressed="false">ส.ค.</button><button type="button" class="m" data-m="9" aria-pressed="false">ก.ย.</button><button type="button" class="m" data-m="10" aria-pressed="false">ต.ค.</button><button type="button" class="m" data-m="11" aria-pressed="false">พ.ย.</button><button type="button" class="m" data-m="12" aria-pressed="false">ธ.ค.</button>
             </div>
-            <div class="row"><span class="ev cool" style="grid-column:1 / 3">อากาศเย็น</span><span class="ev cool" style="grid-column:11 / 13">อากาศเย็น เที่ยวสบาย</span></div>
-            <div class="row"><span class="ev fest" style="grid-column:3 / 4">ลำดวนบาน</span><span class="ev trad" style="grid-column:4 / 5">สงกรานต์</span></div>
-            <div class="row"><span class="ev fruit" style="grid-column:5 / 8">ทุเรียน เงาะ มังคุด</span></div>
-            <div class="row"><span class="ev rain" style="grid-column:7 / 11">หน้าฝน น้ำตกไหลแรง ทุ่งนาเขียว</span></div>
-            <div class="row"><span class="ev trad" style="grid-column:9 / 11">แซนโฎนตา</span></div>
+            <div class="row" aria-hidden="true"><span class="ev cool" style="grid-column:1 / 3">อากาศเย็น</span><span class="ev cool" style="grid-column:11 / 13">อากาศเย็น เที่ยวสบาย</span></div>
+            <div class="row" aria-hidden="true"><span class="ev fest" style="grid-column:3 / 4">ลำดวนบาน</span><span class="ev trad" style="grid-column:4 / 5">สงกรานต์</span></div>
+            <div class="row" aria-hidden="true"><span class="ev fruit" style="grid-column:5 / 8">ทุเรียน เงาะ มังคุด</span></div>
+            <div class="row" aria-hidden="true"><span class="ev rain" style="grid-column:7 / 11">หน้าฝน น้ำตกไหลแรง ทุ่งนาเขียว</span></div>
+            <div class="row" aria-hidden="true"><span class="ev trad" style="grid-column:9 / 11">แซนโฎนตา</span></div>
           </div>
         </div>
         <ul class="season-list">
-          <li>
+          <li class="rv" data-months="11,12,1,2">
             <div class="when"><i style="background:#c9d6e8"></i>พ.ย. – ก.พ.</div>
             <h3>หน้าหนาว เที่ยวสบายที่สุด</h3>
             <p>อากาศเย็นและแห้ง เหมาะกับเดินชมปราสาทกลางแจ้งและขึ้นไปรอแสงเช้าที่ผามออีแดง</p>
           </li>
-          <li>
+          <li class="rv" data-months="3">
             <div class="when"><i style="background:#f2c75c"></i>มี.ค.</div>
             <h3>เทศกาลดอกลำดวนบาน</h3>
             <p>จัดที่สวนสมเด็จศรีนครินทร์ ช่วงที่ต้นลำดวนออกดอกพร้อมกัน มีการแสดงวัฒนธรรมของ 4 ชาติพันธุ์</p>
           </li>
-          <li>
+          <li class="rv" data-months="5,6,7">
             <div class="when"><i style="background:#a6c78c"></i>พ.ค. – ก.ค.</div>
             <h3>ฤดูทุเรียนภูเขาไฟ</h3>
             <p>ผลไม้ออกพร้อมกันทั้งทุเรียน เงาะ และมังคุด มักมีงานเทศกาลผลไม้ประจำปีที่ อ.กันทรลักษ์</p>
           </li>
-          <li>
+          <li class="rv" data-months="7,8,9,10">
             <div class="when"><i style="background:#6d8fbf"></i>ก.ค. – ต.ค.</div>
             <h3>หน้าฝน</h3>
             <p>น้ำตกห้วยจันทร์และน้ำตกสำโรงเกียรติมีน้ำเต็มที่ ทุ่งนารอบเมืองเขียวทั้งจังหวัด ถนนบนเขาอาจลื่น</p>
           </li>
-          <li>
+          <li class="rv" data-months="9,10">
             <div class="when"><i style="background:#c2623b"></i>ราว ก.ย. – ต.ค.</div>
             <h3>แซนโฎนตา</h3>
             <p>ประเพณีเซ่นไหว้บรรพบุรุษของชาวเขมร วันจัดขึ้นกับปฏิทินจันทรคติ จึงเลื่อนไปมาทุกปี</p>
           </li>
-          <li>
+          <li class="rv" data-months="4">
             <div class="when"><i style="background:#c2623b"></i>เม.ย.</div>
             <h3>สงกรานต์</h3>
             <p>ช่วงร้อนที่สุดของปี แต่บรรยากาศงานบุญและรดน้ำดำหัวตามหมู่บ้านคึกคัก</p>
@@ -749,7 +906,7 @@
 
     <section class="sec" id="taste">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">ของดี</p>
             <h2>ติดมือกลับบ้าน</h2>
@@ -757,25 +914,25 @@
           <p>ศรีสะเกษมีสินค้าที่ได้ขึ้นทะเบียนสิ่งบ่งชี้ทางภูมิศาสตร์ (GI) หลายรายการ เพราะดินและแหล่งปลูกของที่นี่ให้รสชาติที่ปลูกที่อื่นแล้วไม่เหมือน</p>
         </div>
         <div class="goods">
-          <article class="good">
+          <article class="good rv">
             <svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="36" rx="20" ry="23" fill="#8d9a3a"/><g fill="#b5bf4c"><path d="M32 13l3 6h-6z"/><path d="M20 20l5 4-6 2z"/><path d="M44 20l1 6-6-2z"/><path d="M14 34l6-2-1 6z"/><path d="M50 34l-5 4-1-6z"/><path d="M22 50l3-5 3 5z"/><path d="M36 50l3-5 3 5z"/><path d="M28 30l4-5 4 5z"/><path d="M26 40l3-4 3 4z"/><path d="M35 40l3-4 3 4z"/></g><rect x="30" y="6" width="4" height="9" fill="#6b5a2e"/></svg>
             <h3>ทุเรียนภูเขาไฟศรีสะเกษ</h3>
             <div><span class="tag">GI</span><span class="tag plain">พ.ค.–ก.ค.</span></div>
             <p>ปลูกบนดินภูเขาไฟใน อ.กันทรลักษ์ ขุนหาญ และศรีรัตนะ เนื้อละเอียด หวานมัน ซื้อได้ทั้งหน้าสวนและร้านริมทาง</p>
           </article>
-          <article class="good">
+          <article class="good rv">
             <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c-2 8-16 16-16 32a16 16 0 0032 0C48 24 34 16 32 8z" fill="#b0424d"/><path d="M32 12c-1 10-8 18-8 30 0 7 4 12 8 12" fill="none" stroke="#e7a0a6" stroke-width="2"/><path d="M26 56h12" stroke="#d8c7a0" stroke-width="3"/></svg>
             <h3>หอมแดงศรีสะเกษ</h3>
             <div><span class="tag">GI</span><span class="tag plain">ยางชุมน้อย · ราษีไศล</span></div>
             <p>หัวเล็ก สีแดงเข้ม กลิ่นหอมฉุน เป็นวัตถุดิบหลักของน้ำพริกและเครื่องแกง ตลาดในเมืองมีขายแบบมัดจุก</p>
           </article>
-          <article class="good">
+          <article class="good rv">
             <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 58V20" stroke="#c9b061" stroke-width="3"/><g fill="#e7d596"><ellipse cx="26" cy="22" rx="4" ry="7" transform="rotate(-25 26 22)"/><ellipse cx="38" cy="22" rx="4" ry="7" transform="rotate(25 38 22)"/><ellipse cx="25" cy="34" rx="4" ry="7" transform="rotate(-25 25 34)"/><ellipse cx="39" cy="34" rx="4" ry="7" transform="rotate(25 39 34)"/><ellipse cx="32" cy="12" rx="4" ry="7"/><ellipse cx="25" cy="46" rx="4" ry="7" transform="rotate(-25 25 46)"/><ellipse cx="39" cy="46" rx="4" ry="7" transform="rotate(25 39 46)"/></g></svg>
             <h3>ข้าวหอมมะลิทุ่งกุลาร้องไห้</h3>
             <div><span class="tag">GI</span><span class="tag plain">บางอำเภอ</span></div>
             <p>ทุ่งกุลาร้องไห้ส่วนหนึ่งอยู่ในเขตศรีสะเกษ ข้าวหอมมะลิจากทุ่งนี้เมล็ดเรียวยาว หุงแล้วนุ่มและหอม</p>
           </article>
-          <article class="good">
+          <article class="good rv">
             <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="10" width="44" height="44" fill="#2d4e8a"/><g fill="#f2c75c"><path d="M32 16l8 8-8 8-8-8z"/><path d="M32 32l8 8-8 8-8-8z"/><path d="M16 24l4 4-4 4-4-4z"/><path d="M48 24l4 4-4 4-4-4z"/></g><path d="M10 14h44M10 50h44" stroke="#c2623b" stroke-width="3"/></svg>
             <h3>ผ้าทอ 4 ชาติพันธุ์</h3>
             <div><span class="tag plain">ไหม · ฝ้าย</span></div>
@@ -787,7 +944,8 @@
 
     <section class="sec" id="trip">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="band rv" style="--img:url(photos/bottle.jpg);--pos:50% 60%" aria-hidden="true"><i></i><span>วัดล้านขวด อ.ขุนหาญ</span></div>
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">เส้นทางแนะนำ</p>
             <h2>ทริป 2 วัน 1 คืน</h2>
@@ -795,7 +953,7 @@
           <p>วันแรกเที่ยวรอบตัวเมืองกับฝั่งตะวันตก วันที่สองขึ้นใต้ไปแนวเทือกเขาพนมดงรัก พักในตัวเมืองคืนเดียวก็เที่ยวครบทั้ง 5 จุดบนแผนที่ ควรมีรถส่วนตัวหรือเช่ารถ</p>
         </div>
         <div class="days">
-          <article class="day">
+          <article class="day rv">
             <h3>วันที่ 1 · มรดกขอมและเมืองลำดวน</h3>
             <p>ตัวเมือง · อุทุมพรพิสัย</p>
             <ol class="stops">
@@ -805,8 +963,9 @@
               <li><time>15:00</time><div><b>วัดพระธาตุเรืองรอง</b><span>ขึ้นชั้นบนชมวิวทุ่งนา และดูเครื่องใช้พื้นบ้านที่จัดแสดง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
               <li><time>17:00</time><div><b>สวนสมเด็จศรีนครินทร์</b><span>เดินเล่นใต้ต้นลำดวนตอนเย็น แล้วหาของกินที่ตลาดในเมือง</span><small>อ.เมืองศรีสะเกษ</small></div></li>
             </ol>
+            <a class="route" href="https://www.google.com/maps/dir/?api=1&amp;travelmode=driving&amp;origin=%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88&amp;destination=%E0%B8%AA%E0%B8%A7%E0%B8%99%E0%B8%AA%E0%B8%A1%E0%B9%80%E0%B8%94%E0%B9%87%E0%B8%88%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C%20%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A9&amp;waypoints=%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2%7C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%9E%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%A1%20%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A9%7C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%95%E0%B8%B8%E0%B9%80%E0%B8%A3%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%A3%E0%B8%AD%E0%B8%87" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0114 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.6"/></svg>เปิดเส้นทางวันนี้ใน Google Maps <span aria-hidden="true">↗</span></a>
           </article>
-          <article class="day">
+          <article class="day rv">
             <h3>วันที่ 2 · ขึ้นเทือกเขาพนมดงรัก</h3>
             <p>กันทรลักษ์ · ขุนหาญ</p>
             <ol class="stops">
@@ -816,6 +975,7 @@
               <li><time>13:00</time><div><b>สวนทุเรียนและร้านผลไม้ริมทาง</b><span>ถ้าตรงฤดู พ.ค.–ก.ค. หลายสวนเปิดให้ชมและกินที่สวน</span><small>ขุนหาญ · กันทรลักษ์</small></div></li>
               <li><time>15:00</time><div><b>น้ำตกห้วยจันทร์</b><span>พักเท้าก่อนขับกลับ ช่วงหน้าฝนน้ำแรงเป็นพิเศษ</span><small>อ.ขุนหาญ</small></div></li>
             </ol>
+            <a class="route" href="https://www.google.com/maps/dir/?api=1&amp;travelmode=driving&amp;origin=%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A9&amp;destination=%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%95%E0%B8%81%E0%B8%AB%E0%B9%89%E0%B8%A7%E0%B8%A2%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C&amp;waypoints=%E0%B8%9C%E0%B8%B2%E0%B8%A1%E0%B8%AD%E0%B8%AD%E0%B8%B5%E0%B9%81%E0%B8%94%E0%B8%87%7C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9B%E0%B9%88%E0%B8%B2%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7%20%E0%B8%82%E0%B8%B8%E0%B8%99%E0%B8%AB%E0%B8%B2%E0%B8%8D" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0114 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.6"/></svg>เปิดเส้นทางวันนี้ใน Google Maps <span aria-hidden="true">↗</span></a>
           </article>
         </div>
       </div>
@@ -823,7 +983,8 @@
 
     <section class="sec" id="travel">
       <div class="wrap">
-        <div class="sec-head">
+        <div class="band rv" style="--img:url(photos/more.jpg);--pos:50% 50%" aria-hidden="true"><i></i><span>ปราสาทสระกำแพงใหญ่</span></div>
+        <div class="sec-head rv">
           <div>
             <p class="eyebrow">การเดินทาง</p>
             <h2>ไปศรีสะเกษอย่างไร</h2>
@@ -831,32 +992,36 @@
           <p>ตัวเมืองอยู่ห่างจากกรุงเทพฯ ราว 570 กิโลเมตร มาได้ทั้งรถยนต์ รถไฟ รถทัวร์ และเครื่องบินผ่านอุบลราชธานี</p>
         </div>
         <div class="modes">
-          <article class="mode">
+          <article class="mode rv">
+            <svg class="mode-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16l1.6-5.2A2 2 0 018.5 9.4h7a2 2 0 011.9 1.4L19 16"/><rect x="3.5" y="15" width="17" height="4.5" rx="1.5"/><circle cx="7.5" cy="19.5" r="1.6"/><circle cx="16.5" cy="19.5" r="1.6"/></svg>
             <div class="k">รถยนต์</div>
             <div class="big">7–8 ชม.</div>
             <h3>ขับรถเอง</h3>
             <p>ถนนมิตรภาพ (ทางหลวง 2) ถึงนครราชสีมา แล้วต่อทางหลวง 226 ผ่านบุรีรัมย์–สุรินทร์</p>
           </article>
-          <article class="mode">
+          <article class="mode rv">
+            <svg class="mode-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3.5" width="12" height="13" rx="3"/><path d="M6 11h12M9 20l-2 1.5M15 20l2 1.5"/><circle cx="9.5" cy="14" r="1"/><circle cx="14.5" cy="14" r="1"/></svg>
             <div class="k">รถไฟ</div>
             <div class="big">สายอีสาน</div>
             <h3>ลงสถานีศรีสะเกษ</h3>
             <p>ขบวนสายกรุงเทพฯ–อุบลราชธานี ออกจากสถานีกลางกรุงเทพอภิวัฒน์ สถานีอยู่กลางเมือง</p>
           </article>
-          <article class="mode">
+          <article class="mode rv">
+            <svg class="mode-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="13" rx="2.5"/><path d="M4 10h16M8 17v2.5M16 17v2.5"/><circle cx="8" cy="13.5" r="1"/><circle cx="16" cy="13.5" r="1"/></svg>
             <div class="k">รถทัวร์</div>
             <div class="big">หมอชิต 2</div>
             <h3>รถโดยสารประจำทาง</h3>
             <p>มีรถออกหลายรอบทุกวันจากสถานีขนส่งหมอชิต 2 ปลายทางสถานีขนส่งศรีสะเกษ</p>
           </article>
-          <article class="mode">
+          <article class="mode rv">
+            <svg class="mode-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15.5l-8-4.5V5a1.5 1.5 0 00-3 0v6l-8 4.5V17l8-2.5V19l-2.5 1.5V22L11.5 21l4 1v-1.5L13 19v-4.5l8 2.5z"/></svg>
             <div class="k">เครื่องบิน</div>
             <div class="big">≈60 กม.</div>
             <h3>บินลงอุบลราชธานี</h3>
             <p>จากสนามบินอุบลราชธานีต่อรถเข้าเมืองศรีสะเกษราว 1 ชั่วโมง</p>
           </article>
         </div>
-        <div class="tips">
+        <div class="tips rv">
           <h3>ก่อนออกเดินทาง</h3>
           <ul>
             <li><strong>เช่ารถหรือขับรถเอง</strong> สะดวกที่สุด จุดเที่ยวอยู่ห่างกันหลายสิบกิโลเมตร และรถสาธารณะไปถึงบางจุดได้ยาก</li>
@@ -864,6 +1029,17 @@
             <li><strong>แต่งกายสุภาพ</strong> เมื่อเข้าวัดและโบราณสถาน และไม่ปีนป่ายตัวปราสาท</li>
             <li><strong>พกน้ำและหมวก</strong> ปราสาทส่วนใหญ่เป็นลานโล่ง แดดแรงตั้งแต่สายจนบ่าย</li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="outro rv" aria-labelledby="outro-h">
+      <div class="wrap">
+        <p class="eyebrow">พร้อมออกเดินทาง</p>
+        <h2 id="outro-h">ศรีสะเกษ<br><span>รอคุณอยู่</span></h2>
+        <div class="cta-row">
+          <a class="btn magnetic" href="#trip">ดูทริป 2 วัน 1 คืน <span aria-hidden="true">→</span></a>
+          <a class="btn ghost magnetic" href="#top">ดูภาพ 3D อีกครั้ง <span aria-hidden="true">↑</span></a>
         </div>
       </div>
     </section>
@@ -876,7 +1052,6 @@
           <ul><li>ปราสาทสระกำแพงใหญ่ (หน้าแรก): <a href="https://commons.wikimedia.org/wiki/File:%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88_(Wat_Sa_Kamphaeng_Yai_Sanctuary)_2_(2019).jpg" target="_blank" rel="noopener">PEAK99</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></li><li>ปราสาทสระกำแพงใหญ่ (ซุ้มประตู): <a href="https://commons.wikimedia.org/wiki/File:%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88_(Wat_Sa_Kamphaeng_Yai_Sanctuary)_7_DSCN0354_(2019).jpg" target="_blank" rel="noopener">PEAK99</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></li><li>วัดพระธาตุเรืองรอง: <a href="https://commons.wikimedia.org/wiki/File:Wat_Phra_That_Ruang_Rong-004.jpg" target="_blank" rel="noopener">Ddalbiez</a>, <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a></li><li>วัดล้านขวด: <a href="https://commons.wikimedia.org/wiki/File:Million_Bottle_Temple_(7447377506).jpg" target="_blank" rel="noopener">Mark Fischer</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a></li><li>ทุเรียน: <a href="https://commons.wikimedia.org/wiki/File:Durians_Markt_Thailand.JPG" target="_blank" rel="noopener">Grossbildjaeger</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener">CC BY-SA 3.0</a></li><li>อุทยานแห่งชาติเขาพระวิหาร: <a href="https://commons.wikimedia.org/wiki/File:Khao_Phra_Wihan_National_Park_(MGK20768).jpg" target="_blank" rel="noopener">Markus G. Klötzer</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></li><li>ปราสาทสระกำแพงใหญ่ (ปรางค์): <a href="https://commons.wikimedia.org/wiki/File:%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%AB%E0%B8%B4%E0%B8%99%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B3%E0%B9%81%E0%B8%9E%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88_(Wat_Sa_Kamphaeng_Yai_Sanctuary)_DSCN0340_(2019).jpg" target="_blank" rel="noopener">PEAK99</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></li></ul>
         </div>
         <div class="again">
-          <a class="btn ghost" href="#top">ดูแผนที่ 3D อีกครั้ง ↑</a>
         </div>
       </div>
     </footer>
@@ -884,6 +1059,99 @@
 </main>
 
 <script>
+  // ---------- interface behaviour (independent of WebGL) ----------
+  (function () {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = matchMedia('(pointer: fine)').matches;
+    document.documentElement.classList.add('js-rv');
+
+    // reveal on scroll
+    var rvs = [].slice.call(document.querySelectorAll('.rv'));
+    if ('IntersectionObserver' in window && !reduce) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      rvs.forEach(function (el) { io.observe(el); });
+    } else rvs.forEach(function (el) { el.classList.add('in'); });
+
+    // header state, progress line, back-to-top ring, scrollspy, photo band parallax
+    var bar = document.getElementById('topbar-progress'), ring = document.getElementById('tt-ring');
+    var navLinks = [].slice.call(document.querySelectorAll('.topbar nav a'));
+    var spy = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    var bands = [].slice.call(document.querySelectorAll('.band i'));
+    function onScroll() {
+      var y = scrollY, max = document.documentElement.scrollHeight - innerHeight, f = max > 0 ? y / max : 0;
+      document.body.classList.toggle('scrolled', y > 40);
+      bar.style.transform = 'scaleX(' + f.toFixed(4) + ')';
+      ring.style.strokeDashoffset = (132 * (1 - f)).toFixed(1);
+      var cur = -1;
+      spy.forEach(function (el, i) { if (el && el.getBoundingClientRect().top < innerHeight * 0.45) cur = i; });
+      navLinks.forEach(function (a, i) { a.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+      if (!reduce) bands.forEach(function (b) {
+        var r = b.parentNode.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < innerHeight) b.style.setProperty('--py', ((r.top + r.height / 2 - innerHeight / 2) * -0.12).toFixed(1) + 'px');
+      });
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // mobile menu
+    var btn = document.getElementById('menu-btn'), menu = document.getElementById('menu');
+    function setMenu(open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.hidden = !open;
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    btn.addEventListener('click', function () { setMenu(menu.hidden); });
+    menu.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    addEventListener('keydown', function (e) { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); btn.focus(); } });
+
+    // seasons: tap a month
+    var mBtns = [].slice.call(document.querySelectorAll('#months .m'));
+    var ribbon = document.querySelector('.ribbon'), list = document.querySelector('.season-list');
+    var hint = document.getElementById('pick-hint');
+    var evs = [].slice.call(document.querySelectorAll('.ribbon .ev')).map(function (el) {
+      var g = (el.getAttribute('style') || '').match(/grid-column:\s*(\d+)\s*\/\s*(\d+)/), ms = [];
+      if (g) for (var m = +g[1]; m < +g[2]; m++) ms.push(m);
+      return { el: el, ms: ms };
+    });
+    var items = [].slice.call(list.querySelectorAll('li')).map(function (li) {
+      return { el: li, ms: (li.dataset.months || '').split(',').map(Number) };
+    });
+    var names = mBtns.map(function (b) { return b.textContent; });
+    function pick(m) {
+      var on = m > 0;
+      mBtns.forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.m === m ? 'true' : 'false'); });
+      ribbon.classList.toggle('picked', on); list.classList.toggle('picked', on);
+      evs.forEach(function (e) { e.el.classList.toggle('hit', e.ms.indexOf(m) >= 0); });
+      var n = 0;
+      items.forEach(function (it) { var h = it.ms.indexOf(m) >= 0; it.el.classList.toggle('hit', h); if (h) n++; });
+      hint.innerHTML = on ? 'เดือน <b>' + names[m - 1] + '</b> มี ' + n + ' เรื่องน่าไป · แตะเดือนเดิมอีกครั้งเพื่อดูทั้งปี' : 'แตะชื่อเดือนเพื่อดูว่าไปช่วงนั้นจะเจออะไร';
+    }
+    var picked = new Date().getMonth() + 1;
+    mBtns.forEach(function (b) { b.addEventListener('click', function () { var m = +b.dataset.m; picked = picked === m ? 0 : m; pick(picked); }); });
+    pick(picked);
+
+    if (!fine || reduce) return;
+    // magnetic buttons
+    [].slice.call(document.querySelectorAll('.magnetic')).forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1) + 'px)';
+      });
+      el.addEventListener('pointerleave', function () { el.style.transform = ''; });
+    });
+    // postcards tilt toward the pointer
+    [].slice.call(document.querySelectorAll('.postcard')).forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        el.classList.add('tilting');
+        el.style.transform = 'translateY(-8px) rotateX(' + (-y * 12).toFixed(1) + 'deg) rotateY(' + (x * 14).toFixed(1) + 'deg)';
+      });
+      el.addEventListener('pointerleave', function () { el.classList.remove('tilting'); el.style.transform = ''; });
+    });
+  })();
+
   // Mark the current month on the seasons ribbon (runs even without WebGL).
   (function () {
     var cells = document.querySelectorAll('#months .m');
