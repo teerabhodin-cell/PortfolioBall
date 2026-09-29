@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Sisaket Twin</title>
-<meta name="description" content="ผังเมืองศรีสะเกษแบบ 3D ตึกต่อตึกจาก OpenStreetMap พร้อมจำลองฝนตก พายุ และน้ำท่วมบนความสูงพื้นดินจริง">
+<meta name="description" content="ผังเมืองศรีสะเกษแบบ 3D ตึกต่อตึกจาก OpenStreetMap พร้อมจำลองฝนตก พายุ และน้ำท่วมบนความสูงพื้นดินจริง เดินสำรวจด้วย WASD">
 <meta name="theme-color" content="#070b14">
 <link rel="icon" type="image/png" href="../logo_transparent.png"><!--repo-only-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,6 +124,36 @@
   .reallist a { color: var(--cyan); margin-left: auto; white-space: nowrap; }
   .reallist button { background: none; border: 0; color: var(--muted); cursor: pointer; }
 
+  /* places */
+  .search { width: 100%; padding: 9px 12px; border-radius: 9px; background: rgba(0, 0, 0, .3); border: 1px solid var(--line-2); margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255, 255, 255, .03); font-size: 12px; cursor: pointer; }
+  .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+  .chip[aria-pressed="true"] { border-color: var(--c, var(--cyan)); background: rgba(63, 214, 255, .1); color: #fff; }
+  .places { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 38vh; overflow: auto; }
+  .place { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 8px 10px; border-radius: 9px; background: rgba(255, 255, 255, .025); border: 1px solid transparent; cursor: pointer; transition: .15s; }
+  .place:hover { border-color: var(--line-2); background: rgba(255, 255, 255, .05); }
+  .place[aria-current="true"] { border-color: var(--c); background: rgba(63, 214, 255, .08); }
+  .place i { flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 10px var(--c); }
+  .place span { flex: 1; font-size: 13px; line-height: 1.35; }
+  .place small { display: block; font-size: 11px; color: var(--muted); }
+  .place em { font: 700 10.5px var(--mono); font-style: normal; color: var(--muted); white-space: nowrap; }
+  .place em.wet { color: var(--amber); } .place em.deep { color: var(--red); }
+  .kwrap { display: flex; gap: 14px; align-items: center; }
+  .kgrid { display: grid; grid-template-columns: repeat(4, 30px); gap: 4px; }
+  .kgrid kbd.wide { grid-column: span 4; }
+  kbd { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 6px; font: 700 11px var(--mono); background: rgba(255, 255, 255, .06); border: 1px solid var(--line-2); border-bottom-width: 3px; transition: .08s; }
+  kbd.on { background: var(--cyan); color: #04121c; border-color: var(--cyan); transform: translateY(2px); border-bottom-width: 1px; }
+  .keys ul { margin: 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); display: grid; gap: 2px; }
+  .keys ul b { color: var(--text); font-family: var(--mono); font-size: 11px; }
+  .hint kbd { min-width: 20px; height: 20px; font-size: 10px; margin: 0 1px; border-bottom-width: 2px; }
+  .lbl { display: flex; align-items: center; gap: 6px; }
+  .lbl i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+  .lbl.big { font-size: 13px; font-weight: 600; border-color: var(--c); }
+  .mk.hosp { border-color: var(--red); width: 30px; height: 30px; margin: -15px 0 0 -15px; background: #fff; box-shadow: 0 0 0 5px rgba(255, 90, 95, .25), 0 0 22px rgba(255, 90, 95, .7); }
+  .mk.hosp svg { stroke: none; fill: var(--red); width: 16px; height: 16px; }
+  @media (max-width: 900px) { .keys { display: none; } .places { max-height: 26vh; } }
+
   /* building card */
   .info { left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(460px, calc(100% - 32px)); padding: 12px 14px; display: none; }
   .info.on { display: block; }
@@ -141,6 +171,33 @@
   .mk.on { background: var(--cyan); box-shadow: 0 0 0 6px rgba(63, 214, 255, .2), 0 0 20px var(--cyan); }
   .mk.on svg { stroke: #04121c; }
 
+  /* collapsible panels + hide-all */
+  .fold { margin-left: 8px; flex: none; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: rgba(255, 255, 255, .04); border: 1px solid var(--line); cursor: pointer; transition: .2s; }
+  .fold:hover { border-color: var(--cyan); background: rgba(63, 214, 255, .1); }
+  .fold svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s; }
+  .panel.collapsed .fold svg { transform: rotate(180deg); }
+  .panel.collapsed .pbody { display: none; }
+  .panel.collapsed .brand { margin-bottom: 0; }
+  .left.collapsed { width: 330px; padding: 10px 12px; }
+  .right.collapsed { width: 260px; padding: 10px 12px; }
+  .phead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .phead h2 { margin: 0; font: 700 11px var(--mono); letter-spacing: .16em; color: var(--muted); display: flex; gap: 10px; align-items: baseline; }
+  .right.collapsed .phead { margin-bottom: 0; }
+  .uitoggle {
+    position: fixed; z-index: 7; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; cursor: pointer;
+    background: var(--panel); border: 1px solid var(--line-2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 13px; transition: .2s;
+  }
+  .uitoggle:hover { border-color: var(--cyan); }
+  .uitoggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .uitoggle .eye-off { display: none; }
+  .uitoggle kbd { min-width: 20px; height: 20px; font-size: 10px; border-bottom-width: 2px; }
+  body.ui-off .uitoggle .eye-on { display: none; }
+  body.ui-off .uitoggle .eye-off { display: inline; }
+  body.ui-off .uitoggle { opacity: .55; }
+  body.ui-off .uitoggle:hover { opacity: 1; }
+  body.ui-off .panel, body.ui-off #labels, body.ui-off .hint, body.ui-off .tabs { opacity: 0; visibility: hidden; pointer-events: none; }
+  .panel, #labels, .tabs { transition: opacity .3s; }
   .hint { transition: opacity .8s; position: fixed; z-index: 4; left: 50%; top: calc(16px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); font-size: 12px; color: var(--muted); background: rgba(7, 11, 20, .6); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
   .attrib { position: fixed; z-index: 4; right: 16px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); font-size: 10.5px; color: var(--muted); }
   .attrib a { color: inherit; }
@@ -163,6 +220,8 @@
     .info { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
     .info dl { grid-template-columns: repeat(2, 1fr); }
     .attrib { display: none; }
+    .uitoggle { left: auto; right: 10px; bottom: auto; top: calc(10px + env(safe-area-inset-top, 0px)); padding: 8px 10px; }
+    .uitoggle kbd, .fold { display: none; }
     .hint { font-size: 11px; }
   }
   @media (prefers-reduced-motion: reduce) { .live::before, .rec::before, .alertbar.on { animation: none; } }
@@ -171,7 +230,7 @@
 <body>
 <canvas id="c" aria-label="ผังเมืองศรีสะเกษแบบ 3D"></canvas>
 <div id="labels" aria-hidden="true"></div>
-<div class="hint" id="hint">ลากเพื่อหมุน · คลิกขวา/สองนิ้วเพื่อเลื่อน · ล้อเมาส์เพื่อซูม · คลิกตึกดูข้อมูล</div>
+<div class="hint" id="hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> เดิน · <kbd>Q</kbd><kbd>E</kbd> หมุน · <kbd>R</kbd><kbd>F</kbd> ซูม · <kbd>Shift</kbd> เร็ว · <kbd>H</kbd> ซ่อน UI · ลากเมาส์หมุน · คลิกตึกดูข้อมูล</div>
 
 <div id="loading" role="status"><div class="box"><span id="load-msg">กำลังสร้างเมือง 9,264 อาคาร</span><div class="bar"><i></i></div></div></div>
 
@@ -180,8 +239,10 @@
     <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#3fd6ff" stroke-width="1.8"><path d="M3 21h18M5 21V10l4-2v13M9 21V5l6-2v18M15 21V9l4 2v10"/></svg></div>
     <div><h1>ศรีสะเกษ ดิจิทัลทวิน</h1><small>SISAKET CITY TWIN · 3D</small></div>
     <span class="live">SIM</span>
+    <button class="fold" type="button" data-fold="p-left" aria-expanded="true" aria-controls="left-body" title="ย่อ/ขยายแผง"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button>
   </div>
 
+  <div class="pbody" id="left-body">
   <div class="sect">
     <h2>สภาพอากาศ</h2>
     <div class="modes" role="group" aria-label="เลือกสถานการณ์">
@@ -212,32 +273,44 @@
     <div class="gauge" aria-hidden="true"><i id="g-risk"></i></div>
     <p class="note">ระดับน้ำวัดจากพื้นที่ต่ำสุดของเขตชุมชน คำนวณแบบ "อ่างน้ำ" จากความสูงพื้นดินจริง (SRTM 30 ม.) น้ำขังจากจุดต่ำก่อน เป็นการจำลองเพื่อการเรียนรู้ ไม่ใช่การพยากรณ์</p>
   </div>
-</aside>
-
-<aside class="panel right" id="p-right" aria-label="กล้องวงจรปิด">
-  <div class="sect" style="border:0;margin:0;padding:0">
-    <h2>กล้อง CCTV <span style="color:var(--amber)">จำลอง</span></h2>
-    <div class="cam-view" id="cam-view">
-      <canvas id="cam-canvas" aria-label="ภาพจากกล้องจำลอง"></canvas>
-      <div class="cam-hud">
-        <div class="top"><span id="cam-id">CAM-01</span><span class="rec">REC</span></div>
-        <div class="bot"><span id="cam-ts">—</span><span class="simtag">SIMULATED</span></div>
-      </div>
-    </div>
-    <div class="cams" id="cams" role="group" aria-label="เลือกกล้อง"></div>
-    <p class="note">ภาพในกล้องเหล่านี้เรนเดอร์จากแบบจำลอง 3D ตามสภาพอากาศที่ตั้งไว้ ไม่ใช่ภาพจริง</p>
-    <details class="real">
-      <summary>ลิงก์กล้องจริงจากหน่วยงาน</summary>
-      <p class="note" style="margin-top:6px">เพิ่มได้เฉพาะลิงก์ที่หน่วยงานเปิดให้ประชาชนดูอย่างเป็นทางการ เช่น หน้ากล้องจราจรของเทศบาลหรือกรมทางหลวง ลิงก์จะเปิดในแท็บใหม่ และบันทึกไว้เฉพาะในเบราว์เซอร์นี้</p>
-      <form id="real-form">
-        <input type="text" id="real-name" placeholder="ชื่อกล้อง เช่น แยกหน้าศาลากลาง" required maxlength="60">
-        <input type="url" id="real-url" placeholder="https://…" required>
-        <button class="btn" type="submit">บันทึกลิงก์</button>
-      </form>
-      <ul class="reallist" id="real-list"></ul>
-    </details>
   </div>
 </aside>
+
+<aside class="panel right" id="p-right" aria-label="สถานที่สำคัญ">
+  <div class="phead">
+    <h2>สถานที่สำคัญ <span id="pl-count"></span></h2>
+    <button class="fold" type="button" data-fold="p-right" aria-expanded="true" aria-controls="right-body" title="ย่อ/ขยายแผง"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button>
+  </div>
+  <div class="pbody" id="right-body">
+  <div class="sect" style="border:0;margin:0;padding:0">
+    <input type="search" id="pl-q" class="search" placeholder="ค้นหา เช่น โรงพยาบาล สวน วัด" aria-label="ค้นหาสถานที่">
+    <div class="chips" id="pl-kinds" role="group" aria-label="กรองตามประเภท"></div>
+    <ul class="places" id="places"></ul>
+  </div>
+  <div class="sect keys">
+    <h2>ควบคุมด้วยคีย์บอร์ด</h2>
+    <div class="kwrap">
+      <div class="kgrid" aria-hidden="true">
+        <kbd data-k="KeyQ">Q</kbd><kbd data-k="KeyW">W</kbd><kbd data-k="KeyE">E</kbd><kbd data-k="KeyR">R</kbd>
+        <kbd data-k="KeyA">A</kbd><kbd data-k="KeyS">S</kbd><kbd data-k="KeyD">D</kbd><kbd data-k="KeyF">F</kbd>
+        <kbd data-k="ShiftLeft" class="wide">Shift</kbd>
+      </div>
+      <ul>
+        <li><b>W A S D</b> เดินหน้า ถอย ซ้าย ขวา</li>
+        <li><b>Q E</b> หมุนมุมมอง</li>
+        <li><b>R F</b> ซูมเข้า ออก</li>
+        <li><b>Shift</b> ค้างไว้เพื่อไปเร็ว</li>
+        <li><b>H</b> ซ่อน/แสดงแผงทั้งหมด</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+</aside>
+
+<button class="uitoggle" id="ui-toggle" type="button" aria-pressed="false" title="ซ่อน/แสดงแผงทั้งหมด (H)">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path class="eye-on" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle class="eye-on" cx="12" cy="12" r="3"/><path class="eye-off" d="M3 3l18 18M10.6 5.1A10.4 10.4 0 0112 5c6.4 0 10 7 10 7a17.6 17.6 0 01-3.2 4.1M6.6 6.6C3.9 8.3 2 12 2 12s3.6 7 10 7a9.8 9.8 0 005.4-1.6"/></svg>
+  <span>ซ่อน UI</span><kbd>H</kbd>
+</button>
 
 <div class="panel info" id="info" role="dialog" aria-label="ข้อมูลอาคาร">
   <h3><span id="i-name">อาคาร</span><button type="button" id="i-close" aria-label="ปิด">×</button></h3>
@@ -251,12 +324,45 @@
 
 <nav class="tabs" aria-label="แผง">
   <button type="button" data-tab="p-left" aria-pressed="true">ควบคุม</button>
-  <button type="button" data-tab="p-right" aria-pressed="false">CCTV</button>
+  <button type="button" data-tab="p-right" aria-pressed="false">สถานที่</button>
   <button type="button" data-tab="" aria-pressed="false">ซ่อนแผง</button>
 </nav>
 
 <div class="attrib">ข้อมูลอาคารและถนน © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · ความสูงพื้นดิน SRTM (NASA) ผ่าน OpenTopoData</div>
 
+<script>
+  // panel folding and hide-all (H); remembered per browser when storage is available
+  (function () {
+    var KEY = 'sisaket-twin-ui';
+    var st = {};
+    try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { st = {}; }
+    var save = function () { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* storage unavailable */ } };
+    var btn = document.getElementById('ui-toggle'), label = btn.querySelector('span');
+    function setFold(id, folded) {
+      var p = document.getElementById(id), b = p.querySelector('.fold');
+      p.classList.toggle('collapsed', folded);
+      b.setAttribute('aria-expanded', folded ? 'false' : 'true');
+      st[id] = folded; save();
+    }
+    function setHidden(off) {
+      document.body.classList.toggle('ui-off', off);
+      btn.setAttribute('aria-pressed', off ? 'true' : 'false');
+      label.textContent = off ? 'แสดง UI' : 'ซ่อน UI';
+      st.off = off; save();
+    }
+    document.querySelectorAll('.fold').forEach(function (b) {
+      b.addEventListener('click', function () { var id = b.dataset.fold; setFold(id, !document.getElementById(id).classList.contains('collapsed')); });
+    });
+    btn.addEventListener('click', function () { setHidden(!document.body.classList.contains('ui-off')); });
+    addEventListener('keydown', function (e) {
+      if (e.code !== 'KeyH' || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.target.closest && e.target.closest('input, textarea, select')) return;
+      setHidden(!document.body.classList.contains('ui-off'));
+    });
+    if (!matchMedia('(max-width: 900px)').matches) { if (st['p-left']) setFold('p-left', true); if (st['p-right']) setFold('p-right', true); }
+    if (st.off) setHidden(true);
+  })();
+</script>
 <script type="module">
 const SOURCES = ['https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js'];
 let THREE = null;
@@ -431,8 +537,14 @@ const unpack = (arr, head) => arr.map(a => ({ head: a.slice(0, head), xs: a.slic
 function wettable(m, reflect = 0.5) {
   m.onBeforeCompile = sh => {
     sh.uniforms.uWet = U.uWet;
-    sh.fragmentShader = 'uniform float uWet;\n' + sh.fragmentShader
-      .replace('#include <color_fragment>', `#include <color_fragment>\n diffuseColor.rgb *= 1.0 - uWet * 0.35;`)
+    sh.vertexShader = 'varying vec3 vWp;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n vWp = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = `uniform float uWet; varying vec3 vWp;
+      float mh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float mn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(mh(i), mh(i + vec2(1, 0)), f.x), mix(mh(i + vec2(0, 1)), mh(i + vec2(1, 1)), f.x), f.y); }
+    ` + sh.fragmentShader
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        diffuseColor.rgb *= 0.86 + 0.22 * mn(vWp.xz * 0.018) + 0.08 * mn(vWp.xz * 0.11);
+        diffuseColor.rgb *= 1.0 - uWet * 0.35;`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>\n roughnessFactor = mix(roughnessFactor, 0.18, uWet * ${reflect.toFixed(2)});`);
   };
   return m;
@@ -449,7 +561,18 @@ const landMat = wettable(new THREE.MeshStandardMaterial({ vertexColors: true, ro
 const landPolys = unpack(city.l, 1).map(p => ({ t: p.head[0], xs: p.xs }));
 flatLayer(landPolys, 0, (c, p) => c.set(LU_COL[p.t] || '#999'), landMat, -4);
 
-const waterMat = new THREE.MeshStandardMaterial({ color: '#3b6f8f', roughness: 0.12, metalness: 0.1, depthWrite: false });
+const AREAS = (city.areas || []).map(a => ({ k: a[0], n: a[1], x: a[2], z: a[3], a: a[4], xs: a.slice(5) }));
+const AREA_COL = { p: '#6fae4c', g: '#86b85a', h: '#d9d4d6', u: '#cfc3a8', r: '#d9b98a', c: '#b9b4ab' };
+flatLayer(AREAS.filter(a => AREA_COL[a.k]), 0, (c, a) => c.set(AREA_COL[a.k]), landMat, -3.6);
+const waterMat = new THREE.MeshStandardMaterial({ color: '#2d5f7c', roughness: 0.06, metalness: 0.35, depthWrite: false });
+waterMat.onBeforeCompile = sh => {
+  sh.uniforms.uTime = U.uTime;
+  sh.vertexShader = 'varying vec3 vWp;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n vWp = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+  sh.fragmentShader = 'uniform float uTime; varying vec3 vWp;\n' + sh.fragmentShader.replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+    { vec2 p = vWp.xz * 0.12; float t = uTime;
+      vec2 g = vec2(sin(p.x * 1.7 + t * 1.2) + sin(p.x * 0.8 - p.y * 1.3 + t), cos(p.y * 1.9 - t * 1.1) + sin(p.y * 0.7 + p.x * 1.1 + t * 1.3)) * 0.06;
+      normal = normalize((viewMatrix * vec4(normalize(vec3(g.x, 1.0, g.y)), 0.0)).xyz); }`);
+};
 flatLayer(city.w.map(xs => ({ xs })), 0, c => c.set('#ffffff'), waterMat, -3);
 ribbons(unpack(city.wl, 1).map(p => ({ w: p.head[0], xs: p.xs })), 0, c => c.set('#ffffff'), waterMat, -3);
 
@@ -463,9 +586,9 @@ ribbons(city.rail.map(xs => ({ w: 3, xs })), 0, c => c.set('#5a4b40'), new THREE
 /* ------------------------------------------------------------------ *
  *  buildings: one merged mesh, block by block
  * ------------------------------------------------------------------ */
-const TYPE_NAME = ['บ้าน/ที่อยู่อาศัย', 'พาณิชย์', 'ราชการ/บริการ', 'ศาสนสถาน', 'โกดัง/โรงงาน', 'อาคารทั่วไป'];
-const WALL = [['#e9e1d2', '#f1ece2', '#e3d5c0', '#dcd6cc'], ['#e8e6e1', '#d9dde3', '#efe4d3', '#cfd4da'], ['#f2efe8', '#e7e1d4'], ['#f3ead8'], ['#c9ccd0', '#b9bdc2'], ['#e6ddcd', '#eee8dc', '#d8d2c6', '#e2e6ea']];
-const ROOF = [['#b0503a', '#8f5a45', '#5f7089', '#9a9a96', '#c06a3f'], ['#7d858f', '#9aa3ab', '#6f7b87'], ['#b5543d', '#8a8f96'], ['#c9892f', '#b8452f'], ['#8f969d', '#a5abb0'], ['#9c9e9f', '#b3523b', '#6d7b8c', '#8e7f70']];
+const TYPE_NAME = ['บ้าน/ที่อยู่อาศัย', 'พาณิชย์', 'ราชการ/การศึกษา', 'ศาสนสถาน', 'โกดัง/โรงงาน', 'อาคารทั่วไป', 'โรงพยาบาล'];
+const WALL = [['#e9e1d2', '#f1ece2', '#e3d5c0', '#dcd6cc'], ['#e8e6e1', '#d9dde3', '#efe4d3', '#cfd4da'], ['#f2efe8', '#e7e1d4'], ['#f3ead8'], ['#c9ccd0', '#b9bdc2'], ['#e6ddcd', '#eee8dc', '#d8d2c6', '#e2e6ea'], ['#f4f6f7', '#e9eef1']];
+const ROOF = [['#b0503a', '#8f5a45', '#5f7089', '#9a9a96', '#c06a3f'], ['#7d858f', '#9aa3ab', '#6f7b87'], ['#b5543d', '#8a8f96'], ['#c9892f', '#b8452f'], ['#8f969d', '#a5abb0'], ['#9c9e9f', '#b3523b', '#6d7b8c', '#8e7f70'], ['#3f8f7f', '#6f98a8']];
 const B = [];
 {
   const pos = [], nor = [], col = [], bid = [];
@@ -543,6 +666,29 @@ const B = [];
   var triB = new Int32Array(pos.length / 9);
   B.forEach(b => triB.fill(b.id, b.tri0, b.tri1));
 }
+// rooftop plant on larger commercial, civic and hospital blocks
+{
+  const inPolyXZ = (x, z, xs) => { let c = false; for (let i = 0, n = xs.length / 2, j = n - 1; i < n; j = i++) { const xi = xs[i * 2], zi = xs[i * 2 + 1], xj = xs[j * 2], zj = xs[j * 2 + 1]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
+  let sd = 11; const rr = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+  const units = [];
+  city.b.forEach((a, id) => {
+    const b = B[id]; if (![1, 2, 4, 6].includes(b.typ)) return;
+    const xs = a.slice(2); let mnx = 1e9, mxx = -1e9, mnz = 1e9, mxz = -1e9;
+    for (let i = 0; i < xs.length; i += 2) { mnx = Math.min(mnx, xs[i]); mxx = Math.max(mxx, xs[i]); mnz = Math.min(mnz, xs[i + 1]); mxz = Math.max(mxz, xs[i + 1]); }
+    const ar = (mxx - mnx) * (mxz - mnz); if (ar < 220) return;
+    const cnt = Math.min(7, Math.floor(ar / 220));
+    for (let k = 0, t = 0; k < cnt && t < 30; t++) {
+      const x = lerp(mnx + 2, mxx - 2, rr()), z = lerp(mnz + 2, mxz - 2, rr());
+      if (!inPolyXZ(x, z, xs)) continue;
+      units.push([x, b.h, z, 1.4 + rr() * 2.6, 0.7 + rr() * 1.3, 1.2 + rr() * 2.2, rr() * 3]); k++;
+    }
+  });
+  const m = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), new THREE.MeshStandardMaterial({ color: '#9aa1a8', roughness: 0.6, metalness: 0.3 }), units.length);
+  const d = new THREE.Object3D();
+  units.forEach(([x, y, z, sx, sy, sz, ry], i) => { d.position.set(x, y, z); d.scale.set(sx, sy, sz); d.rotation.y = ry; d.updateMatrix(); m.setMatrixAt(i, d.matrix); });
+  m.castShadow = m.receiveShadow = true;
+  scene.add(m);
+}
 // flood levels are measured from the lowest built-up ground (1st percentile of building bases)
 const DATUM = B.map(b => b.e).sort((a, b) => a - b)[Math.floor(B.length * 0.01)];
 const BMIN = Math.min(...B.map(b => b.e));
@@ -563,13 +709,14 @@ for (const [name, x, z, h, typ] of city.names) {
   const pts = [];
   const inPoly = (x, z, xs) => { let c = false; for (let i = 0, n = xs.length / 2, j = n - 1; i < n; j = i++) { const xi = xs[i * 2], zi = xs[i * 2 + 1], xj = xs[j * 2], zj = xs[j * 2 + 1]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c; } return c; };
   let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const budget = isMobile ? 2200 : 4500;
-  for (const p of landPolys) {
+  const budget = isMobile ? 3200 : 7500;
+  const treeZones = [...AREAS.filter(a => a.k === 'p' || a.k === 'g').map(a => ({ t: 1, xs: a.xs })), ...landPolys];
+  for (const p of treeZones) {
     if (![1, 2, 3, 5, 6].includes(p.t)) continue;
     const xs = p.xs; let mnx = 1e9, mxx = -1e9, mnz = 1e9, mxz = -1e9;
     for (let i = 0; i < xs.length; i += 2) { mnx = Math.min(mnx, xs[i]); mxx = Math.max(mxx, xs[i]); mnz = Math.min(mnz, xs[i + 1]); mxz = Math.max(mxz, xs[i + 1]); }
     const area = Math.abs(polyArea(xs)), dens = p.t === 1 ? 1 / 180 : p.t === 2 ? 1 / 260 : 1 / 1400;
-    const n = Math.min(400, Math.floor(area * dens));
+    const n = Math.min(p.t === 1 ? 1100 : 400, Math.floor(area * dens));
     for (let k = 0; k < n && pts.length < budget; k++) { const x = lerp(mnx, mxx, rnd()), z = lerp(mnz, mxz, rnd()); if (inPoly(x, z, xs)) pts.push([x, z, 0.7 + rnd() * 0.8]); }
   }
   const trunk = new THREE.CylinderGeometry(0.25, 0.35, 3, 5).translate(0, 1.5, 0);
@@ -704,11 +851,12 @@ function strike(center) {
 /* ------------------------------------------------------------------ *
  *  camera controls (orbit / pan / zoom, mouse + touch)
  * ------------------------------------------------------------------ */
+let lastInput = 0;
 const ctl = { target: new THREE.Vector3(-250, 0, -150), dist: 1500, az: 0.65, pol: 0.92, t: new THREE.Vector3(-250, 0, -150), d: 1500, a: 0.65, p: 0.92 };
 {
   const ptrs = new Map(); let last = null, pinch = 0, moved = 0;
   canvas.addEventListener('contextmenu', e => e.preventDefault());
-  canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, b: e.button, shift: e.shiftKey }); moved = 0; canvas.classList.add('dragging'); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = Math.hypot(a.x - b.x, a.y - b.y); last = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; } });
+  canvas.addEventListener('pointerdown', e => { lastInput = Date.now(); canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, b: e.button, shift: e.shiftKey }); moved = 0; canvas.classList.add('dragging'); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = Math.hypot(a.x - b.x, a.y - b.y); last = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; } });
   const pan = (dx, dy) => {
     const s = ctl.d * 0.0012;
     const fx = Math.sin(ctl.a), fz = Math.cos(ctl.a);
@@ -766,73 +914,117 @@ function updateInfo() {
 document.getElementById('i-close').addEventListener('click', () => { selB = null; U.uSel.value = -1; info.classList.remove('on'); });
 
 /* ------------------------------------------------------------------ *
- *  simulated CCTV cameras
+ *  places: named areas + key civic buildings — searchable, fly-to
  * ------------------------------------------------------------------ */
-const CAMS = [
-  ['ศาลากลาง', 'ศาลากลางจังหวัดศรีสะเกษ'], ['เทศบาลเมือง', 'สำนักงานเทศบาลเมืองศรีสะเกษ'], ['สถานีขนส่ง', 'สถานีขนส่งผู้โดยสารจังหวัดศรีสะเกษ'],
-  ['ย่านการค้า', 'ซุ่นเฮงพลาซ่า'], ['โรงพยาบาล', 'โรงพยาบาลพริ้นซ์ ศรีสะเกษ'], ['ห้างฯ ถนนสายหลัก', 'Big C'],
-].map(([label, name], i) => {
-  const n = city.names.find(x => x[0] === name) || [name, 0, 0, 8];
-  const [, x, z, h] = n;
-  const ang = i * 1.3 + 0.6, r = 70 + h * 1.5;
-  const pos = new THREE.Vector3(x + Math.cos(ang) * r, 14 + h * 0.4, z + Math.sin(ang) * r);
-  return { id: `CAM-${String(i + 1).padStart(2, '0')}`, label, pos, look: new THREE.Vector3(x, h * 0.4, z), e: elevAt(x, z) };
+const labelsEl = document.getElementById('labels');
+const KIND = { h: ['โรงพยาบาล', '#ff5a5f'], p: ['สวนสาธารณะ', '#4be39a'], g: ['ลาน/สนาม', '#a4e07a'], r: ['ศาสนสถาน', '#ffb547'], u: ['การศึกษา', '#b89bff'], w: ['แหล่งน้ำ', '#3fd6ff'], c: ['ราชการ/คมนาคม', '#dfe8f5'] };
+const PLACES = [];
+AREAS.forEach(a => PLACES.push({ name: a.n, k: a.k, x: a.x, z: a.z, r: Math.sqrt(a.a), h: 10 }));
+city.names.forEach(([name, x, z, h, typ]) => {
+  if ((typ === 2 || /ศาลากลาง|เทศบาล|ไปรษณีย์|ที่ว่าการ|ขนส่ง|ศาล|Big C|ซุ่นเฮง/.test(name)) && !PLACES.some(p => p.name === name || Math.hypot(p.x - x, p.z - z) < 25))
+    PLACES.push({ name, k: 'c', x, z, r: 70, h });
 });
-const camCCTV = new THREE.PerspectiveCamera(58, 16 / 10, 1, 6000);
-let activeCam = 0;
-const camsEl = document.getElementById('cams'), labelsEl = document.getElementById('labels');
-const CAM_SVG = '<svg viewBox="0 0 24 24"><path d="M3 7h11v10H3zM14 10l6-3v10l-6-3"/></svg>';
-CAMS.forEach((c, i) => {
-  const b = document.createElement('button');
-  b.type = 'button'; b.className = 'cam'; b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-  b.innerHTML = `<code>${c.id}</code><span>${c.label}</span><small id="cw-${i}">—</small>`;
-  b.addEventListener('click', () => selectCam(i));
-  camsEl.appendChild(b); c.btn = b;
-  const m = document.createElement('button');
-  m.type = 'button'; m.className = 'mk' + (i === 0 ? ' on' : ''); m.innerHTML = CAM_SVG; m.setAttribute('aria-label', `${c.id} ${c.label}`); m.tabIndex = -1;
-  m.addEventListener('click', () => selectCam(i));
-  labelsEl.appendChild(m); c.mk = m;
-});
-function selectCam(i, user = true) {
-  activeCam = i;
-  CAMS.forEach((c, k) => { c.btn.setAttribute('aria-pressed', k === i ? 'true' : 'false'); c.mk.classList.toggle('on', k === i); });
-  document.getElementById('cam-id').textContent = `${CAMS[i].id} · ${CAMS[i].label}`;
-  if (isMobile && user) setTab('p-right');
-}
-selectCam(0, false);
-LABELS.slice(0, 22).forEach(l => { const el = document.createElement('div'); el.className = 'lbl'; el.textContent = l.name; labelsEl.appendChild(el); l.el = el; });
+const ORDER = 'hpgcurw';
+PLACES.sort((a, b) => ORDER.indexOf(a.k) - ORDER.indexOf(b.k) || b.r - a.r);
+PLACES.forEach(p => { p.e = elevAt(p.x, p.z); p.v = new THREE.Vector3(p.x, p.h + 12, p.z); });
 
-// officially public camera links the viewer adds themselves (kept in this browser only)
-{
-  const KEY = 'sisaket-twin-real-cams';
-  const list = document.getElementById('real-list');
-  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } };
-  const save = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } };
-  let items = load();
-  const draw = () => {
-    list.innerHTML = '';
-    items.forEach((it, i) => {
-      const li = document.createElement('li');
-      const s = document.createElement('span'); s.textContent = it.name;
-      const a = document.createElement('a'); a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'เปิดดู ↗';
-      const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', `ลบ ${it.name}`);
-      x.addEventListener('click', () => { items.splice(i, 1); save(items); draw(); });
-      li.append(s, a, x); list.appendChild(li);
-    });
-  };
-  document.getElementById('real-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('real-name').value.trim(), url = document.getElementById('real-url').value.trim();
-    if (!/^https:\/\//i.test(url)) return;
-    items.push({ name, url }); save(items); draw(); e.target.reset();
-  });
-  draw();
+// map labels (decluttered each frame) and a permanent marker on the hospital
+LABELS.length = 0;
+PLACES.forEach(p => {
+  const el = document.createElement('div');
+  el.className = 'lbl' + (p.k === 'h' || p.k === 'p' ? ' big' : '');
+  el.style.setProperty('--c', KIND[p.k][1]);
+  el.innerHTML = `<i></i>${p.name}`;
+  labelsEl.appendChild(el);
+  LABELS.push({ name: p.name, v: p.v, el, far: p.k === 'h' ? 5200 : p.k === 'p' ? 3200 : 2200 });
+  if (p.k === 'h') {
+    const m = document.createElement('button');
+    m.type = 'button'; m.className = 'mk hosp'; m.tabIndex = -1; m.setAttribute('aria-label', p.name);
+    m.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>';
+    m.addEventListener('click', () => flyTo(p));
+    labelsEl.appendChild(m); p.mk = m; p.v = new THREE.Vector3(p.x, p.h + 40, p.z);
+  }
+});
+
+// light beam over the chosen place
+const beamMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+  uniforms: { uColor: { value: new THREE.Color('#3fd6ff') }, uTime: U.uTime, uOn: { value: 0 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: `uniform vec3 uColor; uniform float uTime; uniform float uOn; varying vec2 vUv;
+    void main(){ float a = pow(1.0 - vUv.y, 1.6) * (0.55 + 0.45 * sin(vUv.y * 40.0 - uTime * 6.0) * 0.5 + 0.25); gl_FragColor = vec4(uColor * a * 1.1 * uOn, 1.0); }`,
+});
+const beam = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 520, 24, 1, true).translate(0, 260, 0), beamMat);
+const ringMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  uniforms: { uColor: beamMat.uniforms.uColor, uTime: U.uTime, uOn: beamMat.uniforms.uOn },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: `uniform vec3 uColor; uniform float uTime; uniform float uOn; varying vec2 vUv;
+    void main(){ float d = length(vUv - 0.5) * 2.0; float r = fract(uTime * 0.5); float a = smoothstep(0.06, 0.0, abs(d - r)) * (1.0 - r) + smoothstep(0.05, 0.0, abs(d - 0.98)) * 0.6;
+      gl_FragColor = vec4(uColor * a * 1.0 * uOn, 1.0); }`,
+});
+const ring = new THREE.Mesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2), ringMat);
+beam.frustumCulled = ring.frustumCulled = false;
+beam.renderOrder = ring.renderOrder = 9;
+scene.add(beam, ring);
+let selPlace = null;
+function beaconTick(dt) {
+  beamMat.uniforms.uOn.value = lerp(beamMat.uniforms.uOn.value, selPlace ? 1 : 0, 1 - Math.exp(-dt * 4));
+  beam.visible = ring.visible = beamMat.uniforms.uOn.value > 0.01;
 }
+function flyTo(p) {
+  selPlace = p;
+  beam.position.set(p.x, 0, p.z);
+  const rr = clamp(p.r * 0.7, 40, 380); ring.scale.set(rr * 2, 1, rr * 2); ring.position.set(p.x, 0.5, p.z);
+  beam.scale.set(clamp(p.r / 140, 0.6, 1.8), 1, clamp(p.r / 140, 0.6, 1.8));
+  beamMat.uniforms.uColor.value.set(KIND[p.k][1]);
+  ctl.t.set(p.x, 0, p.z); ctl.d = clamp(p.r * 3.4, 300, 1600); ctl.p = Math.min(ctl.p, 0.95);
+  lastInput = Date.now();
+  document.querySelectorAll('.place').forEach(b => b.setAttribute('aria-current', b.dataset.name === p.name ? 'true' : 'false'));
+}
+
+// list, search and kind filter
+const listEl = document.getElementById('places'), qEl = document.getElementById('pl-q'), kindsEl = document.getElementById('pl-kinds');
+let kindFilter = '';
+[['', 'ทั้งหมด', '#3fd6ff'], ...Object.entries(KIND).filter(([k]) => PLACES.some(p => p.k === k)).map(([k, v]) => [k, v[0], v[1]])].forEach(([k, label, c]) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip'; b.style.setProperty('--c', c);
+  b.setAttribute('aria-pressed', k === '' ? 'true' : 'false');
+  b.innerHTML = `<i></i>${label}`;
+  b.addEventListener('click', () => { kindFilter = k; kindsEl.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); drawList(); });
+  kindsEl.appendChild(b);
+});
+function drawList() {
+  const q = qEl.value.trim().toLowerCase();
+  listEl.innerHTML = '';
+  const shown = PLACES.filter(p => (!kindFilter || p.k === kindFilter) && (!q || p.name.toLowerCase().includes(q) || KIND[p.k][0].includes(q)));
+  shown.forEach(p => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'place'; b.dataset.name = p.name; b.style.setProperty('--c', KIND[p.k][1]);
+    b.setAttribute('aria-current', selPlace === p ? 'true' : 'false');
+    b.innerHTML = `<i></i><span>${p.name}<small>${KIND[p.k][0]} · พื้น ${(zmin + p.e).toFixed(0)} ม.รทก.</small></span><em></em>`;
+    b.addEventListener('click', () => { flyTo(p); if (isMobile) setTab(''); });
+    p.badge = b.querySelector('em');
+    li.appendChild(b); listEl.appendChild(li);
+  });
+  document.getElementById('pl-count').textContent = `${shown.length} แห่ง`;
+  updatePlaceBadges(floodL());
+}
+function updatePlaceBadges(L) {
+  PLACES.forEach(p => {
+    if (!p.badge || !p.badge.isConnected) return;
+    const d = L - p.e;
+    p.badge.textContent = p.k === 'w' ? '' : d > 0.05 ? `น้ำ ${d.toFixed(1)} ม.` : '';
+    p.badge.className = d > 1 ? 'deep' : d > 0.05 ? 'wet' : '';
+  });
+}
+qEl.addEventListener('input', drawList);
 
 /* ------------------------------------------------------------------ *
  *  simulation state & UI
  * ------------------------------------------------------------------ */
-const sim = { mode: 'clear', rain: 0, wind: 5, level: 0, minutes: 16.5 * 60, scenario: null, cloud: 0.2 };
+const sim = { mode: 'clear', rain: 0, wind: 5, level: 0, minutes: 17.25 * 60, scenario: null, cloud: 0.2 };
 const $ = id => document.getElementById(id);
 const sliders = { rain: $('s-rain'), wind: $('s-wind'), flood: $('s-flood'), time: $('s-time') };
 function paintSlider(s) { s.style.setProperty('--p', ((s.value - s.min) / (s.max - s.min) * 100) + '%'); }
@@ -859,7 +1051,7 @@ sliders.rain.addEventListener('input', () => { sim.rain = +sliders.rain.value; s
 sliders.wind.addEventListener('input', () => { sim.wind = +sliders.wind.value; setUI(); });
 sliders.flood.addEventListener('input', () => { sim.level = sliders.flood.value / 10; setUI(); updateStats(); });
 sliders.time.addEventListener('input', () => { sim.minutes = sliders.time.value * 5; setUI(); });
-$('b-reset').addEventListener('click', () => { sim.scenario = null; sim.minutes = 16.5 * 60; setMode('clear'); $('b-scenario').textContent = '▶ จำลองพายุ 6 ชม.'; });
+$('b-reset').addEventListener('click', () => { sim.scenario = null; sim.minutes = 17.25 * 60; setMode('clear'); $('b-scenario').textContent = '▶ จำลองพายุ 6 ชม.'; });
 $('b-scenario').addEventListener('click', () => {
   if (sim.scenario) { sim.scenario = null; $('b-scenario').textContent = '▶ จำลองพายุ 6 ชม.'; return; }
   Object.assign(sim, { level: 0, rain: 0, wind: 5, minutes: 14 * 60 });
@@ -898,7 +1090,7 @@ function updateStats() {
   if (nb > 0) msgs.push(`อาคาร ${nb.toLocaleString('th-TH')} หลัง (${(pct * 100).toFixed(1)}%) อยู่ในพื้นที่น้ำท่วม`);
   al.textContent = msgs.length ? '⚠ ' + msgs.join(' · ') : '';
   al.classList.toggle('on', msgs.length > 0);
-  CAMS.forEach((c, i) => { const d = L - c.e; const el = $(`cw-${i}`); el.textContent = d > 0.05 ? `น้ำ ${d.toFixed(1)} ม.` : sim.rain > 0 ? 'ฝนตก' : 'ปกติ'; el.style.color = d > 0.8 ? 'var(--red)' : d > 0.05 ? 'var(--amber)' : ''; });
+  updatePlaceBadges(L);
   updateInfo();
 }
 
@@ -954,23 +1146,129 @@ function environment(dt) {
   rainU.uLight.value.copy(tmpB).lerp(C('#dfe7f2'), 0.5);
   U.uLevel.value = floodL();
   renderer.toneMappingExposure = 1.0 + (1 - day) * 0.7;
+  if (post) post.u.exposure.value = renderer.toneMappingExposure;
   flood.material.uniforms.uSky.value.copy(tmpB);
   flood.material.uniforms.uSunDir.value.copy(sunDir);
 }
 
 /* ------------------------------------------------------------------ *
+ *  keyboard: WASD to move, Q/E to turn, R/F to zoom, Shift for speed
+ * ------------------------------------------------------------------ */
+const keys = new Set();
+const KEYRE = /^(Key[WASDQERF]|Arrow(Up|Down|Left|Right)|Shift(Left|Right))$/;
+const kbdEls = [...document.querySelectorAll('kbd[data-k]')];
+const syncKbd = () => kbdEls.forEach(k => k.classList.toggle('on', keys.has(k.dataset.k) || (k.dataset.k === 'ShiftLeft' && keys.has('ShiftRight'))));
+addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input, textarea, select')) return;
+  if (!KEYRE.test(e.code)) return;
+  keys.add(e.code); lastInput = Date.now(); syncKbd();
+  if (e.code.startsWith('Arrow')) e.preventDefault();
+});
+addEventListener('keyup', e => { keys.delete(e.code); syncKbd(); });
+addEventListener('blur', () => { keys.clear(); syncKbd(); });
+function keyMove(dt) {
+  if (!keys.size) return;
+  const fast = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 2.8 : 1;
+  const sp = clamp(ctl.d, 80, 6000) * 0.7 * fast * dt;
+  const fx = -Math.sin(ctl.a), fz = -Math.cos(ctl.a), rx = Math.cos(ctl.a), rz = -Math.sin(ctl.a);
+  let mx = 0, mz = 0;
+  if (keys.has('KeyW') || keys.has('ArrowUp')) { mx += fx; mz += fz; }
+  if (keys.has('KeyS') || keys.has('ArrowDown')) { mx -= fx; mz -= fz; }
+  if (keys.has('KeyD')) { mx += rx; mz += rz; }
+  if (keys.has('KeyA')) { mx -= rx; mz -= rz; }
+  if (keys.has('KeyQ') || keys.has('ArrowLeft')) ctl.a += 1.2 * dt * fast;
+  if (keys.has('KeyE') || keys.has('ArrowRight')) ctl.a -= 1.2 * dt * fast;
+  if (keys.has('KeyR')) ctl.d = clamp(ctl.d * Math.exp(-1.3 * dt * fast), 60, 9000);
+  if (keys.has('KeyF')) ctl.d = clamp(ctl.d * Math.exp(1.3 * dt * fast), 60, 9000);
+  const l = Math.hypot(mx, mz);
+  if (l) { ctl.t.x = clamp(ctl.t.x + mx / l * sp, -4500, 4500); ctl.t.z = clamp(ctl.t.z + mz / l * sp, -3800, 3800); }
+}
+
+/* ------------------------------------------------------------------ *
+ *  post-processing: HDR bloom, miniature tilt-shift at altitude,
+ *  film grade, vignette, grain
+ * ------------------------------------------------------------------ */
+const POST_OK = renderer.capabilities.isWebGL2 && (renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float'));
+const dbs = new THREE.Vector2();
+const post = POST_OK ? (() => {
+  const FSQ = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
+  const mk = (s = 0, depth = false) => { const r = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: s, depthBuffer: depth }); r.texture.generateMipmaps = false; return r; };
+  const scn = mk(isMobile ? 0 : 4, true), bright = mk();
+  const lv = [0, 1, 2, 3].map(() => ({ h: mk(), v: mk() }));
+  const d1h = mk(), d1v = mk();
+  const o = { vertexShader: FSQ, depthTest: false, depthWrite: false, toneMapped: false };
+  const brightM = new THREE.ShaderMaterial({ ...o, uniforms: { t: { value: null } }, fragmentShader: `uniform sampler2D t; varying vec2 vUv;
+    void main(){ vec3 c = texture2D(t, vUv).rgb; float l = max(c.r, max(c.g, c.b)); gl_FragColor = vec4(min(c * smoothstep(1.0, 2.0, l), vec3(12.0)), 1.0); }` });
+  const blurM = new THREE.ShaderMaterial({ ...o, uniforms: { t: { value: null }, dir: { value: new THREE.Vector2() } }, fragmentShader: `uniform sampler2D t; uniform vec2 dir; varying vec2 vUv;
+    void main(){ vec3 c = texture2D(t, vUv).rgb * 0.227;
+      c += (texture2D(t, vUv + dir * 1.385).rgb + texture2D(t, vUv - dir * 1.385).rgb) * 0.316;
+      c += (texture2D(t, vUv + dir * 3.231).rgb + texture2D(t, vUv - dir * 3.231).rgb) * 0.070;
+      gl_FragColor = vec4(c, 1.0); }` });
+  const cu = {
+    tScene: { value: scn.texture }, tSoft: { value: d1v.texture }, tB0: { value: lv[0].v.texture }, tB1: { value: lv[1].v.texture }, tB2: { value: lv[2].v.texture }, tB3: { value: lv[3].v.texture },
+    exposure: { value: 1 }, tilt: { value: 0 }, time: { value: 0 }, res: { value: new THREE.Vector2() }, flash: U.uFlash,
+  };
+  const compM = new THREE.ShaderMaterial({ ...o, uniforms: cu, fragmentShader: `
+    uniform sampler2D tScene; uniform sampler2D tSoft; uniform sampler2D tB0; uniform sampler2D tB1; uniform sampler2D tB2; uniform sampler2D tB3;
+    uniform float exposure; uniform float tilt; uniform float time; uniform vec2 res; uniform float flash; varying vec2 vUv;
+    vec3 RRT(vec3 v){ vec3 a = v * (v + 0.0245786) - 0.000090537; vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081; return a / b; }
+    vec3 aces(vec3 c){
+      const mat3 I = mat3(vec3(0.59719, 0.07600, 0.02840), vec3(0.35458, 0.90834, 0.13383), vec3(0.04823, 0.01566, 0.83777));
+      const mat3 O = mat3(vec3(1.60475, -0.10208, -0.00327), vec3(-0.53108, 1.10813, -0.07276), vec3(-0.07367, -0.00605, 1.07602));
+      c *= exposure / 0.6; c = I * c; c = RRT(c); c = O * c; return clamp(c, 0.0, 1.0); }
+    vec3 srgb(vec3 c){ return mix(pow(c, vec3(0.41666)) * 1.055 - vec3(0.055), c * 12.92, vec3(lessThanEqual(c, vec3(0.0031308)))); }
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    void main(){
+      vec2 q = vUv - 0.5;
+      float k = 0.0018 * dot(q, q) * 4.0;
+      vec3 c = vec3(texture2D(tScene, vUv + q * k).r, texture2D(tScene, vUv).g, texture2D(tScene, vUv - q * k).b);
+      float m = smoothstep(0.12, 0.46, abs(vUv.y - 0.52)) * tilt;
+      c = mix(c, texture2D(tSoft, vUv).rgb, m);
+      c += texture2D(tB0, vUv).rgb * 0.35 + texture2D(tB1, vUv).rgb * 0.45 + texture2D(tB2, vUv).rgb * 0.55 + texture2D(tB3, vUv).rgb * 0.6;
+      vec3 t = aces(c);
+      float l = dot(t, vec3(0.2126, 0.7152, 0.0722));
+      t = mix(vec3(l), t, 1.12);
+      t *= mix(vec3(0.93, 0.99, 1.07), vec3(1.05, 1.0, 0.93), smoothstep(0.1, 0.8, l));
+      t *= 1.0 - dot(q * vec2(1.0, 1.2), q) * 0.95;
+      vec3 s = srgb(clamp(t, 0.0, 1.0));
+      s = mix(s, s * s * (3.0 - 2.0 * s), 0.25);
+      s += (hash(vUv * res + fract(time) * 71.0) - 0.5) * 0.028;
+      gl_FragColor = vec4(s, 1.0);
+    }` });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), compM); quad.frustumCulled = false;
+  const qs = new THREE.Scene(); qs.add(quad); const qc = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const run = (mtl, tg) => { quad.material = mtl; renderer.setRenderTarget(tg); renderer.render(qs, qc); };
+  const blur = (src, a, b, s = 1) => {
+    blurM.uniforms.t.value = src.texture; blurM.uniforms.dir.value.set(s / a.width, 0); run(blurM, a);
+    blurM.uniforms.t.value = a.texture; blurM.uniforms.dir.value.set(0, s / b.height); run(blurM, b);
+  };
+  return {
+    u: cu,
+    setSize(w, h) {
+      scn.setSize(w, h); bright.setSize(w >> 1, h >> 1); d1h.setSize(w >> 2, h >> 2); d1v.setSize(w >> 2, h >> 2);
+      lv.forEach((l, i) => { const f = 4 << i; l.h.setSize(Math.max(2, w / f | 0), Math.max(2, h / f | 0)); l.v.setSize(Math.max(2, w / f | 0), Math.max(2, h / f | 0)); });
+      cu.res.value.set(w, h);
+    },
+    render() {
+      renderer.setRenderTarget(scn); renderer.render(scene, camera);
+      brightM.uniforms.t.value = scn.texture; run(brightM, bright);
+      let src = bright; lv.forEach(l => { blur(src, l.h, l.v); src = l.v; });
+      blur(scn, d1h, d1v, 1.6);
+      cu.tilt.value = reduce ? 0 : smooth(700, 3000, ctl.dist) * 0.75;
+      cu.time.value = U.uTime.value;
+      run(compM, null);
+    },
+  };
+})() : null;
+
+/* ------------------------------------------------------------------ *
  *  loop
  * ------------------------------------------------------------------ */
-function onResize() { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+function onResize() { renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); if (post) { renderer.getDrawingBufferSize(dbs); post.setSize(dbs.x, dbs.y); } }
 addEventListener('resize', onResize);
 const v3 = new THREE.Vector3();
-let last = performance.now(), statT = 0, ts = document.getElementById('cam-ts'), simClock = $('sim-clock');
-const camView = $('cam-view'), camCanvas = $('cam-canvas'), camCtx = camCanvas.getContext('2d');
-const camDpr = Math.min(devicePixelRatio || 1, 1.5);
-const camRT = new THREE.WebGLRenderTarget(4, 4, { samples: 4 });
-camRT.texture.colorSpace = THREE.SRGBColorSpace;
-let camPx = null, camImg = null, camFrame = 0;
-setUI(); updateStats();
+let last = performance.now(), statT = 0, simClock = $('sim-clock');
+setUI(); updateStats(); onResize(); drawList();
 
 function frame(now) {
   requestAnimationFrame(frame);
@@ -1009,7 +1307,8 @@ function frame(now) {
   // orbit easing
   const k = 1 - Math.exp(-dt * 8);
   ctl.target.lerp(ctl.t, k); ctl.dist = lerp(ctl.dist, ctl.d, k); ctl.az = lerp(ctl.az, ctl.a, k); ctl.pol = lerp(ctl.pol, ctl.p, k);
-  if (!reduce && !canvas.classList.contains('dragging') && !sim.scenario) ctl.a += dt * 0.012;
+  keyMove(dt);
+  if (!reduce && !canvas.classList.contains('dragging') && !sim.scenario && !keys.size && Date.now() - lastInput > 8000) ctl.a += dt * 0.012;
   const sp = Math.sin(ctl.pol), cp = Math.cos(ctl.pol);
   camera.position.set(ctl.target.x + ctl.dist * sp * Math.sin(ctl.az), ctl.target.y + ctl.dist * cp, ctl.target.z + ctl.dist * sp * Math.cos(ctl.az));
   camera.position.y = Math.max(camera.position.y, 6);
@@ -1035,7 +1334,7 @@ function frame(now) {
   const taken = [];
   LABELS.forEach(l => {
     if (!l.el) return;
-    let show = ctl.dist < 1800 && camera.position.distanceTo(l.v) < 2200;
+    let show = ctl.dist < (l.far || 2200) * 0.85 && camera.position.distanceTo(l.v) < (l.far || 2200);
     if (show) {
       v3.copy(l.v).project(camera);
       const sx = (v3.x * 0.5 + 0.5) * W, sy = (-v3.y * 0.5 + 0.5) * H;
@@ -1043,30 +1342,11 @@ function frame(now) {
     }
     place(l.el, l.v, show);
   });
-  CAMS.forEach(c => place(c.mk, c.pos, true));
+  PLACES.forEach(pl => { if (pl.mk) place(pl.mk, pl.v, true); });
+  beaconTick(dt);
 
-  renderer.render(scene, camera);
+  if (post) post.render(); else renderer.render(scene, camera);
 
-  // CCTV feed: render the simulation from the camera into a target, then copy into the panel's canvas
-  camFrame = (camFrame + 1) % 2;
-  const r = camView.getBoundingClientRect();
-  if (camFrame === 0 && r.width > 10 && r.bottom > 0 && r.top < H && getComputedStyle($('p-right')).display !== 'none') {
-    const w = Math.round(r.width * camDpr), h = Math.round(r.height * camDpr);
-    if (camRT.width !== w || camRT.height !== h) { camRT.setSize(w, h); camCanvas.width = w; camCanvas.height = h; camPx = new Uint8Array(w * h * 4); camImg = camCtx.createImageData(w, h); }
-    const c = CAMS[activeCam];
-    camCCTV.position.copy(c.pos);
-    camCCTV.position.x += Math.sin(U.uTime.value * 0.3) * 0.4;
-    camCCTV.lookAt(c.look);
-    camCCTV.aspect = w / h; camCCTV.updateProjectionMatrix();
-    rainU.uCenter.value.copy(c.look); rainU.uBox.value = 260; rainU.uH.value = 180; rainU.uLen.value = 4;
-    sky.position.copy(camCCTV.position);
-    renderer.setRenderTarget(camRT); renderer.render(scene, camCCTV); renderer.setRenderTarget(null);
-    renderer.readRenderTargetPixels(camRT, 0, 0, w, h, camPx);
-    for (let y = 0; y < h; y++) camImg.data.set(camPx.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
-    camCtx.putImageData(camImg, 0, 0);
-    const d = new Date(); d.setHours(Math.floor(sim.minutes / 60) % 24, Math.floor(sim.minutes % 60));
-    ts.textContent = d.toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'medium' });
-  }
   if (!loading.classList.contains('done')) loading.classList.add('done');
 }
 requestAnimationFrame(frame);
