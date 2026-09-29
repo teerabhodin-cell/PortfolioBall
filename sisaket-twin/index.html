@@ -232,7 +232,7 @@
 <div id="labels" aria-hidden="true"></div>
 <div class="hint" id="hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> เดิน · <kbd>Q</kbd><kbd>E</kbd> หมุน · <kbd>R</kbd><kbd>F</kbd> ซูม · <kbd>Shift</kbd> เร็ว · <kbd>H</kbd> ซ่อน UI · ลากเมาส์หมุน · คลิกตึกดูข้อมูล</div>
 
-<div id="loading" role="status"><div class="box"><span id="load-msg">กำลังสร้างเมือง 9,264 อาคาร</span><div class="bar"><i></i></div></div></div>
+<div id="loading" role="status"><div class="box"><span id="load-msg">กำลังสร้างเมืองศรีสะเกษ</span><div class="bar"><i></i></div></div></div>
 
 <aside class="panel left on" id="p-left" aria-label="ควบคุมการจำลอง">
   <div class="brand">
@@ -494,20 +494,31 @@ scene.add(clouds);
  * ------------------------------------------------------------------ */
 const V2 = THREE.Vector2;
 function polyArea(xs) { let a = 0; for (let i = 0, n = xs.length / 2; i < n; i++) { const j = (i + 1) % n; a += xs[i * 2] * xs[j * 2 + 1] - xs[j * 2] * xs[i * 2 + 1]; } return a / 2; }
-function triangulate(xs) {
+function toRing(xs) {
   const pts = []; for (let i = 0; i < xs.length; i += 2) pts.push(new V2(xs[i], xs[i + 1]));
   if (pts.length > 2 && pts[0].equals(pts[pts.length - 1])) pts.pop();
+  return pts;
+}
+// holes (e.g. an island inside a reservoir) are optional
+function triangulate(xs, holeXs = []) {
+  const pts = toRing(xs);
   if (pts.length < 3) return { pts, tris: [] };
+  const holes = holeXs.map(toRing).filter(h => h.length > 2);
   let tris;
-  try { tris = THREE.ShapeUtils.triangulateShape(pts, []); } catch (e) { tris = []; }
-  return { pts, tris };
+  try { tris = THREE.ShapeUtils.triangulateShape(pts, holes); } catch (e) { tris = []; }
+  return { pts: pts.concat(...holes), tris };
 }
 function flatLayer(polys, y, colorFn, mat, order) {
   const pos = [], col = [], c = new THREE.Color();
   for (const p of polys) {
-    const { pts, tris } = triangulate(p.xs);
+    const { pts, tris } = triangulate(p.xs, p.holes);
     colorFn(c, p);
-    for (const t of tris) for (const k of t) { pos.push(pts[k].x, y, pts[k].y); col.push(c.r, c.g, c.b); }
+    for (const t of tris) {
+      // wind every triangle so it faces the sky (otherwise it is culled when seen from above)
+      let [a, b, d] = t.map(k => pts[k]);
+      if ((b.x - a.x) * (d.y - a.y) - (b.y - a.y) * (d.x - a.x) > 0) [b, d] = [d, b];
+      for (const v of [a, b, d]) { pos.push(v.x, y, v.y); col.push(c.r, c.g, c.b); }
+    }
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
@@ -564,7 +575,7 @@ const landPolys = unpack(city.l, 1).map(p => ({ t: p.head[0], xs: p.xs }));
 flatLayer(landPolys, 0, (c, p) => c.set(LU_COL[p.t] || '#999'), landMat, -4);
 
 const AREAS = (city.areas || []).map(a => ({ k: a[0], n: a[1], x: a[2], z: a[3], a: a[4], xs: a.slice(5) }));
-const AREA_COL = { p: '#6fae4c', g: '#86b85a', h: '#d9d4d6', u: '#cfc3a8', r: '#d9b98a', c: '#b9b4ab' };
+const AREA_COL = { p: '#6fae4c', g: '#86b85a', h: '#d9d4d6', u: '#cfc3a8', r: '#d9b98a', c: '#b9b4ab', m: '#c9a9a0' };
 flatLayer(AREAS.filter(a => AREA_COL[a.k]), 0, (c, a) => c.set(AREA_COL[a.k]), landMat, -3.6);
 const waterMat = new THREE.MeshStandardMaterial({ color: '#2d5f7c', roughness: 0.06, metalness: 0.35, depthWrite: false });
 waterMat.onBeforeCompile = sh => {
@@ -575,7 +586,7 @@ waterMat.onBeforeCompile = sh => {
       vec2 g = vec2(sin(p.x * 1.7 + t * 1.2) + sin(p.x * 0.8 - p.y * 1.3 + t), cos(p.y * 1.9 - t * 1.1) + sin(p.y * 0.7 + p.x * 1.1 + t * 1.3)) * 0.06;
       normal = normalize((viewMatrix * vec4(normalize(vec3(g.x, 1.0, g.y)), 0.0)).xyz); }`);
 };
-flatLayer(city.w.map(xs => ({ xs })), 0, c => c.set('#ffffff'), waterMat, -3);
+flatLayer([...city.w.map(xs => ({ xs })), ...(city.wh || []).map(w => ({ xs: w.o, holes: w.h }))], 0, c => c.set('#ffffff'), waterMat, -3);
 ribbons(unpack(city.wl, 1).map(p => ({ w: p.head[0], xs: p.xs })), 0, c => c.set('#ffffff'), waterMat, -3);
 
 const roadMat = wettable(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, depthWrite: false }), 0.9);
@@ -863,7 +874,7 @@ const ctl = { target: new THREE.Vector3(-250, 0, -150), dist: 1500, az: 0.65, po
     const s = ctl.d * 0.0012;
     const fx = Math.sin(ctl.a), fz = Math.cos(ctl.a);
     ctl.t.x += (-dx * fz - dy * fx) * s; ctl.t.z += (dx * fx - dy * fz) * s;
-    ctl.t.x = clamp(ctl.t.x, -4500, 4500); ctl.t.z = clamp(ctl.t.z, -3800, 3800);
+    ctl.t.x = clamp(ctl.t.x, -8000, 8000); ctl.t.z = clamp(ctl.t.z, -5000, 5000);
   };
   canvas.addEventListener('pointermove', e => {
     const p = ptrs.get(e.pointerId); if (!p) return;
@@ -919,14 +930,41 @@ document.getElementById('i-close').addEventListener('click', () => { selB = null
  *  places: named areas + key civic buildings — searchable, fly-to
  * ------------------------------------------------------------------ */
 const labelsEl = document.getElementById('labels');
-const KIND = { h: ['โรงพยาบาล', '#ff5a5f'], p: ['สวนสาธารณะ', '#4be39a'], g: ['ลาน/สนาม', '#a4e07a'], r: ['ศาสนสถาน', '#ffb547'], u: ['การศึกษา', '#b89bff'], w: ['แหล่งน้ำ', '#3fd6ff'], c: ['ราชการ/คมนาคม', '#dfe8f5'] };
+/* landmark towers (position and height approximate, edit in city.json → towers) */
+const TOWERS = [];
+(city.towers || []).forEach(t => {
+  const g = new THREE.Group(); g.position.set(t.x, 0, t.z); scene.add(g);
+  const H = t.h, concrete = new THREE.MeshStandardMaterial({ color: '#e9e6df', roughness: 0.7 });
+  const glass = new THREE.MeshStandardMaterial({ color: '#1d3346', roughness: 0.15, metalness: 0.6, emissive: '#ffcf8a', emissiveIntensity: 0 });
+  const add = (geo, mat, y) => { const m = new THREE.Mesh(geo, mat); m.position.y = y; m.castShadow = m.receiveShadow = true; g.add(m); return m; };
+  add(new THREE.CylinderGeometry(9, 11, 3, 24), concrete, 1.5);                          // plinth
+  add(new THREE.CylinderGeometry(2.6, 4.2, H * 0.72, 20), concrete, 3 + H * 0.36);      // shaft
+  const deckY = 3 + H * 0.72;
+  add(new THREE.CylinderGeometry(7.5, 5, 2, 28), concrete, deckY + 1);                   // deck floor
+  add(new THREE.CylinderGeometry(7.2, 7.2, 4.2, 28, 1, true), glass, deckY + 4.1);       // glazed viewing ring
+  add(new THREE.CylinderGeometry(8.2, 7.4, 1.2, 28), concrete, deckY + 6.8);             // roof
+  add(new THREE.ConeGeometry(1.2, H * 0.22, 12), concrete, deckY + 7.4 + H * 0.11);      // spire
+  const beacon = add(new THREE.SphereGeometry(0.9, 12, 8), new THREE.MeshBasicMaterial({ color: '#ff3b30' }), deckY + 7.4 + H * 0.22);
+  TOWERS.push({ ...t, glass, beacon, top: deckY + 8 + H * 0.22 });
+});
+function towerTick() {
+  const blink = Math.sin(U.uTime.value * 3.2) > 0.2 ? 1 : 0.15;
+  TOWERS.forEach(t => {
+    t.beacon.material.color.setRGB(3 * blink, 0.25 * blink, 0.2 * blink);
+    t.glass.emissiveIntensity = U.uNight.value * 1.8;
+  });
+}
+
+const KIND = { t: ['แลนด์มาร์ก', '#ffd166'], h: ['โรงพยาบาล', '#ff5a5f'], p: ['สวนสาธารณะ', '#4be39a'], g: ['ลาน/สนาม', '#a4e07a'], r: ['ศาสนสถาน', '#ffb547'], u: ['การศึกษา', '#b89bff'], m: ['ตลาด', '#ff8fb1'], w: ['แหล่งน้ำ', '#3fd6ff'], c: ['ราชการ/คมนาคม', '#dfe8f5'] };
 const PLACES = [];
+TOWERS.forEach(t => PLACES.push({ name: t.n, k: 't', x: t.x, z: t.z, r: 90, h: t.top - 4 }));
 AREAS.forEach(a => PLACES.push({ name: a.n, k: a.k, x: a.x, z: a.z, r: Math.sqrt(a.a), h: 10 }));
+(city.wh || []).forEach(w => { if (w.n && !PLACES.some(p => p.name === w.n)) { const n = w.o.length / 2; let x = 0, z = 0; for (let i = 0; i < n; i++) { x += w.o[i * 2]; z += w.o[i * 2 + 1]; } PLACES.push({ name: w.n, k: 'w', x: x / n, z: z / n, r: 450, h: 6 }); } });
 city.names.forEach(([name, x, z, h, typ]) => {
   if ((typ === 2 || /ศาลากลาง|เทศบาล|ไปรษณีย์|ที่ว่าการ|ขนส่ง|ศาล|Big C|ซุ่นเฮง/.test(name)) && !PLACES.some(p => p.name === name || Math.hypot(p.x - x, p.z - z) < 25))
     PLACES.push({ name, k: 'c', x, z, r: 70, h });
 });
-const ORDER = 'hpgcurw';
+const ORDER = 'thpgcumrw';
 PLACES.sort((a, b) => ORDER.indexOf(a.k) - ORDER.indexOf(b.k) || b.r - a.r);
 PLACES.forEach(p => { p.e = elevAt(p.x, p.z); p.v = new THREE.Vector3(p.x, p.h + 12, p.z); });
 
@@ -934,11 +972,11 @@ PLACES.forEach(p => { p.e = elevAt(p.x, p.z); p.v = new THREE.Vector3(p.x, p.h +
 LABELS.length = 0;
 PLACES.forEach(p => {
   const el = document.createElement('div');
-  el.className = 'lbl' + (p.k === 'h' || p.k === 'p' ? ' big' : '');
+  el.className = 'lbl' + (p.k === 'h' || p.k === 'p' || p.k === 't' ? ' big' : '');
   el.style.setProperty('--c', KIND[p.k][1]);
   el.innerHTML = `<i></i>${p.name}`;
   labelsEl.appendChild(el);
-  LABELS.push({ name: p.name, v: p.v, el, far: p.k === 'h' ? 5200 : p.k === 'p' ? 3200 : 2200 });
+  LABELS.push({ name: p.name, v: p.v, el, far: p.k === 'h' || p.k === 't' ? 5200 : p.k === 'p' ? 3200 : 2200 });
   if (p.k === 'h') {
     const m = document.createElement('button');
     m.type = 'button'; m.className = 'mk hosp'; m.tabIndex = -1; m.setAttribute('aria-label', p.name);
@@ -1183,7 +1221,7 @@ function keyMove(dt) {
   if (keys.has('KeyR')) ctl.d = clamp(ctl.d * Math.exp(-1.3 * dt * fast), 60, 9000);
   if (keys.has('KeyF')) ctl.d = clamp(ctl.d * Math.exp(1.3 * dt * fast), 60, 9000);
   const l = Math.hypot(mx, mz);
-  if (l) { ctl.t.x = clamp(ctl.t.x + mx / l * sp, -4500, 4500); ctl.t.z = clamp(ctl.t.z + mz / l * sp, -3800, 3800); }
+  if (l) { ctl.t.x = clamp(ctl.t.x + mx / l * sp, -8000, 8000); ctl.t.z = clamp(ctl.t.z + mz / l * sp, -5000, 5000); }
 }
 
 /* ------------------------------------------------------------------ *
@@ -1346,6 +1384,7 @@ function frame(now) {
   });
   PLACES.forEach(pl => { if (pl.mk) place(pl.mk, pl.v, true); });
   beaconTick(dt);
+  towerTick();
 
   if (post) post.render(); else renderer.render(scene, camera);
 
