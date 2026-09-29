@@ -171,6 +171,53 @@
   .mk.on { background: var(--cyan); box-shadow: 0 0 0 6px rgba(63, 214, 255, .2), 0 0 20px var(--cyan); }
   .mk.on svg { stroke: #04121c; }
 
+  /* intro */
+  #intro {
+    position: fixed; inset: 0; z-index: 15; display: flex; align-items: center; padding: 6vh clamp(20px, 7vw, 110px);
+    background: radial-gradient(120% 90% at 85% 40%, rgba(7, 11, 20, 0) 0, rgba(7, 11, 20, .35) 45%, rgba(7, 11, 20, .92) 100%),
+                linear-gradient(90deg, rgba(7, 11, 20, .92) 0, rgba(7, 11, 20, .55) 42%, rgba(7, 11, 20, 0) 70%);
+    transition: opacity .9s ease, transform .9s cubic-bezier(.7, 0, .2, 1), visibility 0s .9s;
+  }
+  #intro.gone { opacity: 0; transform: scale(1.04); visibility: hidden; pointer-events: none; }
+  .intro-inner { max-width: 560px; display: grid; gap: 22px; }
+  .intro-inner > * { animation: introIn 1s cubic-bezier(.2, .8, .2, 1) both; }
+  .intro-inner > :nth-child(2) { animation-delay: .08s; } .intro-inner > :nth-child(3) { animation-delay: .16s; }
+  .intro-inner > :nth-child(4) { animation-delay: .24s; } .intro-inner > :nth-child(5) { animation-delay: .32s; }
+  .intro-inner > :nth-child(6) { animation-delay: .4s; } .intro-inner > :nth-child(7) { animation-delay: .48s; }
+  @keyframes introIn { from { opacity: .001; transform: translateY(24px); } }
+  .intro-eyebrow { margin: 0; font: 700 12px var(--mono); letter-spacing: .3em; color: var(--cyan); display: flex; align-items: center; gap: 10px; }
+  .intro-eyebrow i { width: 28px; height: 1px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  #intro h1 { margin: 0; font-size: clamp(48px, 8vw, 104px); line-height: 1.02; font-weight: 700; letter-spacing: -.01em; }
+  #intro h1 span { color: transparent; -webkit-text-stroke: 1.5px var(--cyan); text-shadow: 0 0 40px rgba(63, 214, 255, .35); }
+  .intro-lede { margin: 0; font-size: clamp(15px, 1.4vw, 18px); color: #c7d3e6; line-height: 1.7; }
+  .intro-stats { display: flex; gap: 0; margin: 0; border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden; width: fit-content; background: rgba(9, 14, 26, .6); backdrop-filter: blur(8px); }
+  .intro-stats div { padding: 10px 18px; border-left: 1px solid var(--line); }
+  .intro-stats div:first-child { border-left: 0; }
+  .intro-stats dt { font-size: 11.5px; color: var(--muted); }
+  .intro-stats dd { margin: 0; font: 700 22px var(--mono); font-variant-numeric: tabular-nums; }
+  .intro-feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--muted); font-size: 14px; }
+  .intro-feat li { display: flex; gap: 10px; align-items: baseline; }
+  .intro-feat li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); transform: translateY(-2px); }
+  .intro-feat b { color: var(--text); font-weight: 600; margin-right: 6px; }
+  .enter {
+    justify-self: start; display: inline-flex; align-items: center; gap: 14px; padding: 16px 26px 16px 30px; border-radius: 999px; border: 0; cursor: pointer;
+    font: 700 17px var(--f); color: #04121c; background: linear-gradient(135deg, #5fe3ff, #1b9be0); box-shadow: 0 12px 40px -10px rgba(63, 214, 255, .7), inset 0 1px 0 rgba(255, 255, 255, .5);
+    transition: transform .25s, box-shadow .25s, filter .25s; position: relative; overflow: hidden;
+  }
+  .enter svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s; }
+  .enter:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 50px -10px rgba(63, 214, 255, .9); }
+  .enter:hover:not(:disabled) svg { transform: translateX(4px); }
+  .enter::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .6) 50%, transparent 65%); transform: translateX(-120%); animation: shine 3.2s 1.5s infinite; }
+  @keyframes shine { 40%, 100% { transform: translateX(120%); } }
+  .enter:disabled { filter: grayscale(.6) brightness(.7); cursor: progress; }
+  .enter:disabled::after { animation: none; }
+  .intro-hint { margin: 0; font-size: 12px; color: var(--muted); }
+  .intro-hint kbd { min-width: 20px; height: 20px; font-size: 10px; border-bottom-width: 2px; }
+  body.intro-on .panel, body.intro-on #labels, body.intro-on .hint, body.intro-on .uitoggle, body.intro-on .tabs, body.intro-on .attrib { opacity: 0; visibility: hidden; pointer-events: none; }
+  body.intro-on #loading { background: #070b14; }
+  @media (max-width: 900px) { #intro { align-items: flex-end; padding-bottom: 8vh; } .intro-stats dd { font-size: 18px; } .intro-stats div { padding: 8px 12px; } }
+  @media (prefers-reduced-motion: reduce) { .intro-inner > * { animation: none; } .enter::after { animation: none; } #intro { transition: opacity .3s, visibility 0s .3s; } }
+
   /* collapsible panels + hide-all */
   .fold { margin-left: 8px; flex: none; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: rgba(255, 255, 255, .04); border: 1px solid var(--line); cursor: pointer; transition: .2s; }
   .fold:hover { border-color: var(--cyan); background: rgba(63, 214, 255, .1); }
@@ -227,10 +274,30 @@
   @media (prefers-reduced-motion: reduce) { .live::before, .rec::before, .alertbar.on { animation: none; } }
 </style>
 </head>
-<body>
+<body class="intro-on">
 <canvas id="c" aria-label="ผังเมืองศรีสะเกษแบบ 3D"></canvas>
 <div id="labels" aria-hidden="true"></div>
 <div class="hint" id="hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> เดิน · <kbd>Q</kbd><kbd>E</kbd> หมุน · <kbd>R</kbd><kbd>F</kbd> ซูม · <kbd>Shift</kbd> เร็ว · <kbd>H</kbd> ซ่อน UI · ลากเมาส์หมุน · คลิกตึกดูข้อมูล</div>
+
+<section id="intro" aria-labelledby="intro-title">
+  <div class="intro-inner">
+    <p class="intro-eyebrow"><i></i>SISAKET CITY TWIN · 3D</p>
+    <h1 id="intro-title">ศรีสะเกษ<br><span>ดิจิทัลทวิน</span></h1>
+    <p class="intro-lede">ผังเมืองศรีสะเกษแบบ 3D ตึกต่อตึกจากข้อมูลแผนที่จริง เดินสำรวจทั่วเมือง แล้วลองจำลองฝนตก พายุ และน้ำท่วมบนความสูงพื้นดินจริง</p>
+    <dl class="intro-stats">
+      <div><dt>อาคาร</dt><dd id="is-b">—</dd></div>
+      <div><dt>สถานที่สำคัญ</dt><dd id="is-p">—</dd></div>
+      <div><dt>ถนน</dt><dd id="is-r">—</dd></div>
+    </dl>
+    <ul class="intro-feat">
+      <li><b>ตึกต่อตึก</b>อาคาร ถนน แหล่งน้ำ จาก OpenStreetMap</li>
+      <li><b>จำลองสภาพอากาศ</b>ฝนตก พายุ ฟ้าแลบ น้ำท่วม กลางวัน กลางคืน</li>
+      <li><b>เดินสำรวจ</b>ใช้ W A S D หรือค้นหาสถานที่แล้วบินไปหา</li>
+    </ul>
+    <button id="enter" class="enter" type="button" disabled><span id="enter-label">กำลังสร้างเมือง…</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <p class="intro-hint">กด <kbd>Enter</kbd> เพื่อเริ่ม · ข้อมูล © OpenStreetMap contributors · ความสูงพื้นดิน SRTM</p>
+  </div>
+</section>
 
 <div id="loading" role="status"><div class="box"><span id="load-msg">กำลังสร้างเมืองศรีสะเกษ</span><div class="bar"><i></i></div></div></div>
 
@@ -357,6 +424,7 @@
     btn.addEventListener('click', function () { setHidden(!document.body.classList.contains('ui-off')); });
     addEventListener('keydown', function (e) {
       if (e.code !== 'KeyH' || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (document.body.classList.contains('intro-on')) return;
       if (e.target.closest && e.target.closest('input, textarea, select')) return;
       setHidden(!document.body.classList.contains('ui-off'));
     });
@@ -575,7 +643,7 @@ const landPolys = unpack(city.l, 1).map(p => ({ t: p.head[0], xs: p.xs }));
 flatLayer(landPolys, 0, (c, p) => c.set(LU_COL[p.t] || '#999'), landMat, -4);
 
 const AREAS = (city.areas || []).map(a => ({ k: a[0], n: a[1], x: a[2], z: a[3], a: a[4], xs: a.slice(5) }));
-const AREA_COL = { p: '#6fae4c', g: '#86b85a', h: '#d9d4d6', u: '#cfc3a8', r: '#d9b98a', c: '#b9b4ab', m: '#c9a9a0' };
+const AREA_COL = { p: '#6fae4c', g: '#86b85a', h: '#d9d4d6', u: '#cfc3a8', r: '#d9b98a', c: '#b9b4ab', m: '#c9a9a0', s: '#a9bf7a' };
 flatLayer(AREAS.filter(a => AREA_COL[a.k]), 0, (c, a) => c.set(AREA_COL[a.k]), landMat, -3.6);
 const waterMat = new THREE.MeshStandardMaterial({ color: '#2d5f7c', roughness: 0.06, metalness: 0.35, depthWrite: false });
 waterMat.onBeforeCompile = sh => {
@@ -930,6 +998,56 @@ document.getElementById('i-close').addEventListener('click', () => { selB = null
  *  places: named areas + key civic buildings — searchable, fly-to
  * ------------------------------------------------------------------ */
 const labelsEl = document.getElementById('labels');
+/* sports grounds: pitches and tracks from OSM; stands, roof and floodlights are generated (not mapped in OSM) */
+const pitchMat = wettable(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, depthWrite: false }));
+flatLayer((city.tracks || []).map(xs => ({ xs })), 0, c => c.set('#b4533a'), pitchMat, -2.9);
+flatLayer((city.pitches || []).map(xs => ({ xs })), 0, c => c.set('#4f9e45'), pitchMat, -2.8);
+const FLOOD_HEADS = [];
+(city.stadiums || []).forEach(st => {
+  const ca = Math.cos(st.a), sa = Math.sin(st.a), L = st.L, W = st.W;
+  const at = (u, v) => [st.x + u * ca - v * sa, st.z + u * sa + v * ca];
+  // pitch markings
+  const lines = [];
+  const seg = pts => lines.push({ w: 0.5, xs: pts.flatMap(([u, v]) => at(u, v)) });
+  const rect = (u0, v0, u1, v1) => seg([[u0, v0], [u1, v0], [u1, v1], [u0, v1], [u0, v0]]);
+  rect(-L / 2, -W / 2, L / 2, W / 2);
+  seg([[0, -W / 2], [0, W / 2]]);
+  seg(Array.from({ length: 33 }, (_, i) => [Math.cos(i / 32 * Math.PI * 2) * 9.15, Math.sin(i / 32 * Math.PI * 2) * 9.15]));
+  for (const s of [-1, 1]) { rect(s * L / 2, -20.15, s * (L / 2 - 16.5), 20.15); rect(s * L / 2, -9.16, s * (L / 2 - 5.5), 9.16); }
+  ribbons(lines, 0, c => c.set('#f4f4ee'), new THREE.MeshBasicMaterial({ vertexColors: true, depthWrite: false }), -2.7);
+
+  const g = new THREE.Group(); g.position.set(st.x, 0, st.z); g.rotation.y = -st.a; scene.add(g);
+  const box = (w, h, d, mat, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; g.add(m); return m; };
+  const concrete = new THREE.MeshStandardMaterial({ color: '#c9c6bf', roughness: 0.85 });
+  const seatA = new THREE.MeshStandardMaterial({ color: '#e5782c', roughness: 0.6 });
+  const seatB = new THREE.MeshStandardMaterial({ color: '#2f6fb3', roughness: 0.6 });
+  const roofM = new THREE.MeshStandardMaterial({ color: '#eef1f4', roughness: 0.4, metalness: 0.3 });
+  // long-side stands (local z is across the pitch), stepping up away from the field
+  for (const s of [-1, 1]) {
+    const tiers = s < 0 ? 12 : 8, len = L * (s < 0 ? 0.92 : 0.8);
+    for (let k = 0; k < tiers; k++) {
+      const h = 1 + k * 0.85, off = W / 2 + 14 + k * 1.7;
+      box(len, h, 1.7, k % 2 ? concrete : (s < 0 ? seatA : seatB), 0, h / 2, s * off);
+    }
+    box(len, 1 + tiers * 0.85 + 1.5, 0.6, concrete, 0, (1 + tiers * 0.85 + 1.5) / 2, s * (W / 2 + 14 + tiers * 1.7 + 0.3));
+  }
+  // cantilever roof over the main stand
+  const rz = -(W / 2 + 14 + 6 * 1.7), roofY = 1 + 12 * 0.85 + 6;
+  const roof = box(L * 0.6, 0.6, 20, roofM, 0, roofY, rz); roof.rotation.x = -0.08;
+  for (let i = -3; i <= 3; i++) box(0.8, roofY + 1, 0.8, concrete, i * L * 0.09, (roofY + 1) / 2, -(W / 2 + 14 + 12 * 1.7 + 0.5));
+  // end banks behind the goals
+  for (const s of [-1, 1]) for (let k = 0; k < 5; k++) { const h = 1 + k * 0.8; box(1.7, h, W * 0.85, k % 2 ? concrete : seatB, s * (L / 2 + 16 + k * 1.7), h / 2, 0); }
+  // floodlight masts with glowing heads
+  const headMat = new THREE.MeshStandardMaterial({ color: '#dfe6ee', emissive: '#fff3d6', emissiveIntensity: 0.3 });
+  for (const su of [-1, 1]) for (const sv of [-1, 1]) {
+    const x = su * (L / 2 + 24), z = sv * (W / 2 + 34);
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.9, 38, 8), concrete); m.position.set(x, 19, z); m.castShadow = true; g.add(m);
+    const hd = box(7, 3.5, 1, headMat, x, 38.5, z); hd.lookAt(g.localToWorld(new THREE.Vector3(0, 0, 0)));
+  }
+  FLOOD_HEADS.push(headMat);
+});
+function stadiumTick() { FLOOD_HEADS.forEach(m => { m.emissiveIntensity = 0.3 + U.uNight.value * 7; }); }
+
 /* landmark towers (position and height approximate, edit in city.json → towers) */
 const TOWERS = [];
 (city.towers || []).forEach(t => {
@@ -955,7 +1073,7 @@ function towerTick() {
   });
 }
 
-const KIND = { t: ['แลนด์มาร์ก', '#ffd166'], h: ['โรงพยาบาล', '#ff5a5f'], p: ['สวนสาธารณะ', '#4be39a'], g: ['ลาน/สนาม', '#a4e07a'], r: ['ศาสนสถาน', '#ffb547'], u: ['การศึกษา', '#b89bff'], m: ['ตลาด', '#ff8fb1'], w: ['แหล่งน้ำ', '#3fd6ff'], c: ['ราชการ/คมนาคม', '#dfe8f5'] };
+const KIND = { t: ['แลนด์มาร์ก', '#ffd166'], s: ['กีฬา', '#ff9f43'], h: ['โรงพยาบาล', '#ff5a5f'], p: ['สวนสาธารณะ', '#4be39a'], g: ['ลาน/สนาม', '#a4e07a'], r: ['ศาสนสถาน', '#ffb547'], u: ['การศึกษา', '#b89bff'], m: ['ตลาด', '#ff8fb1'], w: ['แหล่งน้ำ', '#3fd6ff'], c: ['ราชการ/คมนาคม', '#dfe8f5'] };
 const PLACES = [];
 TOWERS.forEach(t => PLACES.push({ name: t.n, k: 't', x: t.x, z: t.z, r: 90, h: t.top - 4 }));
 AREAS.forEach(a => PLACES.push({ name: a.n, k: a.k, x: a.x, z: a.z, r: Math.sqrt(a.a), h: 10 }));
@@ -964,7 +1082,7 @@ city.names.forEach(([name, x, z, h, typ]) => {
   if ((typ === 2 || /ศาลากลาง|เทศบาล|ไปรษณีย์|ที่ว่าการ|ขนส่ง|ศาล|Big C|ซุ่นเฮง/.test(name)) && !PLACES.some(p => p.name === name || Math.hypot(p.x - x, p.z - z) < 25))
     PLACES.push({ name, k: 'c', x, z, r: 70, h });
 });
-const ORDER = 'thpgcumrw';
+const ORDER = 'thspgcumrw';
 PLACES.sort((a, b) => ORDER.indexOf(a.k) - ORDER.indexOf(b.k) || b.r - a.r);
 PLACES.forEach(p => { p.e = elevAt(p.x, p.z); p.v = new THREE.Vector3(p.x, p.h + 12, p.z); });
 
@@ -976,7 +1094,7 @@ PLACES.forEach(p => {
   el.style.setProperty('--c', KIND[p.k][1]);
   el.innerHTML = `<i></i>${p.name}`;
   labelsEl.appendChild(el);
-  LABELS.push({ name: p.name, v: p.v, el, far: p.k === 'h' || p.k === 't' ? 5200 : p.k === 'p' ? 3200 : 2200 });
+  LABELS.push({ name: p.name, v: p.v, el, far: p.k === 'h' || p.k === 't' ? 5200 : p.k === 'p' || p.k === 's' ? 3200 : 2200 });
   if (p.k === 'h') {
     const m = document.createElement('button');
     m.type = 'button'; m.className = 'mk hosp'; m.tabIndex = -1; m.setAttribute('aria-label', p.name);
@@ -1207,7 +1325,7 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { keys.delete(e.code); syncKbd(); });
 addEventListener('blur', () => { keys.clear(); syncKbd(); });
 function keyMove(dt) {
-  if (!keys.size) return;
+  if (!keys.size || introOn) return;
   const fast = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 2.8 : 1;
   const sp = clamp(ctl.d, 80, 6000) * 0.7 * fast * dt;
   const fx = -Math.sin(ctl.a), fz = -Math.cos(ctl.a), rx = Math.cos(ctl.a), rz = -Math.sin(ctl.a);
@@ -1308,6 +1426,23 @@ function onResize() { renderer.setSize(innerWidth, innerHeight); camera.aspect =
 addEventListener('resize', onResize);
 const v3 = new THREE.Vector3();
 let last = performance.now(), statT = 0, simClock = $('sim-clock');
+// intro screen: city orbits slowly behind the title until the viewer enters
+var introOn = true;
+const intro = $('intro'), enterBtn = $('enter');
+$('is-b').textContent = B.length.toLocaleString('th-TH');
+$('is-p').textContent = PLACES.length.toLocaleString('th-TH');
+$('is-r').textContent = Math.round(roadSegs.reduce((a, s) => a + s[1], 0) / 1000).toLocaleString('th-TH') + ' กม.';
+const home = { d: ctl.d, p: ctl.p };
+ctl.d = ctl.dist = 4200; ctl.p = ctl.pol = 0.78;
+function enterCity() {
+  if (!introOn || enterBtn.disabled) return;
+  introOn = false;
+  intro.classList.add('gone');
+  document.body.classList.remove('intro-on');
+  ctl.d = home.d; ctl.p = home.p; lastInput = Date.now();
+}
+enterBtn.addEventListener('click', enterCity);
+addEventListener('keydown', e => { if (introOn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); enterCity(); } });
 setUI(); updateStats(); onResize(); drawList();
 
 function frame(now) {
@@ -1348,7 +1483,7 @@ function frame(now) {
   const k = 1 - Math.exp(-dt * 8);
   ctl.target.lerp(ctl.t, k); ctl.dist = lerp(ctl.dist, ctl.d, k); ctl.az = lerp(ctl.az, ctl.a, k); ctl.pol = lerp(ctl.pol, ctl.p, k);
   keyMove(dt);
-  if (!reduce && !canvas.classList.contains('dragging') && !sim.scenario && !keys.size && Date.now() - lastInput > 8000) ctl.a += dt * 0.012;
+  if (!reduce && !canvas.classList.contains('dragging') && !sim.scenario && !keys.size && Date.now() - lastInput > 8000) ctl.a += dt * (introOn ? 0.05 : 0.012);
   const sp = Math.sin(ctl.pol), cp = Math.cos(ctl.pol);
   camera.position.set(ctl.target.x + ctl.dist * sp * Math.sin(ctl.az), ctl.target.y + ctl.dist * cp, ctl.target.z + ctl.dist * sp * Math.cos(ctl.az));
   camera.position.y = Math.max(camera.position.y, 6);
@@ -1385,10 +1520,11 @@ function frame(now) {
   PLACES.forEach(pl => { if (pl.mk) place(pl.mk, pl.v, true); });
   beaconTick(dt);
   towerTick();
+  stadiumTick();
 
   if (post) post.render(); else renderer.render(scene, camera);
 
-  if (!loading.classList.contains('done')) loading.classList.add('done');
+  if (!loading.classList.contains('done')) { loading.classList.add('done'); enterBtn.disabled = false; $('enter-label').textContent = 'เข้าสู่เมือง'; enterBtn.focus({ preventScroll: true }); }
 }
 requestAnimationFrame(frame);
 setTimeout(() => $('hint').style.opacity = '0', 9000);
