@@ -330,6 +330,7 @@
 
 <div class="attrib">ข้อมูลอาคารและถนน © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · ความสูงพื้นดิน SRTM (NASA) ผ่าน OpenTopoData</div>
 
+<script src="city.js"></script><!--repo-only-->
 <script>
   // panel folding and hide-all (H); remembered per browser when storage is available
   (function () {
@@ -378,7 +379,8 @@ const isMobile = matchMedia('(max-width: 900px)').matches || matchMedia('(pointe
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let city;
-try { city = await (await fetch('city.json')).json(); } catch (e) { fail('โหลดข้อมูลเมืองไม่สำเร็จ'); throw e; }
+try { city = window.CITY_DATA || await (await fetch('city.json')).json(); }
+catch (e) { fail(location.protocol === 'file:' ? 'โหลดข้อมูลเมืองไม่สำเร็จ: วางไฟล์ city.js ไว้โฟลเดอร์เดียวกับ index.html' : 'โหลดข้อมูลเมืองไม่สำเร็จ'); throw e; }
 
 /* ------------------------------------------------------------------ *
  *  renderer
